@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useInterval, useLocalStorage } from 'react-use';
 import styled from 'styled-components';
 
+import { t } from '../../../../common/i18n';
 import { GitRepository } from '../../../../models/git-repository';
 import {
   exchangeCodeForGitLabToken,
@@ -171,7 +172,7 @@ const GitLabRepositoryForm = ({
           if (axios.isAxiosError(error) && error.response?.status === 401) {
             refreshToken();
           } else {
-            const errorMessage = (error instanceof Error) ? error.message : 'Something went wrong when trying to fetch info from GitLab.';
+            const errorMessage = (error instanceof Error) ? error.message : t('gitLab.errorFetchingInfo');
             setError(errorMessage);
             console.log(`[gitlab oauth]: ${error}`);
           }
@@ -204,7 +205,7 @@ const GitLabRepositoryForm = ({
       {token && (
         <div className="form-control form-control--outlined">
           <label>
-            GitLab URI
+            {t('gitLab.gitlabUri')}
             <input
               className="form-control"
               defaultValue={uri}
@@ -213,7 +214,7 @@ const GitLabRepositoryForm = ({
               autoFocus
               disabled={Boolean(uri)}
               required
-              placeholder="https://gitlab.com/org/repo.git"
+              placeholder={t('gitLab.gitlabUriPlaceholder')}
             />
           </label>
         </div>
@@ -244,10 +245,9 @@ const GitLabRepositoryForm = ({
             event.preventDefault();
             event.stopPropagation();
             showAlert({
-              title: 'Sign out of GitLab',
-              message:
-                'Are you sure you want to sign out? You will need to re-authenticate with GitLab to use this feature.',
-              okLabel: 'Sign out',
+              title: t('gitLab.signOutOfGitLab'),
+              message: t('gitLab.signOutConfirm'),
+              okLabel: t('gitLab.signOut'),
               onConfirm: () => {
                 removeUser();
                 onSignOut();
@@ -255,7 +255,7 @@ const GitLabRepositoryForm = ({
             });
           }}
         >
-          Sign out
+          {t('gitLab.signOut')}
         </Button>
       </AccountViewContainer>
 
@@ -303,7 +303,7 @@ const GitLabSignInForm = ({ token }: GitLabSignInFormProps) => {
         }}
       >
         <i className="fa fa-gitlab" />
-        {isAuthenticating ? 'Authenticating' : 'Authenticate'} with GitLab
+        {isAuthenticating ? t('gitLab.authenticating') : t('gitLab.authenticate')}
       </a>
 
       {isAuthenticating && (
@@ -325,7 +325,7 @@ const GitLabSignInForm = ({ token }: GitLabSignInFormProps) => {
                 }).catch((error: Error) => {
                   showError({
                     error,
-                    title: 'Error authorizing GitLab',
+                    title: t('gitLab.errorAuthorizing'),
                     message: error.message,
                   });
                 });
@@ -335,12 +335,11 @@ const GitLabSignInForm = ({ token }: GitLabSignInFormProps) => {
         >
           <label className="form-control form-control--outlined">
             <div>
-              If you aren't redirected to the app you can manually paste your
-              code here:
+              {t('gitLab.manualPasteCode')}
             </div>
             <div className="form-row">
               <input name="link" />
-              <Button bg="surprise" name="add-token">Authenticate</Button>
+              <Button bg="surprise" name="add-token">{t('gitLab.authenticate')}</Button>
             </div>
           </label>
         </form>

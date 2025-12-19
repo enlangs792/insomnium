@@ -1,5 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 
+import { t } from '../../../common/i18n';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
 import { ModalFooter } from '../base/modal-footer';
@@ -27,8 +28,8 @@ export const AskModal = forwardRef<AskModalHandle, ModalProps>((_, ref) => {
   const [state, setState] = useState<State>({
     title: '',
     message: '',
-    yesText: 'Yes',
-    noText: 'No',
+    yesText: t('modal.yes'),
+    noText: t('modal.no'),
     onDone: async () => { },
   });
 
@@ -38,10 +39,10 @@ export const AskModal = forwardRef<AskModalHandle, ModalProps>((_, ref) => {
     },
     show: ({ title, message, onDone, yesText, noText }) => {
       setState({
-        title: title || 'Confirm',
-        message: message || 'No message provided',
-        yesText: yesText || 'Yes',
-        noText: noText || 'No',
+        title: title || t('modal.confirm'),
+        message: message || t('modal.noMessageProvided'),
+        yesText: yesText || t('modal.yes'),
+        noText: noText || t('modal.no'),
         onDone,
       });
       modalRef.current?.show();
@@ -50,7 +51,7 @@ export const AskModal = forwardRef<AskModalHandle, ModalProps>((_, ref) => {
   const { message, title, yesText, noText, onDone } = state;
   return (
     <Modal ref={modalRef}>
-      <ModalHeader>{title || 'Confirm?'}</ModalHeader>
+      <ModalHeader>{title || t('modal.confirmQuestion')}</ModalHeader>
       <ModalBody className="wide pad">{message}</ModalBody>
       <ModalFooter>
         <div>

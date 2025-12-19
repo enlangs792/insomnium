@@ -3,6 +3,7 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import { OverlayContainer } from 'react-aria';
 import { useFetcher, useParams } from 'react-router-dom';
 
+import { t } from '../../../common/i18n';
 import { strings } from '../../../common/strings';
 import * as models from '../../../models';
 import { CommitToGitRepoResult, GitChangesLoaderData, GitRollbackChangesResult } from '../../routes/git-actions';
@@ -72,7 +73,7 @@ export const GitStagingModal: FC<ModalProps> = ({
   useEffect(() => {
     if (errors && errors?.length > 0) {
       showAlert({
-        title: 'Push Failed',
+        title: t('gitStaging.pushFailed'),
         message: errors.join('\n'),
       });
     }
@@ -83,7 +84,7 @@ export const GitStagingModal: FC<ModalProps> = ({
   return (
     <OverlayContainer>
       <Modal onHide={onHide} ref={modalRef}>
-        <ModalHeader>Commit Changes</ModalHeader>
+        <ModalHeader>{t('gitStaging.title')}</ModalHeader>
         <ModalBody className="wide pad">
           <gitCommitFetcher.Form
             id="git-staging-form"
@@ -110,13 +111,13 @@ export const GitStagingModal: FC<ModalProps> = ({
                   <textarea
                     rows={3}
                     required
-                    placeholder="A descriptive message to describe changes made"
+                    placeholder={t('gitStaging.commitMessagePlaceholder')}
                     name="message"
                   />
                 </div>
                 {modifiedChanges.length > 0 && (
                   <div className="pad-top">
-                    <strong>Modified Objects</strong>
+                    <strong>{t('gitStaging.modifiedObjects')}</strong>
                     <PromptButton
                       className="btn pull-right btn--micro"
                       onClick={e => {
@@ -132,7 +133,7 @@ export const GitStagingModal: FC<ModalProps> = ({
                         }
                       }}
                     >
-                      Rollback All
+                      {t('gitStaging.rollbackAll')}
                     </PromptButton>
                     <table className="table--fancy table--outlined margin-top-sm">
                       <thead>
@@ -152,10 +153,10 @@ export const GitStagingModal: FC<ModalProps> = ({
                                   indeterminate={!checkAllModified}
                                 />
                               </span>{' '}
-                              name
+                              {t('gitStaging.name')}
                             </label>
                           </th>
-                          <th className="text-right">Description</th>
+                          <th className="text-right">{t('gitStaging.description')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -180,7 +181,7 @@ export const GitStagingModal: FC<ModalProps> = ({
                             <td className="text-right">
                               {item.editable && (
                                 <Tooltip
-                                  message={item.added ? 'Delete' : 'Rollback'}
+                                  message={item.added ? t('gitStaging.delete') : t('gitStaging.rollback')}
                                 >
                                   <button
                                     className="btn btn--micro space-right"
@@ -221,7 +222,7 @@ export const GitStagingModal: FC<ModalProps> = ({
 
                 {unversionedChanges.length > 0 && (
                   <div className="pad-top">
-                    <strong>Unversioned Objects</strong>
+                    <strong>{t('gitStaging.unversionedObjects')}</strong>
                     <PromptButton
                       className="btn pull-right btn--micro"
                       onClick={e => {
@@ -237,7 +238,7 @@ export const GitStagingModal: FC<ModalProps> = ({
                         }
                       }}
                     >
-                      Delete All
+                      {t('gitStaging.deleteAll')}
                     </PromptButton>
                     <table className="table--fancy table--outlined margin-top-sm">
                       <thead>
@@ -257,10 +258,10 @@ export const GitStagingModal: FC<ModalProps> = ({
                                   indeterminate={!checkAllUnversioned}
                                 />
                               </span>{' '}
-                              name
+                              {t('gitStaging.name')}
                             </label>
                           </th>
-                          <th className="text-right">Description</th>
+                          <th className="text-right">{t('gitStaging.description')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -287,7 +288,7 @@ export const GitStagingModal: FC<ModalProps> = ({
                             <td className="text-right">
                               {item.editable && (
                                 <Tooltip
-                                  message={item.added ? 'Delete' : 'Rollback'}
+                                  message={item.added ? t('gitStaging.delete') : t('gitStaging.rollback')}
                                 >
                                   <button
                                     className="btn btn--micro space-right"
@@ -333,7 +334,7 @@ export const GitStagingModal: FC<ModalProps> = ({
               <div className="txt-sm faint italic">
                 {isLoadingGitChanges ? <>
                   <i className="fa fa-spinner fa-spin space-right" />
-                  Loading changes...</> : errors && errors?.length > 0 ? "network error.." : hasDone ? "Commited. Ready to push" : 'No new changes to commit.'}
+                  {t('gitStaging.loadingChanges')}</> : errors && errors?.length > 0 ? t('gitStaging.networkError') : hasDone ? t('gitStaging.committedReadyToPush') : t('gitStaging.noNewChangesToCommit')}
               </div>
             )}
           </gitCommitFetcher.Form>
@@ -344,7 +345,7 @@ export const GitStagingModal: FC<ModalProps> = ({
           </div>
           <div>
             <button className="btn" onClick={() => modalRef.current?.hide()}>
-              Close
+              {t('gitStaging.close')}
             </button>
             <button
               type="submit"
@@ -353,7 +354,7 @@ export const GitStagingModal: FC<ModalProps> = ({
               disabled={gitCommitFetcher.state !== 'idle' || !hasChanges}
             >
               <i className={`fa ${gitCommitFetcher.state === 'idle' ? 'fa-check' : 'fa-spinner fa-spin'} space-right`} />
-              Commit
+              {t('gitStaging.commit')}
             </button>
           </div>
         </ModalFooter>
@@ -369,27 +370,27 @@ const OperationTooltip = ({ item }: { item: Item }) => {
     item.type === models.workspace.type ? strings.document.singular : item.type;
   if (item.status.includes('added')) {
     return (
-      <Tooltip message="Added">
+      <Tooltip message={t('gitStaging.added')}>
         <i className="fa fa-plus-circle success" /> {type}
       </Tooltip>
     );
   }
   if (item.status.includes('modified')) {
     return (
-      <Tooltip message="Modified">
+      <Tooltip message={t('gitStaging.modified')}>
         <i className="fa fa-plus-circle faded" /> {type}
       </Tooltip>
     );
   }
   if (item.status.includes('deleted')) {
     return (
-      <Tooltip message="Deleted">
+      <Tooltip message={t('gitStaging.deleted')}>
         <i className="fa fa-minus-circle danger" /> {type}
       </Tooltip>
     );
   }
   return (
-    <Tooltip message="Unknown">
+    <Tooltip message={t('gitStaging.unknown')}>
       <i className="fa fa-question-circle info" /> {type}
     </Tooltip>
   );

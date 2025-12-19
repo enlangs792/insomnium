@@ -17,6 +17,7 @@ import {
   type Request,
   type RequestBodyParameter,
 } from '../../../../models/request';
+import { t } from '../../../../common/i18n';
 import { NunjucksEnabledProvider } from '../../../context/nunjucks/nunjucks-enabled-context';
 import { useRequestSetter } from '../../../hooks/use-request';
 import { AskModal } from '../../modals/ask-modal';
@@ -88,10 +89,10 @@ export const BodyEditor: FC<Props> = ({
     if (contentType !== newContentType && path) {
       contentTypeHeader.value = newContentType;
       showModal(AskModal, {
-        title: 'Change Content-Type',
+        title: t('bodyEditor.changeContentType'),
         message: <p>
-          Do you want set the <span className="monospace">Content-Type</span> header to{' '}
-          <span className="monospace">{newContentType}</span>?
+          {t('bodyEditor.changeContentTypeMessage')}{' '}
+          <span className="monospace">{newContentType}</span>？
         </p>,
         onDone: async (saidYes: boolean) => {
           if (saidYes) {
@@ -108,7 +109,7 @@ export const BodyEditor: FC<Props> = ({
   const mimeType = request.body.mimeType;
   const isBodyEmpty = typeof mimeType !== 'string' && !request.body.text;
 
-  const secondaryAction = request.method === "POST" ? " Select a body type from above to send data in the body of a request" : null;
+  const secondaryAction = request.method === "POST" ? t('bodyEditor.selectBodyType') : null;
 
   const _render = () => {
     if (mimeType === CONTENT_TYPE_FORM_URLENCODED) {
@@ -127,11 +128,11 @@ export const BodyEditor: FC<Props> = ({
         icon={<i className="fa fa-paper-plane" />}
         documentationLinks={[]}
         secondaryAction={secondaryAction}
-        title="Enter a URL and connect to start receiving event stream data"
+        title={t('bodyEditor.enterUrlForEventStream')}
       />;
     }
 
-    return <EmptyStatePane icon={<SvgIcon icon="globe" />} documentationLinks={[]} secondaryAction={secondaryAction} title={"Enter a URL and send to get a response"} />;
+    return <EmptyStatePane icon={<SvgIcon icon="globe" />} documentationLinks={[]} secondaryAction={secondaryAction} title={t('bodyEditor.enterUrlForResponse')} />;
   };
 
   return <NunjucksEnabledProvider disable={noRender}>{_render()}</NunjucksEnabledProvider>;

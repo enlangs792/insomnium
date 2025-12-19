@@ -132,8 +132,13 @@ app.on('window-all-closed', () => {
   }
 });
 // Mac-only, when the user clicks the doc icon
-app.on('activate', (_error, hasVisibleWindows) => {
+app.on('activate', () => {
   // Create a new window when clicking the doc icon if there isn't one open
+  if (!app.isReady()) {
+    console.log('[main] App not ready to "activate" yet');
+    return;
+  }
+  const hasVisibleWindows = BrowserWindow.getAllWindows().length > 0;
   if (!hasVisibleWindows) {
     try {
       console.log('[main] creating new window for MacOS activate event');
@@ -141,7 +146,7 @@ app.on('activate', (_error, hasVisibleWindows) => {
     } catch (error) {
       // This might happen if 'ready' hasn't fired yet. So we're just going
       // to silence these errors.
-      console.log('[main] App not ready to "activate" yet');
+      console.log('[main] App not ready to "activate" yet', error);
     }
   }
 });

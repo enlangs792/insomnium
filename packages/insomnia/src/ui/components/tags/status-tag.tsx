@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 import React, { FC, memo } from 'react';
 
-import { RESPONSE_CODE_DESCRIPTIONS, RESPONSE_CODE_REASONS } from '../../../common/constants';
+import { RESPONSE_CODE_DESCRIPTIONS, getResponseCodeReason } from '../../../common/constants';
 import { Tooltip } from '../tooltip';
 
 interface Props {
@@ -30,9 +30,9 @@ export const StatusTag: FC<Props> = memo(({ statusMessage, statusCode, small, to
 
   const description = RESPONSE_CODE_DESCRIPTIONS[statusCode] || 'Unknown Response Code';
   const isStatusMessageUnknown = statusMessage === 'Unknown' || statusMessage === 'unknown';
-  let statusMessageToShow = statusMessage || RESPONSE_CODE_REASONS[statusCode];
+  let statusMessageToShow = statusMessage || getResponseCodeReason(statusCode);
   if (isStatusMessageUnknown) {
-    statusMessageToShow = RESPONSE_CODE_REASONS[statusCode] || statusMessage;
+    statusMessageToShow = getResponseCodeReason(statusCode) || statusMessage;
   }
   return (
     <div

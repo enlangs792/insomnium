@@ -5,6 +5,7 @@ import { useFetcher, useParams, useRouteLoaderData } from 'react-router-dom';
 
 import { exportHarRequest } from '../../../common/har';
 import { toKebabCase } from '../../../common/misc';
+import { t } from '../../../common/i18n';
 import { RENDER_PURPOSE_NO_RENDER } from '../../../common/render';
 import { PlatformKeyCombinations } from '../../../common/settings';
 import type { Environment } from '../../../models/environment';
@@ -160,13 +161,13 @@ export const RequestActionsDropdown = ({
     action: () => void;
   }[] = canGenerateCode ? [{
     id: 'GenerateCode',
-    name: 'Generate Code',
+    name: t('menu.generateCode'),
     action: generateCode,
     icon: 'code',
     hint: hotKeyRegistry.request_showGenerateCodeEditor,
   }, {
     id: 'CopyAsCurl',
-    name: 'Copy as cURL',
+    name: t('menu.copyAsCurl'),
     action: copyAsCurl,
     icon: 'copy',
   }] : [];
@@ -180,25 +181,25 @@ export const RequestActionsDropdown = ({
   }[] = [
       {
         id: 'Duplicate',
-        name: 'Duplicate',
+        name: t('menu.duplicate'),
       action: handleDuplicateRequest,
         icon: 'copy',
       },
       {
         id: 'Rename',
-        name: 'Rename',
+        name: t('menu.rename'),
         action: handleRename,
         icon: 'edit',
       },
       {
         id: 'Delete',
-        name: 'Delete',
+        name: t('menu.delete'),
         action: deleteRequest,
         icon: 'trash',
       },
       {
         id: 'Pin',
-        name: isPinned ? 'Unpin' : 'Pin',
+        name: isPinned ? t('menu.unpin') : t('menu.pin'),
         action: togglePin,
         icon: 'thumbtack',
       },
@@ -211,7 +212,7 @@ export const RequestActionsDropdown = ({
       })),
       {
         id: 'Settings',
-        name: 'Settings',
+        name: t('menu.settings'),
         icon: 'gear',
         hint: hotKeyRegistry.request_showSettings,
         action: () => {

@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import React, { forwardRef, ReactNode, useImperativeHandle, useRef, useState } from 'react';
 
+import { t } from '../../../common/i18n';
 import { Modal, ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
 import { ModalFooter } from '../base/modal-footer';
@@ -123,33 +124,33 @@ export const PromptModal = forwardRef<PromptModalHandle, ModalProps>((_, ref) =>
 
   if (Array.isArray(hints)) {
     sanitizedHints = hints.slice(0, 15).map(hint =>
-      (<div key={hint} className="btn btn--outlined btn--super-duper-compact margin-right-sm margin-top-sm inline-block">
-        <button
-          className="tall"
-          onClick={() => {
-            if (hint) {
-              state.onComplete?.(state.upperCase ? hint?.toUpperCase() : hint);
-            }
-            modalRef.current?.hide();
-          }}
-        >
-          {hint}
-        </button>
-        <PromptButton
-          confirmMessage=""
-          className="tall space-left icon"
-          onClick={() => {
-            state.onDeleteHint?.(hint);
-            const hints = state.hints?.filter(h => h !== hint);
-            setState(state => ({
-              ...state,
-              hints,
-            }));
-          }}
-        >
-          <i className="fa fa-close faint" />
-        </PromptButton>
-      </div>));
+    (<div key={hint} className="btn btn--outlined btn--super-duper-compact margin-right-sm margin-top-sm inline-block">
+      <button
+        className="tall"
+        onClick={() => {
+          if (hint) {
+            state.onComplete?.(state.upperCase ? hint?.toUpperCase() : hint);
+          }
+          modalRef.current?.hide();
+        }}
+      >
+        {hint}
+      </button>
+      <PromptButton
+        confirmMessage=""
+        className="tall space-left icon"
+        onClick={() => {
+          state.onDeleteHint?.(hint);
+          const hints = state.hints?.filter(h => h !== hint);
+          setState(state => ({
+            ...state,
+            hints,
+          }));
+        }}
+      >
+        <i className="fa fa-close faint" />
+      </PromptButton>
+    </div>));
   }
 
   let field = input;
@@ -183,7 +184,7 @@ export const PromptModal = forwardRef<PromptModalHandle, ModalProps>((_, ref) =>
       <ModalFooter>
         <div className="margin-left faint italic txt-sm">{hint ? `* ${hint}` : ''}</div>
         <button className="btn" onClick={handleSubmit}>
-          {submitName || 'Submit'}
+          {submitName || t('modal.submit')}
         </button>
       </ModalFooter>
     </Modal>

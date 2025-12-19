@@ -14,9 +14,12 @@ import { docsKeyMaps } from '../../../common/documentation';
 import { HttpVersion, HttpVersions, UpdateChannel } from '../../../common/settings';
 import { strings } from '../../../common/strings';
 import { initNewOAuthSession } from '../../../network/o-auth-2/get-token';
+import { t, setLocale, type Locale } from '../../../common/i18n';
 import { RootLoaderData } from '../../routes/root';
+import { useSettingsPatcher } from '../../hooks/use-request';
 import { Link } from '../base/link';
 import { CheckForUpdatesButton } from '../check-for-updates-button';
+import { HelpTooltip } from '../help-tooltip';
 import { Tooltip } from '../tooltip';
 import { BooleanSetting } from './boolean-setting';
 import { EnumSetting } from './enum-setting';
@@ -31,7 +34,7 @@ import { TextSetting } from './text-setting';
 const RestartTooltip: FC<{ message: string }> = ({ message }) => (
   <Fragment>
     {message}{' '}
-    <Tooltip message="Will restart the app" className="space-left">
+    <Tooltip message={t('tooltip.willRestart')} className="space-left">
       <i className="fa fa-refresh super-duper-faint" />
     </Tooltip>
   </Fragment>
@@ -41,39 +44,71 @@ export const General: FC = () => {
   const {
     settings,
   } = useRouteLoaderData('root') as RootLoaderData;
+  const patchSettings = useSettingsPatcher();
+
+  const handleLocaleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newLocale = event.target.value as Locale;
+    setLocale(newLocale);
+    patchSettings({ locale: newLocale });
+    // 提示用户刷新页面以应用语言更改
+    setTimeout(() => {
+      if (window.confirm(t('settings.language.refreshPrompt') || 'Language changed. Refresh page to apply?')) {
+        window.location.reload();
+      }
+    }, 100);
+  };
 
   return (
     <div className="pad-bottom">
+      <div className="form-row pad-top-sm">
+        <div className="form-control form-control--outlined">
+          <label>
+            {t('settings.language')}
+            <HelpTooltip className="space-left">{t('settings.language.help')}</HelpTooltip>
+            <select
+              value={settings.locale || 'zh-CN'}
+              name="locale"
+              onChange={handleLocaleChange}
+            >
+              <option value="zh-CN">{t('locale.zh-CN')}</option>
+              <option value="en">{t('locale.en')}</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <hr className="pad-top" />
+
       <div className="row-fill row-fill--top">
         <div>
           <BooleanSetting
-            label="Use bulk header editor"
+            label={t('settings.general.useBulkHeaderEditor')}
             setting="useBulkHeaderEditor"
           />
           <BooleanSetting
-            label="Use vertical layout"
+            label={t('settings.general.useVerticalLayout')}
             setting="forceVerticalLayout"
-            help="If checked, stack request and response panels vertically."
+            help={t('settings.general.useVerticalLayout.help')}
           />
           <BooleanSetting
-            label={<RestartTooltip message="Show variable source and value" />}
-            help="If checked, reveals the environment variable source and value in the template tag. Otherwise, hover over the template tag to see the source and value."
+            label={<RestartTooltip message={t('settings.general.showVariableSourceAndValue')} />}
+            help={t('settings.general.showVariableSourceAndValue.help')}
             setting="showVariableSourceAndValue"
           />
         </div>
         <div>
           <BooleanSetting
-            label="Reveal passwords"
+            label={t('settings.general.revealPasswords')}
             setting="showPasswords"
           />
           {!isMac() && (
             <BooleanSetting
-              label="Hide menu bar"
+              label={t('settings.general.hideMenuBar')}
               setting="autoHideMenuBar"
             />
           )}
           <BooleanSetting
-            label={<RestartTooltip message="Raw template syntax" />}
+            label={<RestartTooltip message={t('settings.general.rawTemplateSyntax')} />}
             setting="nunjucksPowerUserMode"
           />
         </div>
@@ -81,9 +116,9 @@ export const General: FC = () => {
 
       <div className="row-fill row-fill--top pad-top-sm">
         <NumberSetting
-          label="Autocomplete popup delay (ms)"
+          label={t('settings.general.autocompleteDelay')}
           setting="autocompleteDelay"
-          help="Delay the autocomplete popup by milliseconds. Enter 0 to disable the autocomplete delay."
+          help={t('settings.general.autocompleteDelay.help')}
           min={0}
           max={3000}
           step={100}
@@ -91,22 +126,22 @@ export const General: FC = () => {
       </div>
 
       <hr className="pad-top" />
-      <h2>Font</h2>
+      <h2>{t('settings.font')}</h2>
 
       <div className="row-fill row-fill--top">
         <div>
           <BooleanSetting
-            label="Indent with tabs"
+            label={t('settings.font.indentWithTabs')}
             setting="editorIndentWithTabs"
           />
           <BooleanSetting
-            label="Wrap text editor lines"
+            label={t('settings.font.wrapTextEditorLines')}
             setting="editorLineWrapping"
           />
         </div>
         <div>
           <BooleanSetting
-            label="Font ligatures"
+            label={t('settings.font.fontLigatures')}
             setting="fontVariantLigatures"
           />
         </div>
@@ -115,13 +150,13 @@ export const General: FC = () => {
       <div className="form-row pad-top-sm">
         <div className="form-row">
           <TextSetting
-            label="Interface font"
+            label={t('settings.font.interfaceFont')}
             setting="fontInterface"
-            help="Enter a comma-separated list of fonts. If left empty, uses system defaults."
-            placeholder="-- System Default --"
+            help={t('settings.font.interfaceFont.help')}
+            placeholder={t('settings.font.systemDefault')}
           />
           <NumberSetting
-            label="Interface font size (px)"
+            label={t('settings.font.interfaceFontSize')}
             setting="fontSize"
             min={MIN_INTERFACE_FONT_SIZE}
             max={MAX_INTERFACE_FONT_SIZE}
@@ -131,13 +166,13 @@ export const General: FC = () => {
 
       <div className="form-row">
         <TextSetting
-          label="Text editor font"
+          label={t('settings.font.textEditorFont')}
           setting="fontMonospace"
-          help="Enter a comma-separated list of monospace fonts. If left empty, uses system defaults."
-          placeholder="-- System Default --"
+          help={t('settings.font.textEditorFont.help')}
+          placeholder={t('settings.font.systemDefault')}
         />
         <NumberSetting
-          label="Editor Font Size (px)"
+          label={t('settings.font.editorFontSize')}
           setting="editorFontSize"
           min={MIN_EDITOR_FONT_SIZE}
           max={MAX_EDITOR_FONT_SIZE}
@@ -146,7 +181,7 @@ export const General: FC = () => {
 
       <div className="form-row">
         <NumberSetting
-          label="Editor Indent Size"
+          label={t('settings.font.editorIndentSize')}
           setting="editorIndentSize"
           help=""
           min={1}
@@ -154,51 +189,51 @@ export const General: FC = () => {
         />
 
         <EnumSetting<EditorKeyMap>
-          label="Text Editor Key Map"
+          label={t('settings.font.textEditorKeyMap')}
           setting="editorKeyMap"
           help={isMac() && settings.editorKeyMap === EditorKeyMap.vim && (
             <Fragment>
               To enable key-repeating with Vim on macOS, see <Link href={docsKeyMaps}>
-                documentation <i className="fa fa-external-link-square" /></Link>
+                {t('tooltip.documentation')} <i className="fa fa-external-link-square" /></Link>
             </Fragment>
           )}
           values={[
-            { value: EditorKeyMap.default, name: 'Default' },
-            { value: EditorKeyMap.vim, name: 'Vim' },
-            { value: EditorKeyMap.emacs, name: 'Emacs' },
-            { value: EditorKeyMap.sublime, name: 'Sublime' },
+            { value: EditorKeyMap.default, name: t('editorKeyMap.default') },
+            { value: EditorKeyMap.vim, name: t('editorKeyMap.vim') },
+            { value: EditorKeyMap.emacs, name: t('editorKeyMap.emacs') },
+            { value: EditorKeyMap.sublime, name: t('editorKeyMap.sublime') },
           ]}
         />
       </div>
 
       <hr className="pad-top" />
 
-      <h2>Request / Response</h2>
+      <h2>{t('settings.requestResponse')}</h2>
 
       <div className="row-fill row-fill--top">
         <div>
           <BooleanSetting
-            label="Validate certificates"
+            label={t('settings.requestResponse.validateCertificates')}
             setting="validateSSL"
-            help="If checked, validate SSL certificates for API requests. This does not affect SSL certificate validation during authentication."
+            help={t('settings.requestResponse.validateCertificates.help')}
           />
           <BooleanSetting
-            label="Follow redirects"
+            label={t('settings.requestResponse.followRedirects')}
             setting="followRedirects"
           />
           <BooleanSetting
-            label="Filter responses by environment"
+            label={t('settings.requestResponse.filterResponsesByEnv')}
             setting="filterResponsesByEnv"
-            help="If checked, only show responses sent under the active environment. "
+            help={t('settings.requestResponse.filterResponsesByEnv.help')}
           />
         </div>
         <div>
           <BooleanSetting
-            label="Disable JS in HTML preview"
+            label={t('settings.requestResponse.disableJsInHtmlPreview')}
             setting="disableHtmlPreviewJs"
           />
           <BooleanSetting
-            label="Disable links in response viewer"
+            label={t('settings.requestResponse.disableLinksInResponseViewer')}
             setting="disableResponsePreviewLinks"
           />
         </div>
@@ -206,33 +241,33 @@ export const General: FC = () => {
 
       <div className="form-row pad-top-sm">
         <EnumSetting<HttpVersion>
-          label="Preferred HTTP version"
+          label={t('settings.requestResponse.preferredHttpVersion')}
           setting="preferredHttpVersion"
           values={[
-            { value: HttpVersions.default, name: 'Default' },
-            { value: HttpVersions.V1_0, name: 'HTTP 1.0' },
-            { value: HttpVersions.V1_1, name: 'HTTP 1.1' },
-            { value: HttpVersions.V2PriorKnowledge, name: 'HTTP/2 PriorKnowledge' },
-            { value: HttpVersions.V2_0, name: 'HTTP/2' },
+            { value: HttpVersions.default, name: t('httpVersion.default') },
+            { value: HttpVersions.V1_0, name: t('httpVersion.v1_0') },
+            { value: HttpVersions.V1_1, name: t('httpVersion.v1_1') },
+            { value: HttpVersions.V2PriorKnowledge, name: t('httpVersion.v2PriorKnowledge') },
+            { value: HttpVersions.V2_0, name: t('httpVersion.v2_0') },
             // Enable when our version of libcurl supports HTTP/3
             // see: https://github.com/JCMais/node-libcurl/issues/233
             // { value: HttpVersions.v3, name: 'HTTP/3' },
           ]}
-          help="Select the preferred HTTP version for requests. The version will fall back if it can’t be negotiated."
+          help={t('settings.requestResponse.preferredHttpVersion.help')}
         />
       </div>
 
       <div className="form-row pad-top-sm">
         <NumberSetting
-          label="Maximum Redirects"
+          label={t('settings.requestResponse.maxRedirects')}
           setting="maxRedirects"
-          help="Enter the maximum amount of redirects to follow. Enter -1 for unlimited redirects."
+          help={t('settings.requestResponse.maxRedirects.help')}
           min={-1}
         />
         <NumberSetting
-          label="Request timeout (ms)"
+          label={t('settings.requestResponse.requestTimeout')}
           setting="timeout"
-          help="Enter the maximum milliseconds allotted before a request will timeout. Enter 0 to disable timeouts. "
+          help={t('settings.requestResponse.requestTimeout.help')}
           min={0}
           step={100}
         />
@@ -240,27 +275,27 @@ export const General: FC = () => {
 
       <div className="form-row pad-top-sm">
         <NumberSetting
-          label="Response history limit"
+          label={t('settings.requestResponse.responseHistoryLimit')}
           setting="maxHistoryResponses"
-          help="Enter the number of responses to keep for each request. Enter -1 to keep all response history."
+          help={t('settings.requestResponse.responseHistoryLimit.help')}
           min={-1}
         />
         <NumberSetting
-          label="Max timeline chunk size (KiB)"
+          label={t('settings.requestResponse.maxTimelineChunkSize')}
           setting="maxTimelineDataSizeKB"
-          help="Enter the maximum size in kibibytes to show on the response timeline. Decrease the number for less detailed responses."
+          help={t('settings.requestResponse.maxTimelineChunkSize.help')}
           min={0}
         />
       </div>
 
       <hr className="pad-top" />
 
-      <h2>Security</h2>
+      <h2>{t('settings.security')}</h2>
       <div className="form-row pad-top-sm">
         <BooleanSetting
-          label="Clear OAuth 2 session on start"
+          label={t('settings.security.clearOAuth2SessionOnStart')}
           setting="clearOAuth2SessionOnRestart"
-          help="If checked, clears the OAuth session every time Insomnium is relaunched."
+          help={t('settings.security.clearOAuth2SessionOnStart.help')}
         />
         <button
           className="btn btn--clicky pointer"
@@ -269,47 +304,47 @@ export const General: FC = () => {
           }}
           onClick={initNewOAuthSession}
         >
-          Clear OAuth 2 session
+          {t('settings.security.clearOAuth2Session')}
         </button>
       </div>
       <div className="form-row pad-top-sm">
         <BooleanSetting
-          label="Validate certificates during authentication"
+          label={t('settings.security.validateCertificatesDuringAuth')}
           setting="validateAuthSSL"
-          help="If checked, validates SSL certificates during authentication flows."
+          help={t('settings.security.validateCertificatesDuringAuth.help')}
         />
       </div>
 
       <hr className="pad-top" />
 
-      <h2>Network Proxy</h2>
+      <h2>{t('settings.networkProxy')}</h2>
 
       <BooleanSetting
-        label="Enable proxy"
+        label={t('settings.networkProxy.enableProxy')}
         setting="proxyEnabled"
-        help="If checked, enables a global network proxy on all requests sent through Insomnium. This proxy supports Basic Auth, digest, and NTLM authentication."
+        help={t('settings.networkProxy.enableProxy.help')}
       />
 
       <div className="form-row pad-top-sm">
         <MaskedSetting
-          label='Proxy for HTTP'
+          label={t('settings.networkProxy.proxyForHttp')}
           setting='httpProxy'
-          help="Enter a HTTP or SOCKS4/5 proxy starting with appropriate prefix from the following (http://, socks4://, socks5://)"
-          placeholder="localhost:8005"
+          help={t('settings.networkProxy.proxyForHttp.help')}
+          placeholder={t('placeholder.proxy')}
           disabled={!settings.proxyEnabled}
         />
         <MaskedSetting
-          label='Proxy for HTTPS'
+          label={t('settings.networkProxy.proxyForHttps')}
           setting='httpsProxy'
-          help="Enter a HTTPS or SOCKS4/5 proxy starting with appropriate prefix from the following (https://, socks4://, socks5://)"
-          placeholder="localhost:8005"
+          help={t('settings.networkProxy.proxyForHttps.help')}
+          placeholder={t('placeholder.proxy')}
           disabled={!settings.proxyEnabled}
         />
         <TextSetting
-          label="No proxy"
+          label={t('settings.networkProxy.noProxy')}
           setting="noProxy"
-          help="Enter a comma-separated list of hostnames that don’t require a proxy."
-          placeholder="localhost,127.0.0.1"
+          help={t('settings.networkProxy.noProxy.help')}
+          placeholder={t('placeholder.localhost')}
           disabled={!settings.proxyEnabled}
         />
       </div>

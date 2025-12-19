@@ -1,5 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 
+import { t } from '../../../common/i18n';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
 import { ModalFooter } from '../base/modal-footer';
@@ -37,12 +38,12 @@ export const ErrorModal = forwardRef<ErrorModalHandle, ModalProps>((_, ref) => {
   const message = state.message || error?.message;
   return (
     <Modal ref={modalRef}>
-      <ModalHeader>{title || 'Uh Oh!'}</ModalHeader>
+      <ModalHeader>{title || t('modal.uhOh')}</ModalHeader>
       <ModalBody className="wide pad">
         {message ? <div className="notice error pre">{message}</div> : null}
         {error && (
           <details>
-            <summary>Stack trace</summary>
+            <summary>{t('modal.stackTrace')}</summary>
             <pre className="pad-top-sm force-wrap selectable">
               <code className="wide">{error.stack}</code>
             </pre>
@@ -53,11 +54,11 @@ export const ErrorModal = forwardRef<ErrorModalHandle, ModalProps>((_, ref) => {
         <div>
           {addCancel ? (
             <button className="btn" onClick={() => modalRef.current?.hide()}>
-              Cancel
+              {t('modal.cancel')}
             </button>
           ) : null}
           <button className="btn" onClick={() => modalRef.current?.hide()}>
-            Ok
+            {t('modal.ok')}
           </button>
         </div>
       </ModalFooter>

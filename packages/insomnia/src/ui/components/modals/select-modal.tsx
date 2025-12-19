@@ -1,5 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 
+import { t } from '../../../common/i18n';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
 import { ModalFooter } from '../base/modal-footer';
@@ -43,7 +44,7 @@ export const SelectModal = forwardRef<SelectModalHandle, ModalProps>((_, ref) =>
 
   return (
     <Modal ref={modalRef}>
-      <ModalHeader>{title || 'Confirm?'}</ModalHeader>
+      <ModalHeader>{title || t('modal.confirmQuestion')}</ModalHeader>
       <ModalBody className="wide pad">
         <p>{message}</p>
         <div className="form-control form-control--outlined">
@@ -64,7 +65,7 @@ export const SelectModal = forwardRef<SelectModalHandle, ModalProps>((_, ref) =>
             onDone?.(value);
           }}
         >
-          Done
+          {t('modal.done')}
         </button>
       </ModalFooter>
     </Modal>

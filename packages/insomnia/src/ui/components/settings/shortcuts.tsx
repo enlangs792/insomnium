@@ -4,10 +4,11 @@ import { useRouteLoaderData } from 'react-router-dom';
 import {
   areSameKeyCombinations,
   constructKeyCombinationDisplay,
+  getKeyboardShortcutDescription,
   getPlatformKeyCombinations,
-  keyboardShortcutDescriptions,
   newDefaultRegistry,
 } from '../../../common/hotkeys';
+import { t } from '../../../common/i18n';
 import { HotKeyRegistry, KeyboardShortcut, KeyCombination } from '../../../common/settings';
 import { useSettingsPatcher } from '../../hooks/use-request';
 import { RootLoaderData } from '../../routes/root';
@@ -34,7 +35,7 @@ export const Shortcuts: FC = () => {
       <div className="row-spaced margin-bottom-xs">
         <div>
           <PromptButton className="btn btn--clicky" onClick={() => patchSettings({ hotKeyRegistry: newDefaultRegistry() })}>
-            Reset all
+            {t('shortcuts.resetAll')}
           </PromptButton>
         </div>
       </div>
@@ -46,7 +47,7 @@ export const Shortcuts: FC = () => {
 
             return (
               <tr key={keyboardShortcut}>
-                <td style={{ verticalAlign: 'middle' }}>{keyboardShortcutDescriptions[keyboardShortcut]}</td>
+                <td style={{ verticalAlign: 'middle' }}>{getKeyboardShortcutDescription(keyboardShortcut)}</td>
                 <td className="text-right">
                   {keyCombosForThisPlatform.map((keyComb: KeyCombination, index: number) => {
                     return (
@@ -58,7 +59,7 @@ export const Shortcuts: FC = () => {
                 </td>
                 <td className="text-right options" style={{ verticalAlign: 'middle' }}>
                   <Dropdown
-                    aria-label='Select a mode'
+                    aria-label={t('shortcuts.selectMode')}
                     closeOnSelect={false}
                     triggerButton={
                       <DropdownButton
@@ -72,10 +73,10 @@ export const Shortcuts: FC = () => {
                       </DropdownButton>
                     }
                   >
-                    <DropdownItem aria-label='Add keyboard shortcut'>
+                    <DropdownItem aria-label={t('shortcuts.addKeyboardShortcut')}>
                       <ItemContent
                         icon="plus-circle"
-                        label="Add keyboard shortcut"
+                        label={t('shortcuts.addKeyboardShortcut')}
                         onClick={() =>
                           showModal(
                             AddKeyCombinationModal,
@@ -92,11 +93,11 @@ export const Shortcuts: FC = () => {
                       />
                     </DropdownItem>
                     <DropdownSection
-                      aria-label='Remove existing section'
-                      title='Remove existing'
+                      aria-label={t('shortcuts.removeSection')}
+                      title={t('shortcuts.removeExisting')}
                     >
                       {
-                      /* Dropdown items to remove key combinations. */
+                        /* Dropdown items to remove key combinations. */
                         keyCombosForThisPlatform.map((keyComb: KeyCombination) => {
                           const display = constructKeyCombinationDisplay(keyComb, false);
                           return (
@@ -127,11 +128,11 @@ export const Shortcuts: FC = () => {
                       }
                     </DropdownSection>
 
-                    <DropdownSection aria-label='Reset keyboard shortcuts section'>
-                      <DropdownItem aria-label='Reset keyboard shortcuts'>
+                    <DropdownSection aria-label={t('shortcuts.resetSection')}>
+                      <DropdownItem aria-label={t('shortcuts.resetKeyboardShortcuts')}>
                         <ItemContent
                           icon="empty"
-                          label="Reset keyboard shortcuts"
+                          label={t('shortcuts.resetKeyboardShortcuts')}
                           withPrompt
                           onClick={() => {
                             hotKeyRegistry[keyboardShortcut] = newDefaultRegistry()[keyboardShortcut];

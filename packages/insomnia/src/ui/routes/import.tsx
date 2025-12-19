@@ -1,6 +1,7 @@
 // Import
 import { ActionFunction } from 'react-router-dom';
 
+import { t } from '../../common/i18n';
 import { fetchImportContentFromURI, scanResources, ScanResult } from '../../common/import';
 import { guard } from '../../utils/guard';
 
@@ -10,15 +11,15 @@ export const scanForResourcesAction: ActionFunction = async ({ request }): Promi
   const formData = await request.formData();
 
   const source = formData.get('importFrom');
-  guard(typeof source === 'string', 'Source is required.');
-  guard(['file', 'uri', 'clipboard'].includes(source), 'Unsupported import type');
+  guard(typeof source === 'string', t('import.sourceRequired'));
+  guard(['file', 'uri', 'clipboard'].includes(source), t('import.unsupportedImportType'));
 
   let content = '';
   if (source === 'uri') {
     const uri = formData.get('uri');
     if (typeof uri !== 'string' || uri === '') {
       return {
-        errors: ['URI is required'],
+        errors: [t('import.uriRequired')],
       };
     }
 
@@ -29,7 +30,7 @@ export const scanForResourcesAction: ActionFunction = async ({ request }): Promi
     const filePath = formData.get('filePath');
     if (typeof filePath !== 'string' || filePath === '') {
       return {
-        errors: ['File is required'],
+        errors: [t('import.fileRequired')],
       };
     }
     const uri = `file://${filePath}`;
@@ -43,7 +44,7 @@ export const scanForResourcesAction: ActionFunction = async ({ request }): Promi
 
   if (!content) {
     return {
-      errors: ['No content to import'],
+      errors: [t('import.noContentToImport')],
     };
   }
 

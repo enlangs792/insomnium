@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { ColorScheme } from '../../../plugins';
 import { PluginTheme } from '../../../plugins/misc';
+import { t } from '../../../common/i18n';
 import { useThemes } from '../../hooks/theme';
 import { HelpTooltip } from '../help-tooltip';
 
@@ -80,7 +81,7 @@ const ThemeWrapper = styled.div({
   textAlign: 'center',
 });
 
-const ColorSchemeBadge = styled.div<{ $theme: 'dark' | 'light'}>(({ $theme }) => ({
+const ColorSchemeBadge = styled.div<{ $theme: 'dark' | 'light' }>(({ $theme }) => ({
   position: 'absolute',
   top: 0,
   width: 12,
@@ -255,59 +256,59 @@ const IndividualTheme: FC<{
   onChangeTheme,
   theme,
 }) => {
-  const { displayName, name } = theme;
+    const { displayName, name } = theme;
 
-  const onClickThemeButton = () => {
-    if (isInOsThemeMode) {
-      // The overlays handle this behavior in OS theme mode.
-      // React's event bubbling means that this will be fired when you click on an overlay, so we need to turn it off when in this mode.
-      // Even still, we don't want to risk some potnetial subpixel or z-index nonsense accidentally setting the default when know we shouldn't.
-      return;
-    }
-    return onChangeTheme(name, 'default');
+    const onClickThemeButton = () => {
+      if (isInOsThemeMode) {
+        // The overlays handle this behavior in OS theme mode.
+        // React's event bubbling means that this will be fired when you click on an overlay, so we need to turn it off when in this mode.
+        // Even still, we don't want to risk some potnetial subpixel or z-index nonsense accidentally setting the default when know we shouldn't.
+        return;
+      }
+      return onChangeTheme(name, 'default');
+    };
+
+    return (
+      <ThemeWrapper>
+        <ThemeTitle>{displayName}</ThemeTitle>
+
+        <ThemeButton
+          onClick={onClickThemeButton}
+          $isActive={isActive}
+          $isInOsThemeMode={isInOsThemeMode}
+        >
+          {isInOsThemeMode ? (
+            <>
+              <OverlayWrapper className="overlay-wrapper">
+                <OverlaySide
+                  $theme="light"
+                  onClick={() => {
+                    onChangeTheme(name, 'light');
+                  }}
+                ><SunSvg /></OverlaySide>
+                <OverlaySide
+                  $theme="dark"
+                  onClick={() => {
+                    onChangeTheme(name, 'dark');
+                  }}
+                ><MoonSvg /></OverlaySide>
+              </OverlayWrapper>
+
+              {isActive && isDark ? (
+                <ColorSchemeBadge $theme="dark"><MoonSvg /></ColorSchemeBadge>
+              ) : null}
+
+              {isActive && isLight ? (
+                <ColorSchemeBadge $theme="light"><SunSvg /></ColorSchemeBadge>
+              ) : null}
+            </>
+          ) : null}
+
+          <ThemePreview theme={theme} />
+        </ThemeButton>
+      </ThemeWrapper>
+    );
   };
-
-  return (
-    <ThemeWrapper>
-      <ThemeTitle>{displayName}</ThemeTitle>
-
-      <ThemeButton
-        onClick={onClickThemeButton}
-        $isActive={isActive}
-        $isInOsThemeMode={isInOsThemeMode}
-      >
-        {isInOsThemeMode ? (
-          <>
-            <OverlayWrapper className="overlay-wrapper">
-              <OverlaySide
-                $theme="light"
-                onClick={() => {
-                  onChangeTheme(name, 'light');
-                }}
-              ><SunSvg /></OverlaySide>
-              <OverlaySide
-                $theme="dark"
-                onClick={() => {
-                  onChangeTheme(name, 'dark');
-                }}
-              ><MoonSvg /></OverlaySide>
-            </OverlayWrapper>
-
-            {isActive && isDark ? (
-              <ColorSchemeBadge $theme="dark"><MoonSvg /></ColorSchemeBadge>
-            ) : null}
-
-            {isActive && isLight ? (
-              <ColorSchemeBadge $theme="light"><SunSvg /></ColorSchemeBadge>
-            ) : null}
-          </>
-        ) : null}
-
-        <ThemePreview theme={theme} />
-      </ThemeButton>
-    </ThemeWrapper>
-  );
-};
 
 export const ThemePanel: FC = () => {
   const {
@@ -324,9 +325,9 @@ export const ThemePanel: FC = () => {
     <RootWrapper>
       <CheckboxWrapper className="form-control form-control--thin">
         <label className="inline-block">
-          Use OS color scheme
+          {t('settings.theme.useOsColorScheme')}
           <HelpTooltip className="space-left">
-            Select different themes for when you’re using light versus dark color schemes on your OS. Check this box, then hover over a theme and select either sun (light) or moon (dark).
+            {t('settings.theme.useOsColorScheme.help')}
           </HelpTooltip>
           <input
             type="checkbox"

@@ -7,6 +7,7 @@ import {
   PLUGIN_HUB_BASE,
 } from '../../../common/constants';
 import { docsPlugins } from '../../../common/documentation';
+import { t } from '../../../common/i18n';
 import { createPlugin } from '../../../plugins/create';
 import type { Plugin } from '../../../plugins/index';
 import { getPlugins } from '../../../plugins/index';
@@ -64,19 +65,19 @@ export const Plugins: FC = () => {
   return (
     <div>
       <p className="notice info no-margin-top">
-        Plugins is still an experimental feature. See{' '}
-        <Link href={docsPlugins}>Documentation</Link> for more info.
+        {t('plugins.experimentalFeature')}{' '}
+        <Link href={docsPlugins}>{t('plugins.seeDocumentation')}</Link> {t('plugins.forMoreInfo')}
       </p>
       {plugins.length === 0 ? (
-        <div className="text-center faint italic pad">No Plugins Added</div>
+        <div className="text-center faint italic pad">{t('plugins.noPluginsAdded')}</div>
       ) : (
         <table className="table--fancy table--striped table--valign-middle margin-top margin-bottom">
           <thead>
             <tr>
-              <th>Enable?</th>
-              <th>Name</th>
-              <th>Version</th>
-              <th>Folder</th>
+              <th>{t('plugins.enable')}</th>
+              <th>{t('plugins.name')}</th>
+              <th>{t('plugins.version')}</th>
+              <th>{t('plugins.folder')}</th>
             </tr>
           </thead>
           <tbody>
@@ -123,14 +124,14 @@ export const Plugins: FC = () => {
                       title={plugin.directory}
                       content={plugin.directory}
                     >
-                      Copy Path
+                      {t('plugins.copyPath')}
                     </CopyButton>{' '}
                     <Button
                       size="small"
                       variant="contained"
                       onClick={() => window.shell.showItemInFolder(plugin.directory)}
                     >
-                      Reveal Folder
+                      {t('plugins.revealFolder')}
                     </Button>
                   </td>
                 </tr>
@@ -148,10 +149,11 @@ export const Plugins: FC = () => {
           </button>
           <div className="selectable force-pre-wrap">
             <b>{installPluginErrMsg}</b>
-            {'\n\nThere may be an issue with the plugin itself, as a note you can discover and install plugins from the '}
-            <a href={PLUGIN_HUB_BASE}>Plugin Hub.</a>
+            {'\n\n' + t('plugins.pluginIssueNote') + ' '}
+            <a href={PLUGIN_HUB_BASE}>{t('plugins.pluginHub')}</a>
+            {' ' + t('plugins.discoverAndInstall')}
             <details>
-              <summary>Additional Information</summary>
+              <summary>{t('plugins.additionalInformation')}</summary>
               <pre className="pad-top-sm force-wrap selectable">
                 <code>{error.stack || error.message}</code>
               </pre>
@@ -174,7 +176,7 @@ export const Plugins: FC = () => {
             await refreshPlugins();
             newState.npmPluginValue = ''; // Clear input if successful install
           } catch (err) {
-            newState.installPluginErrMsg = `Failed to install ${npmPluginValue}`;
+            newState.installPluginErrMsg = `${t('plugins.failedToInstall')} ${npmPluginValue}`;
             newState.error = err;
           }
           setState(state => ({ ...state, ...newState }));
@@ -190,14 +192,14 @@ export const Plugins: FC = () => {
               }}
               disabled={isInstallingFromNpm}
               type="text"
-              placeholder="npm-package-name"
+              placeholder={t('plugins.npmPackageName')}
               value={npmPluginValue}
             />
           </div>
           <div className="form-control width-auto">
             <Button variant="contained" bg="surprise" disabled={isInstallingFromNpm}>
               {isInstallingFromNpm && <i className="fa fa-refresh fa-spin space-right" />}
-              Install Plugin
+              {t('plugins.installPlugin')}
             </Button>
           </div>
         </div>
@@ -207,21 +209,21 @@ export const Plugins: FC = () => {
         <Button
           onClick={() => window.main.openInBrowser(PLUGIN_HUB_BASE)}
         >
-          Browse Plugin Hub
+          {t('plugins.browsePluginHub')}
         </Button>
         <Button
           style={{
             marginLeft: '0.3em',
           }}
           onClick={() => showPrompt({
-            title: 'New Plugin',
+            title: t('plugins.newPlugin'),
             defaultValue: 'demo-example',
-            placeholder: 'example-name',
-            submitName: 'Generate',
-            label: 'Plugin Name',
+            placeholder: t('plugins.exampleName'),
+            submitName: t('plugins.generate'),
+            label: t('plugins.pluginName'),
             selectText: true,
             validate: name =>
-              name.match(/^[a-z][a-z-]*[a-z]$/) ? '' : 'Plugin name must be of format my-plugin-name',
+              name.match(/^[a-z][a-z-]*[a-z]$/) ? '' : t('plugins.pluginNameFormat'),
             onComplete: async name => {
               // Remove insomnia-plugin- prefix if they accidentally typed it
               name = name.replace(/^insomnia-plugin-/, '');
@@ -239,21 +241,21 @@ export const Plugins: FC = () => {
               } catch (err) {
                 console.error(err);
                 showAlert({
-                  title: 'Failed to Create Plugin',
+                  title: t('plugins.failedToCreatePlugin'),
                   message: err.message,
                 });
               }
               refreshPlugins();
             },
           })}
-        >Generate New Plugin</Button>
+        >{t('plugins.generateNewPlugin')}</Button>
         <Button
           style={{
             marginLeft: '0.3em',
           }}
           onClick={() => window.shell.showItemInFolder(path.join(process.env['INSOMNIA_DATA_PATH'] || window.app.getPath('userData'), 'plugins'))}
         >
-          Reveal Plugins Folder
+          {t('plugins.revealPluginsFolder')}
         </Button>
         <Button
           disabled={isRefreshingPlugins}
@@ -262,7 +264,7 @@ export const Plugins: FC = () => {
           }}
           onClick={() => refreshPlugins()}
         >
-          Reload Plugins
+          {t('plugins.reloadPlugins')}
           {isRefreshingPlugins && <i className="fa fa-refresh fa-spin space-left" />}
         </Button>
       </div>

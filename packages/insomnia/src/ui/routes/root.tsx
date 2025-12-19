@@ -63,7 +63,8 @@ import { useSettingsPatcher } from '../hooks/use-request';
 import Modals from './modals';
 
 import { WorkspaceLoaderData } from './workspace';
-import { defaultOrganization } from '../../models/organization';
+import { DEFAULT_ORGANIZATION_ID, defaultOrganization } from '../../models/organization';
+import { t } from '../../common/i18n';
 
 /**** ><> ↑ --------- Hooks and Containers */
 export interface RootLoaderData {
@@ -357,7 +358,7 @@ const Root = () => {
                       offset={8}
                       className="border select-none text-sm min-w-max border-solid border-[--hl-sm] shadow-lg bg-[--color-bg] text-[--color-font] px-4 py-2 rounded-md overflow-y-auto max-h-[85vh] focus:outline-none"
                     >
-                  <span>{organizations[0].name}</span>
+                  <span>{organizations[0]._id === DEFAULT_ORGANIZATION_ID ? t('organization.personalProjects') : organizations[0].name}</span>
                     </Tooltip>
                   </TooltipTrigger>
 

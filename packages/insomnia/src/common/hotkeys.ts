@@ -2,12 +2,13 @@ import { displayModifierKey, isMac } from './constants';
 import { keyboardKeys } from './keyboard-keys';
 import { HotKeyRegistry, KeyboardShortcut, KeyCombination, PlatformKeyCombinations } from './settings';
 import { strings } from './strings';
+import { t } from './i18n';
 
 /**
- * The collection of available hotkeys' and their descriptions.
+ * The collection of available hotkeys' and their descriptions (English).
  * @IMPORTANT Not using dot, because NeDB prohibits field names to contain dots.
  */
-export const keyboardShortcutDescriptions: Record<KeyboardShortcut, string> = {
+const keyboardShortcutDescriptionsEn: Record<KeyboardShortcut, string> = {
   'workspace_showSettings': `Show ${strings.document.singular} / ${strings.collection.singular} Settings`,
   'request_showSettings': 'Show Request Settings',
   'preferences_showKeyboardShortcuts': 'Show Keyboard Shortcuts',
@@ -38,6 +39,25 @@ export const keyboardShortcutDescriptions: Record<KeyboardShortcut, string> = {
   'beautifyRequestBody': 'Beautify Active Code Editors',
   'graphql_explorer_focus_filter': 'Focus GraphQL Explorer Filter',
 };
+
+/**
+ * Get the translated description for a keyboard shortcut.
+ */
+export function getKeyboardShortcutDescription(shortcut: KeyboardShortcut): string {
+  const translationKey = `hotkey.${shortcut}`;
+  const translated = t(translationKey);
+  // If translation exists and is different from the key, use it; otherwise use English
+  if (translated && translated !== translationKey) {
+    return translated;
+  }
+  return keyboardShortcutDescriptionsEn[shortcut];
+}
+
+/**
+ * The collection of available hotkeys' and their descriptions.
+ * @deprecated Use getKeyboardShortcutDescription() instead for translated descriptions.
+ */
+export const keyboardShortcutDescriptions: Record<KeyboardShortcut, string> = keyboardShortcutDescriptionsEn;
 
 /**
  * The default key bindings values of all available hotkeys.

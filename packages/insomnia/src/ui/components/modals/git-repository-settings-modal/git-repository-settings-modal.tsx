@@ -3,6 +3,7 @@ import { OverlayContainer } from 'react-aria';
 import { useFetcher, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { t } from '../../../../common/i18n';
 import { docsGitSync } from '../../../../common/documentation';
 import type { GitRepository, OauthProviderName } from '../../../../models/git-repository';
 import { Link } from '../../base/link';
@@ -74,7 +75,7 @@ export const GitRepositorySettingsModal = (props: ModalProps & {
       const errorMessage = errors.map(e => e instanceof Error ? e.message : typeof e === 'string' && e).join(', ');
 
       showAlert({
-        title: 'Error Cloning Repository',
+        title: t('gitRepositorySettings.errorCloningRepository'),
         message: errorMessage,
       });
     }
@@ -84,18 +85,17 @@ export const GitRepositorySettingsModal = (props: ModalProps & {
     <OverlayContainer>
       <Modal ref={modalRef} {...props}>
         <ModalHeader>
-          Git Settings
-
+          {t('gitRepositorySettings.title')}
         </ModalHeader>
         <ModalBody>
           <ErrorBoundary>
             <Tabs
               isDisabled={isLoading || hasGitRepository}
-              aria-label="Git repository settings tabs"
+              aria-label={t('gitRepositorySettings.tabsAriaLabel')}
               selectedKey={selectedTab}
               onSelectionChange={(key: Key) => setTab(key as OauthProviderName)}
             >
-              <TabItem key='custom' title={<TabPill><i className="fa fa-code-fork" /> Git</TabPill>}>
+              <TabItem key='custom' title={<TabPill><i className="fa fa-code-fork" /> {t('gitRepositorySettings.git')}</TabPill>}>
                 <PanelContainer className="pad pad-top-sm">
                   <CustomRepositorySettingsFormGroup
                     gitRepository={gitRepository}
@@ -123,7 +123,7 @@ export const GitRepositorySettingsModal = (props: ModalProps & {
                 });
               }}
             >
-              Reset
+              {t('gitRepositorySettings.reset')}
             </button>
             {hasGitRepository ? (
               <button
@@ -132,7 +132,7 @@ export const GitRepositorySettingsModal = (props: ModalProps & {
                 className="btn"
                 data-testid="git-repository-settings-modal__sync-btn-close"
               >
-                Close
+                {t('gitRepositorySettings.close')}
               </button>
             ) : (
               <button
@@ -142,7 +142,7 @@ export const GitRepositorySettingsModal = (props: ModalProps & {
                 className="btn"
                 data-testid="git-repository-settings-modal__sync-btn"
               >
-                Sync
+                {t('gitRepositorySettings.sync')}
               </button>
             )}
           </div>

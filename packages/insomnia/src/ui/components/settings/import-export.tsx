@@ -7,6 +7,8 @@ import { docsImportExport } from '../../../common/documentation';
 import { exportAllToFile } from '../../../common/export';
 import { getWorkspaceLabel } from '../../../common/get-workspace-label';
 import { strings } from '../../../common/strings';
+import { t } from '../../../common/i18n';
+import { Workspace } from '../../../models/workspace';
 import { ProjectLoaderData } from '../../routes/project';
 import { WorkspaceLoaderData } from '../../routes/workspace';
 import { Dropdown, DropdownButton, DropdownItem, DropdownSection, ItemContent } from '../base/dropdown';
@@ -45,48 +47,56 @@ export const ImportExport: FC<Props> = ({ hideSettingsModal }) => {
     exportAllToFile(projectName, workspacesForActiveProject);
     hideSettingsModal();
   };
- // here we should list all the folders which contain insomnia.*.db files
- // and have some big red button to overwrite the current data with the backup
- // and once complete trigger an app restart?
+
+  // 获取工作空间类型的中文标签
+  const getWorkspaceTypeLabel = (workspace: Workspace | undefined) => {
+    if (!workspace) return '';
+    const label = getWorkspaceLabel(workspace);
+    return label.singular === 'Collection' ? t('workspace.collection') : t('workspace.document');
+  };
+
+  // here we should list all the folders which contain insomnia.*.db files
+  // and have some big red button to overwrite the current data with the backup
+  // and once complete trigger an app restart?
   return (
     <Fragment>
       <div data-testid="import-export-tab">
         <div className="no-margin-top">
-          Import format will be automatically detected.
+          {t('importExport.autoDetectFormat')}
         </div>
         <p>
-          Your format isn't supported? <Link href={docsImportExport}>Add Your Own</Link>.
+          {t('importExport.formatNotSupported')} <Link href={docsImportExport}>{t('importExport.addYourOwn')}</Link>.
         </p>
         <div className="pad-top">
           {workspaceData?.activeWorkspace ?
             (<Dropdown
-              aria-label='Export Data Dropdown'
+              aria-label={t('importExport.exportData')}
               triggerButton={
                 <DropdownButton className="btn btn--clicky">
-                  Export Data <i className="fa fa-caret-down" />
+                  {t('importExport.exportData')} <i className="fa fa-caret-down" />
                 </DropdownButton>
               }
             >
               <DropdownSection
-                aria-label="Choose Export Type"
-                title="Choose Export Type"
+                aria-label={t('importExport.chooseExportType')}
+                title={t('importExport.chooseExportType')}
               >
-                <DropdownItem aria-label={`Export the "${activeWorkspaceName}" ${getWorkspaceLabel(workspaceData.activeWorkspace).singular}`}>
+                <DropdownItem aria-label={t('importExport.exportWorkspace').replace('{{name}}', activeWorkspaceName || '').replace('{{type}}', getWorkspaceTypeLabel(workspaceData.activeWorkspace))}>
                   <ItemContent
                     icon="home"
-                    label={`Export the "${activeWorkspaceName}" ${getWorkspaceLabel(workspaceData.activeWorkspace).singular}`}
+                    label={t('importExport.exportWorkspace').replace('{{name}}', activeWorkspaceName || '').replace('{{type}}', getWorkspaceTypeLabel(workspaceData.activeWorkspace))}
                     onClick={() => setIsExportModalOpen(true)}
                   />
                 </DropdownItem>
-                <DropdownItem aria-label={`Export files from the "${projectName}" ${strings.project.singular}`}>
+                <DropdownItem aria-label={t('importExport.exportProjectFiles').replace('{{name}}', projectName).replace('{{type}}', t('project.singular'))}>
                   <ItemContent
                     icon="empty"
-                    label={`Export files from the "${projectName}" ${strings.project.singular}`}
+                    label={t('importExport.exportProjectFiles').replace('{{name}}', projectName).replace('{{type}}', t('project.singular'))}
                     onClick={handleExportAllToFile}
                   />
                 </DropdownItem>
               </DropdownSection>
-            </Dropdown>) : (<Button onClick={handleExportAllToFile}>{`Export files from the "${projectName}" ${strings.project.singular}`}</Button>)
+            </Dropdown>) : (<Button onClick={handleExportAllToFile}>{t('importExport.exportProjectFiles').replace('{{name}}', projectName).replace('{{type}}', t('project.singular'))}</Button>)
           }
           &nbsp;&nbsp;
           <Button
@@ -98,11 +108,11 @@ export const ImportExport: FC<Props> = ({ hideSettingsModal }) => {
             onClick={() => setIsImportModalOpen(true)}
           >
             <i className="fa fa-file-import" />
-            {`Import to the "${projectName}" ${strings.project.singular}`}
+            {t('importExport.importToProject').replace('{{name}}', projectName).replace('{{type}}', t('project.singular'))}
           </Button>
           &nbsp;&nbsp;
           <Link href="https://insomnia.rest/create-run-button" className="btn btn--compact" button>
-            Create Run Button
+            {t('importExport.createRunButton')}
           </Link>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { DASHBOARD_SORT_ORDERS, DashboardSortOrder, dashboardSortOrderName } from '../../../common/constants';
+import { DASHBOARD_SORT_ORDERS, DashboardSortOrder, getDashboardSortOrderName } from '../../../common/constants';
 import { Dropdown, DropdownButton, DropdownItem, ItemContent } from '../base/dropdown';
 
 interface DashboardSortDropdownProps {
@@ -26,10 +26,10 @@ export const DashboardSortDropdown: FC<DashboardSortDropdownProps> = ({ onSelect
       {DASHBOARD_SORT_ORDERS.map(order => (
         <DropdownItem
           key={order}
-          aria-label={dashboardSortOrderName[order]}
+          aria-label={getDashboardSortOrderName(order)}
         >
           <ItemContent
-            label={dashboardSortOrderName[order]}
+            label={getDashboardSortOrderName(order)}
             isSelected={order === value}
             onClick={() => onSelect(order)}
           />

@@ -1,6 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 
 import { getAppVersion, getProductName } from '../../../common/constants';
+import { t } from '../../../common/i18n';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
 import { ModalHeader } from '../base/modal-header';
@@ -42,35 +43,35 @@ export const SettingsModal = forwardRef<SettingsModalHandle, ModalProps>((props,
   return (
     <Modal ref={modalRef} tall {...props}>
       <ModalHeader>
-        {getProductName()} Preferences
+        {t('settings.preferences')}
         <span className="faint txt-sm">
           &nbsp;&nbsp;–&nbsp; v{getAppVersion()}
 
         </span>
       </ModalHeader>
       <ModalBody noScroll>
-        <Tabs aria-label="Insomnium Settings" defaultSelectedKey={defaultTabKey}>
-          <TabItem key="general" title="General">
+        <Tabs aria-label={t('settings.insomnium')} defaultSelectedKey={defaultTabKey}>
+          <TabItem key="general" title={t('settings.general')}>
             <PanelContainer className="pad">
               <General />
             </PanelContainer>
           </TabItem>
-          <TabItem key="data" title="Data">
+          <TabItem key="data" title={t('settings.data')}>
             <PanelContainer className="pad">
               <ImportExport hideSettingsModal={() => modalRef.current?.hide()} />
             </PanelContainer>
           </TabItem>
-          <TabItem key="themes" title="Themes">
+          <TabItem key="themes" title={t('settings.themes')}>
             <PanelContainer className="pad">
               <ThemePanel />
             </PanelContainer>
           </TabItem>
-          <TabItem key="keyboard" title="Keyboard">
+          <TabItem key="keyboard" title={t('settings.keyboard')}>
             <PanelContainer className="pad">
               <Shortcuts />
             </PanelContainer>
           </TabItem>
-          <TabItem key="plugins" title="Plugins">
+          <TabItem key="plugins" title={t('settings.plugins')}>
             <PanelContainer className="pad">
               <Plugins />
             </PanelContainer>

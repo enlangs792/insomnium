@@ -3,6 +3,7 @@ import { OverlayContainer } from 'react-aria';
 import { useFetcher, useParams, useRouteLoaderData } from 'react-router-dom';
 
 import { fuzzyMatch } from '../../../common/misc';
+import { t } from '../../../common/i18n';
 import type { Cookie, CookieJar } from '../../../models/cookie-jar';
 import { useNunjucks } from '../../context/nunjucks/use-nunjucks';
 import { WorkspaceLoaderData } from '../../routes/workspace';
@@ -35,14 +36,14 @@ export const CookiesModal = ({ onHide }: ModalProps) => {
   return (
     <OverlayContainer>
       <Modal ref={modalRef} wide tall onHide={onHide}>
-        <ModalHeader>Manage Cookies</ModalHeader>
+        <ModalHeader>{t('cookies.manageCookies')}</ModalHeader>
         <ModalBody noScroll>
           {activeCookieJar && (
             <div className="cookie-list">
               <div className="pad">
                 <div className="form-control form-control--outlined">
                   <label>
-                    Filter Cookies
+                    {t('cookies.filterCookies')}
                     <input
                       onChange={async event => {
                         setFilter(event.target.value);
@@ -66,7 +67,7 @@ export const CookiesModal = ({ onHide }: ModalProps) => {
                         setVisibleCookieIndexes(visibleCookieIndexes);
                       }}
                       type="text"
-                      placeholder="insomnia.rest"
+                      placeholder={t('cookies.placeholder')}
                       defaultValue=""
                     />
                   </label>
@@ -99,10 +100,10 @@ export const CookiesModal = ({ onHide }: ModalProps) => {
         </ModalBody>
         <ModalFooter>
           <div className="margin-left faint italic txt-sm">
-            * cookies are automatically sent with relevant requests
+            * {t('cookies.autoSent')}
           </div>
           <button className="btn" onClick={() => modalRef.current?.hide()}>
-            Done
+            {t('cookies.done')}
           </button>
         </ModalFooter>
       </Modal>

@@ -4,6 +4,7 @@ import React, { MouseEvent, useEffect, useState } from 'react';
 import { useInterval, useLocalStorage } from 'react-use';
 import styled from 'styled-components';
 
+import { t } from '../../../../common/i18n';
 import { GitRepository } from '../../../../models/git-repository';
 import {
   exchangeCodeForToken,
@@ -195,10 +196,9 @@ const GitHubRepositoryForm = ({
     event.preventDefault();
     event.stopPropagation();
     showAlert({
-      title: 'Sign out of GitHub',
-      message:
-        'Are you sure you want to sign out? You will need to re-authenticate with GitHub to use this feature.',
-      okLabel: 'Sign out',
+      title: t('gitHub.signOutOfGitHub'),
+      message: t('gitHub.signOutConfirm'),
+      okLabel: t('gitHub.signOut'),
       onConfirm: () => {
         removeUser();
         onSignOut();
@@ -220,9 +220,7 @@ const GitHubRepositoryForm = ({
         .then(({ data, errors }) => {
           if (isMounted) {
             if (errors) {
-              setError(
-                'Something went wrong when trying to fetch info from GitHub.'
-              );
+              setError(t('gitHub.errorFetchingInfo'));
             } else if (data) {
               setUser(data.viewer);
             }
@@ -230,9 +228,7 @@ const GitHubRepositoryForm = ({
         })
         .catch((error: unknown) => {
           if (error instanceof Error) {
-            setError(
-              'Something went wrong when trying to fetch info from GitHub.'
-            );
+            setError(t('gitHub.errorFetchingInfo'));
           }
         });
     }
@@ -266,7 +262,7 @@ const GitHubRepositoryForm = ({
       {token && (
         <div className="form-control form-control--outlined">
           <label>
-            GitHub URI
+            {t('gitHub.githubUri')}
             <input
               className="form-control"
               defaultValue={uri}
@@ -275,7 +271,7 @@ const GitHubRepositoryForm = ({
               autoFocus
               required
               disabled={Boolean(uri)}
-              placeholder="https://github.com/org/repo.git"
+              placeholder={t('gitHub.githubUriPlaceholder')}
             />
           </label>
         </div>
@@ -301,7 +297,7 @@ const GitHubRepositoryForm = ({
           </Details>
         </AccountDetails>
         <Button type="button" onClick={handleSignOut}>
-          Sign out
+          {t('gitHub.signOut')}
         </Button>
       </AccountViewContainer>
 
@@ -343,7 +339,7 @@ const GitHubSignInForm = ({ token }: GitHubSignInFormProps) => {
         }}
       >
         <i className="fa fa-github" />
-        {isAuthenticating ? 'Authenticating' : 'Authenticate'} with GitHub
+        {isAuthenticating ? t('gitHub.authenticating') : t('gitHub.authenticate')}
       </a>
 
       {isAuthenticating && (
@@ -358,7 +354,7 @@ const GitHubSignInForm = ({ token }: GitHubSignInFormProps) => {
               try {
                 parsedURL = new URL(link);
               } catch (error) {
-                setError('Invalid URL');
+                setError(t('gitHub.invalidUrl'));
                 return;
               }
 
@@ -366,7 +362,7 @@ const GitHubSignInForm = ({ token }: GitHubSignInFormProps) => {
               const state = parsedURL.searchParams.get('state');
 
               if (!(typeof code === 'string') || !(typeof state === 'string')) {
-                setError('Incomplete URL');
+                setError(t('gitHub.incompleteUrl'));
                 return;
               }
 
@@ -376,7 +372,7 @@ const GitHubSignInForm = ({ token }: GitHubSignInFormProps) => {
               }).catch((error: Error) => {
                 showError({
                   error,
-                  title: 'Error authorizing GitHub',
+                  title: t('gitHub.errorAuthorizing'),
                   message: error.message,
                 });
               });
@@ -385,11 +381,11 @@ const GitHubSignInForm = ({ token }: GitHubSignInFormProps) => {
         >
           <label className="form-control form-control--outlined">
             <div>
-              If you aren't redirected to the app you can manually paste the authentication url here:
+              {t('gitHub.manualPasteUrl')}
             </div>
             <div className="form-row">
               <input name="link" />
-              <Button bg="surprise" name="add-token">Authenticate</Button>
+              <Button bg="surprise" name="add-token">{t('gitHub.authenticate')}</Button>
             </div>
           </label>
           {error && (

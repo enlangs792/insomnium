@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react';
 import { Cookie } from 'tough-cookie';
 
+import { t } from '../../../common/i18n';
 import { CookiesModal } from '../modals/cookies-modal';
 
 interface Props {
@@ -34,34 +35,38 @@ export const ResponseCookiesViewer: FC<Props> = props => {
   } = props;
   const notifyNotStored = !cookiesStored && headers.length;
   let noticeMessage: string | null = null;
+  let noticeMessageKey: string | null = null;
 
   if (!cookiesSent && notifyNotStored) {
-    noticeMessage = 'sending and storing';
+    noticeMessage = t('responseCookiesViewer.sendingAndStoring');
+    noticeMessageKey = 'sendingAndStoring';
   } else if (!cookiesSent) {
-    noticeMessage = 'sending';
+    noticeMessage = t('responseCookiesViewer.sending');
+    noticeMessageKey = 'sending';
   } else if (notifyNotStored) {
-    noticeMessage = 'storing';
+    noticeMessage = t('responseCookiesViewer.storing');
+    noticeMessageKey = 'storing';
   }
 
   return <div>
     {noticeMessage && <div className="notice info margin-bottom no-margin-top">
       <p>
-        Automatic {noticeMessage} of cookies was disabled at the time this request was made
+        {t('responseCookiesViewer.automaticDisabled').replace('{{action}}', noticeMessage)}
       </p>
     </div>}
 
     <table className="table--fancy table--striped table--compact">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Value</th>
+          <th>{t('responseCookiesViewer.name')}</th>
+          <th>{t('responseCookiesViewer.value')}</th>
         </tr>
       </thead>
       <tbody>{!headers.length ? renderRow(null, -1) : headers.map(renderRow)}</tbody>
     </table>
     <p className="pad-top">
       <button className="pull-right btn btn--clicky" onClick={() => setIsCookieModalOpen(true)}>
-        Manage Cookies
+        {t('responseCookiesViewer.manageCookies')}
       </button>
     </p>
     {isCookieModalOpen && (

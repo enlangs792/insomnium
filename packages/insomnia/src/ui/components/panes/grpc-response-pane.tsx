@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useEffect, useRef } from 'react';
 
+import { t } from '../../../common/i18n';
 import { GrpcMessage, GrpcRequestState } from '../../routes/debug';
 import { TabItem, Tabs } from '../base/tabs';
 import { CodeEditor } from '../codemirror/code-editor';
@@ -30,7 +31,7 @@ const GrpcUnaryResponsePane: FunctionComponent<Props> = ({ grpcState }) => {
         {grpcState.responseMessages.length
           ? (<Tabs aria-label="Grpc tabbed messages tabs" isNested>
             {grpcState.responseMessages.map((m, index) => (
-              <TabItem key={m.id} title={`Response ${index + 1}`}>
+              <TabItem key={m.id} title={`${t('grpc.response')} ${index + 1}`}>
                 <CodeEditor
                   id="grpc-response"
                   defaultValue={m.text}
@@ -66,7 +67,7 @@ const GrpcStreamingResponseHeader: FunctionComponent<{ message: GrpcMessage }> =
         paddingTop: "2px",
       }}
     >
-      Received at: <Timestamp time={message.created} />
+      {t('grpcResponse.receivedAt')} <Timestamp time={message.created} />
     </div>
   );
 };
@@ -82,7 +83,7 @@ const GrpcStreamingResponsePane: FunctionComponent<Props> = ({ grpcState }) => {
     <Pane type="response">
       <GrpcPaneHeader grpcState={grpcState} />
       <PaneBody>
-        <div style={{ height: "100%", overflow:"scroll" }}>
+        <div style={{ height: "100%", overflow: "scroll" }}>
           {grpcState.responseMessages.map(m => (
             <div key={m.id} style={{ borderBottom: `1px solid ${BORDER_COLOR}` }}>
               <GrpcStreamingResponseHeader message={m} />
@@ -97,7 +98,7 @@ const GrpcStreamingResponsePane: FunctionComponent<Props> = ({ grpcState }) => {
                 autoPrettify
               />
             </div>))}
-            <div ref={messagesBottom} />
+          <div ref={messagesBottom} />
         </div>
 
       </PaneBody>

@@ -1,5 +1,6 @@
 import appConfig from '../../config/config.json';
 import { version } from '../../package.json';
+import { t } from './i18n';
 import { KeyCombination } from './settings';
 
 const env = process['env'];
@@ -357,6 +358,27 @@ export const sortOrderName: Record<SortOrder, string> = {
   [SORT_TYPE_ASC]: 'Requests First',
 };
 
+export function getSortOrderName(order: SortOrder): string {
+  // Map sort order keys to translation keys
+  const keyMap: Record<SortOrder, string> = {
+    [SORT_TYPE_MANUAL]: 'manual',
+    [SORT_NAME_ASC]: 'nameAsc',
+    [SORT_NAME_DESC]: 'nameDesc',
+    [SORT_CREATED_ASC]: 'createdAsc',
+    [SORT_CREATED_DESC]: 'createdDesc',
+    [SORT_HTTP_METHOD]: 'httpMethod',
+    [SORT_TYPE_DESC]: 'typeDesc',
+    [SORT_TYPE_ASC]: 'typeAsc',
+  };
+  const translationKey = `sortOrder.${keyMap[order]}`;
+  const translated = t(translationKey);
+  if (translated && translated !== translationKey) {
+    return translated;
+  }
+  // Fallback to original English
+  return sortOrderName[order];
+}
+
 export type DashboardSortOrder =
   | 'name-asc'
   | 'name-desc'
@@ -380,9 +402,33 @@ export const dashboardSortOrderName: Record<DashboardSortOrder, string> = {
   [SORT_MODIFIED_DESC]: 'Last Modified',
 };
 
+export function getDashboardSortOrderName(order: DashboardSortOrder): string {
+  // Map dashboard sort order keys to translation keys
+  const keyMap: Record<DashboardSortOrder, string> = {
+    [SORT_NAME_ASC]: 'nameAsc',
+    [SORT_NAME_DESC]: 'nameDesc',
+    [SORT_CREATED_ASC]: 'createdAsc',
+    [SORT_CREATED_DESC]: 'createdDesc',
+    [SORT_MODIFIED_DESC]: 'modifiedDesc',
+  };
+  const translationKey = `sortOrder.${keyMap[order]}`;
+  const translated = t(translationKey);
+  if (translated && translated !== translationKey) {
+    return translated;
+  }
+  // Fallback to original English
+  return dashboardSortOrderName[order];
+}
+
 export type PreviewMode = 'friendly' | 'source' | 'raw' /*| 'frontend' */;
 
 export function getPreviewModeName(previewMode: PreviewMode, useLong = false) {
+  const translationKey = useLong ? `previewMode.${previewMode}Long` : `previewMode.${previewMode}`;
+  const translated = t(translationKey);
+  if (translated && translated !== translationKey) {
+    return translated;
+  }
+  // Fallback to original English
   if (previewModeMap.hasOwnProperty(previewMode)) {
     return useLong ? previewModeMap[previewMode][1] : previewModeMap[previewMode][0];
   } else {
@@ -396,15 +442,62 @@ export function getContentTypeName(contentType?: string | null, useLong = false)
   }
   for (const contentTypeKey in contentTypesMap) {
     if (contentType.includes(contentTypeKey) && contentTypeKey.length > 0) {
+      // Map content type keys to translation keys
+      const keyMap: Record<string, string> = {
+        [CONTENT_TYPE_EDN]: 'edn',
+        [CONTENT_TYPE_FILE]: 'file',
+        [CONTENT_TYPE_FORM_DATA]: 'formData',
+        [CONTENT_TYPE_FORM_URLENCODED]: 'formUrlEncoded',
+        [CONTENT_TYPE_GRAPHQL]: 'graphql',
+        [CONTENT_TYPE_JSON]: 'json',
+        [CONTENT_TYPE_OTHER]: 'other',
+        [CONTENT_TYPE_PLAINTEXT]: 'plaintext',
+        [CONTENT_TYPE_XML]: 'xml',
+        [CONTENT_TYPE_YAML]: 'yaml',
+      };
+      const translationKeyBase = keyMap[contentTypeKey] || 'other';
+      const translationKey = useLong ? `contentType.${translationKeyBase}Long` : `contentType.${translationKeyBase}`;
+      const translated = t(translationKey);
+      if (translated && translated !== translationKey) {
+        return translated;
+      }
+      // Fallback to original English
       return useLong ? contentTypesMap[contentTypeKey][1] : contentTypesMap[contentTypeKey][0];
     }
   }
 
+  const translationKey = useLong ? 'contentType.otherLong' : 'contentType.other';
+  const translated = t(translationKey);
+  if (translated && translated !== translationKey) {
+    return translated;
+  }
+  // Fallback to original English
   return useLong ? contentTypesMap[CONTENT_TYPE_OTHER][1] : contentTypesMap[CONTENT_TYPE_OTHER][0];
 }
 
 export function getAuthTypeName(authType: string, useLong = false) {
   if (authTypesMap.hasOwnProperty(authType)) {
+    // Map auth type keys to translation keys
+    const keyMap: Record<string, string> = {
+      [AUTH_API_KEY]: 'apiKey',
+      [AUTH_BASIC]: 'basic',
+      [AUTH_DIGEST]: 'digest',
+      [AUTH_NTLM]: 'ntlm',
+      [AUTH_BEARER]: 'bearer',
+      [AUTH_OAUTH_1]: 'oauth1',
+      [AUTH_OAUTH_2]: 'oauth2',
+      [AUTH_HAWK]: 'hawk',
+      [AUTH_AWS_IAM]: 'awsIam',
+      [AUTH_ASAP]: 'asap',
+      [AUTH_NETRC]: 'netrc',
+    };
+    const translationKeyBase = keyMap[authType] || authType;
+    const translationKey = useLong ? `authType.${translationKeyBase}Long` : `authType.${translationKeyBase}`;
+    const translated = t(translationKey);
+    if (translated && translated !== translationKey) {
+      return translated;
+    }
+    // Fallback to original English
     return useLong ? authTypesMap[authType][1] : authTypesMap[authType][0];
   } else {
     return '';
@@ -495,7 +588,7 @@ export const RESPONSE_CODE_DESCRIPTIONS: Record<number, string> = {
   599: 'An error used by some HTTP proxies to signal a network connect timeout behind the proxy to a client in front of the proxy.',
 };
 
-export const RESPONSE_CODE_REASONS: Record<number, string> = {
+export const RESPONSE_CODE_REASONS_ORIGINAL: Record<number, string> = {
   // Special
   [STATUS_CODE_PLUGIN_ERROR]: 'Plugin Error',
   // 100s
@@ -568,6 +661,89 @@ export const RESPONSE_CODE_REASONS: Record<number, string> = {
   598: 'Network read timeout error',
   599: 'Network Connect Timeout Error',
 };
+
+// Keep original for backward compatibility, but use getResponseCodeReason() for translated versions
+export const RESPONSE_CODE_REASONS: Record<number, string> = RESPONSE_CODE_REASONS_ORIGINAL;
+
+export function getResponseCodeReason(statusCode: number): string {
+  const translationKey = `responseCode.${getResponseCodeReasonKey(statusCode)}`;
+  const translated = t(translationKey);
+  if (translated && translated !== translationKey) {
+    return translated;
+  }
+  // Fallback to original English
+  return RESPONSE_CODE_REASONS_ORIGINAL[statusCode] || t('responseCode.unknownResponseCode');
+}
+
+function getResponseCodeReasonKey(statusCode: number): string {
+  const reasonMap: Record<number, string> = {
+    [STATUS_CODE_PLUGIN_ERROR]: 'pluginError',
+    100: 'continue',
+    101: 'switchingProtocols',
+    200: 'ok',
+    201: 'created',
+    202: 'accepted',
+    203: 'nonAuthoritativeInformation',
+    204: 'noContent',
+    205: 'resetContent',
+    206: 'partialContent',
+    207: 'multiStatus',
+    208: 'alreadyReported',
+    226: 'imUsed',
+    300: 'multipleChoices',
+    301: 'movedPermanently',
+    302: 'found',
+    303: 'seeOther',
+    304: 'notModified',
+    305: 'useProxy',
+    306: 'switchProxy',
+    307: 'temporaryRedirect',
+    308: 'permanentRedirect',
+    400: 'badRequest',
+    401: 'unauthorized',
+    402: 'paymentRequired',
+    403: 'forbidden',
+    404: 'notFound',
+    405: 'methodNotAllowed',
+    406: 'notAcceptable',
+    407: 'proxyAuthenticationRequired',
+    408: 'requestTimeout',
+    409: 'conflict',
+    410: 'gone',
+    411: 'lengthRequired',
+    412: 'preconditionFailed',
+    413: 'payloadTooLarge',
+    414: 'uriTooLong',
+    415: 'unsupportedMediaType',
+    416: 'rangeNotSatisfiable',
+    417: 'expectationFailed',
+    418: 'imATeapot',
+    421: 'misdirectedRequest',
+    422: 'unprocessableEntity',
+    423: 'locked',
+    424: 'failedDependency',
+    426: 'upgradeRequired',
+    428: 'preconditionRequired',
+    429: 'tooManyRequests',
+    431: 'requestHeaderFieldsTooLarge',
+    451: 'unavailableForLegalReasons',
+    500: 'internalServerError',
+    501: 'notImplemented',
+    502: 'badGateway',
+    503: 'serviceUnavailable',
+    504: 'gatewayTimeout',
+    505: 'httpVersionNotSupported',
+    506: 'variantAlsoNegotiates',
+    507: 'insufficientStorage',
+    508: 'loopDetected',
+    509: 'bandwidthLimitExceeded',
+    510: 'notExtended',
+    511: 'networkAuthenticationRequired',
+    598: 'networkReadTimeoutError',
+    599: 'networkConnectTimeoutError',
+  };
+  return reasonMap[statusCode] || 'unknownResponseCode';
+}
 
 export const WORKSPACE_ID_KEY = '__WORKSPACE_ID__';
 export const BASE_ENVIRONMENT_ID_KEY = '__BASE_ENVIRONMENT_ID__';

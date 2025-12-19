@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { getCommonHeaderNames, getCommonHeaderValues } from '../../../common/common-headers';
 import { documentationLinks } from '../../../common/documentation';
+import { t } from '../../../common/i18n';
 import { generateId } from '../../../common/misc';
 import { getRenderedGrpcRequest, getRenderedGrpcRequestMessage, RENDER_PURPOSE_SEND } from '../../../common/render';
 import { GrpcMethodInfo, GrpcMethodType } from '../../../main/ipc/grpc';
@@ -62,10 +63,10 @@ const StyledDropdownWrapper = styled.div({
 
 export const canClientStream = (methodType?: GrpcMethodType) => methodType === 'client' || methodType === 'bidi';
 export const GrpcMethodTypeName = {
-  unary: 'Unary',
-  server: 'Server Streaming',
-  client: 'Client Streaming',
-  bidi: 'Bi-directional Streaming',
+  unary: t('grpc.methodType.unary'),
+  server: t('grpc.methodType.server'),
+  client: t('grpc.methodType.client'),
+  bidi: t('grpc.methodType.bidi'),
 } as const;
 
 export const GrpcRequestPane: FunctionComponent<Props> = ({
@@ -140,10 +141,10 @@ export const GrpcRequestPane: FunctionComponent<Props> = ({
           });
         } else {
           showAlert({
-            title: 'Unexpected Request Failure',
+            title: t('grpc.unexpectedRequestFailure'),
             message: (
               <div>
-                <p>The request failed due to an unhandled error:</p>
+                <p>{t('grpc.requestFailedError')}</p>
                 <code className="wide selectable">
                   <pre>{err.message}</pre>
                 </code>
@@ -204,7 +205,7 @@ export const GrpcRequestPane: FunctionComponent<Props> = ({
                   }
                 }}
               >
-                <Tooltip message="Click to replace body with an example" position="bottom" delay={500}>
+                <Tooltip message={t('grpc.replaceBodyWithExample')} position="bottom" delay={500}>
                   <i className="fa fa-code" />
                 </Tooltip>
               </Button>
@@ -223,7 +224,7 @@ export const GrpcRequestPane: FunctionComponent<Props> = ({
                   }
                 }}
               >
-                <Tooltip message="Click to use server reflection" position="bottom" delay={500}>
+                <Tooltip message={t('grpc.useServerReflection')} position="bottom" delay={500}>
                   <i className="fa fa-refresh" />
                 </Tooltip>
               </Button>
@@ -232,7 +233,7 @@ export const GrpcRequestPane: FunctionComponent<Props> = ({
                 variant="text"
                 onClick={() => setIsProtoModalOpen(true)}
               >
-                <Tooltip message="Click to change proto file" position="bottom" delay={500}>
+                <Tooltip message={t('grpc.changeProtoFile')} position="bottom" delay={500}>
                   <i className="fa fa-file-code-o" />
                 </Tooltip>
               </Button>
@@ -256,10 +257,10 @@ export const GrpcRequestPane: FunctionComponent<Props> = ({
                         className='btn btn--compact btn--clicky-small margin-left-sm bg-default'
                         onClick={async () => {
                           const requestBody = await getRenderedGrpcRequestMessage({
-                              request: activeRequest,
-                              environmentId,
-                              purpose: RENDER_PURPOSE_SEND,
-                            });
+                            request: activeRequest,
+                            environmentId,
+                            purpose: RENDER_PURPOSE_SEND,
+                          });
                           const preparedMessage = {
                             body: requestBody,
                             requestId,
@@ -267,26 +268,26 @@ export const GrpcRequestPane: FunctionComponent<Props> = ({
                           window.main.grpc.sendMessage(preparedMessage);
                           setGrpcState({
                             ...grpcState, requestMessages: [...requestMessages, {
-                                id: generateId(),
+                              id: generateId(),
                               text: preparedMessage.body.text || '',
-                                created: Date.now(),
+                              created: Date.now(),
                             }],
                           });
                         }}
                       >
-                        Stream <i className='fa fa-plus' />
+                        {t('grpc.stream')} <i className='fa fa-plus' />
                       </button>
                       <button
                         className='btn btn--compact btn--clicky-small margin-left-sm bg-surprise'
                         onClick={() => window.main.grpc.commit(requestId)}
                       >
-                        Commit <i className='fa fa-arrow-right' />
+                        {t('grpc.commit')} <i className='fa fa-arrow-right' />
                       </button>
                     </ActionButtonsContainer>
                   )}
                   <Tabs key={uniquenessKey} aria-label="Grpc tabbed messages tabs" isNested>
                     {[
-                      <TabItem key="body" title="Body">
+                      <TabItem key="body" title={t('grpc.body')}>
                         <CodeEditor
                           id="grpc-request-editor"
                           ref={editorRef}
@@ -298,22 +299,22 @@ export const GrpcRequestPane: FunctionComponent<Props> = ({
                         />
                       </TabItem>,
                       ...requestMessages.sort((a, b) => a.created - b.created).map((m, index) => (
-                          <TabItem key={m.id} title={`Stream ${index + 1}`}>
-                            <CodeEditor
-                              id={'grpc-request-editor-tab' + m.id}
-                              defaultValue={m.text}
-                              mode="application/json"
-                              enableNunjucks
-                              readOnly
-                              autoPrettify
-                            />
-                          </TabItem>
-                        )),
+                        <TabItem key={m.id} title={`${t('grpc.stream')} ${index + 1}`}>
+                          <CodeEditor
+                            id={'grpc-request-editor-tab' + m.id}
+                            defaultValue={m.text}
+                            mode="application/json"
+                            enableNunjucks
+                            readOnly
+                            autoPrettify
+                          />
+                        </TabItem>
+                      )),
                     ]}
                   </Tabs>
                 </>
               </TabItem>
-              <TabItem key="headers" title="Headers">
+              <TabItem key="headers" title={t('grpc.headers')}>
                 <PanelContainer className="tall wide">
                   <ErrorBoundary key={uniquenessKey} errorClassName="font-error pad text-center">
                     <KeyValueEditor
@@ -335,8 +336,8 @@ export const GrpcRequestPane: FunctionComponent<Props> = ({
             <EmptyStatePane
               icon={<SvgIcon icon="bug" />}
               documentationLinks={[]}
-              secondaryAction="Select a body type from above to send data in the body of a request"
-              title="Enter a URL and send to get a response"
+              secondaryAction={t('bodyEditor.selectBodyType')}
+              title={t('bodyEditor.enterUrlForResponse')}
             />
           )}
         </PaneBody>

@@ -27,7 +27,7 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 
-import { SORT_ORDERS, SortOrder, sortOrderName } from '../../common/constants';
+import { SORT_ORDERS, SortOrder, getSortOrderName } from '../../common/constants';
 import { ChangeBufferEvent, database as db } from '../../common/database';
 import { generateId } from '../../common/misc';
 import { PlatformKeyCombinations } from '../../common/settings';
@@ -774,7 +774,7 @@ export const Debug: FC = () => {
                 items={SORT_ORDERS.map(order => {
                   return {
                     id: order,
-                    name: sortOrderName[order],
+                    name: getSortOrderName(order),
                   };
                 })}
               >

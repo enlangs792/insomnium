@@ -2,7 +2,7 @@ import React, { FC, PropsWithChildren } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { keyboardShortcutDescriptions } from '../../../common/hotkeys';
+import { getKeyboardShortcutDescription } from '../../../common/hotkeys';
 import { KeyboardShortcut } from '../../../common/settings';
 import { RootLoaderData } from '../../routes/root';
 import { Hotkey } from '../hotkey';
@@ -46,7 +46,7 @@ export const PlaceholderResponsePane: FC<PropsWithChildren<{}>> = ({ children })
             'preferences_showKeyboardShortcuts',
           ].map(shortcut => (
             <Item key={shortcut}>
-              <Description>{keyboardShortcutDescriptions[shortcut as KeyboardShortcut]}</Description>
+              <Description>{getKeyboardShortcutDescription(shortcut as KeyboardShortcut)}</Description>
               <code>
                 <Hotkey
                   keyBindings={hotKeyRegistry[shortcut as KeyboardShortcut]}

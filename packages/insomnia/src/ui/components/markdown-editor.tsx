@@ -1,6 +1,7 @@
 import React, { forwardRef, ReactElement, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
+import { t } from '../../common/i18n';
 import { PanelContainer, TabItem, Tabs } from './base/tabs';
 import { CodeEditor, CodeEditorHandle } from './codemirror/code-editor';
 import { MarkdownPreview } from './markdown-preview';
@@ -73,10 +74,10 @@ export const MarkdownEditor = forwardRef<CodeEditorHandle, Props>(({
   return (
     <Wrapper className={className}>
       <Tabs
-        aria-label="Markdown editor tabs"
-        defaultSelectedKey={defaultPreviewMode ? 'preview' : 'write' }
+        aria-label={t('markdownEditor.tabsAriaLabel')}
+        defaultSelectedKey={defaultPreviewMode ? 'preview' : 'write'}
       >
-        <TabItem key="write" title="Write">
+        <TabItem key="write" title={t('markdownEditor.write')}>
           <MarkdownEdit withDynamicHeight={!tall}>
             <div className='form-control form-control--outlined'>
               <CodeEditor
@@ -95,11 +96,11 @@ export const MarkdownEditor = forwardRef<CodeEditorHandle, Props>(({
               />
             </div>
             <div className='txt-sm italic faint'>
-              Styling with Markdown is supported
+              {t('markdownEditor.stylingSupported')}
             </div>
           </MarkdownEdit>
         </TabItem>
-        <TabItem key="preview" title="Preview">
+        <TabItem key="preview" title={t('markdownEditor.preview')}>
           <MarkdownPreiview>
             <PanelContainer className="markdown-editor__preview">
               <MarkdownPreview markdown={markdown} />

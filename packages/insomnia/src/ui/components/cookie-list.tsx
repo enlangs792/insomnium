@@ -3,6 +3,7 @@ import { Cookie as ToughCookie } from 'tough-cookie';
 import { v4 as uuidv4 } from 'uuid';
 
 import { cookieToString } from '../../common/cookies';
+import { t } from '../../common/i18n';
 import { Cookie } from '../../models/cookie-jar';
 import { Dropdown, DropdownButton, DropdownItem, ItemContent } from './base/dropdown';
 import { PromptButton } from './base/prompt-button';
@@ -40,15 +41,15 @@ const CookieRow: FC<{
       <button
         className="btn btn--super-compact btn--outlined"
         onClick={() => setIsCookieModalOpen(true)}
-        title="Edit cookie properties"
+        title={t('cookies.editProperties')}
       >
-        Edit
+        {t('cookies.edit')}
       </button>{' '}
       <PromptButton
         className="btn btn--super-compact btn--outlined"
         confirmMessage=""
         onClick={() => deleteCookie(cookie)}
-        title="Delete cookie"
+        title={t('cookies.deleteCookie')}
       >
         <i className="fa fa-trash-o" />
       </PromptButton>
@@ -90,14 +91,14 @@ export const CookieList: FC<CookieListProps> = ({
               minWidth: '10rem',
             }}
           >
-            Domain
+            {t('cookies.domain')}
           </th>
           <th
             style={{
               width: '90%',
             }}
           >
-            Cookie
+            {t('cookies.cookie')}
           </th>
           <th
             style={{
@@ -106,28 +107,28 @@ export const CookieList: FC<CookieListProps> = ({
             className="text-right"
           >
             <Dropdown
-              aria-label='Cookie Actions Dropdown'
+              aria-label={t('cookies.actionsDropdown')}
               triggerButton={
                 <DropdownButton
-                  title="Add cookie"
+                  title={t('cookies.addCookie')}
                   className="btn btn--super-duper-compact btn--outlined txt-md"
                   disableHoverBehavior={false}
                 >
-                  Actions <i className="fa fa-caret-down" />
+                  {t('cookies.actions')} <i className="fa fa-caret-down" />
                 </DropdownButton>
               }
             >
-              <DropdownItem aria-label='Add Cookie'>
+              <DropdownItem aria-label={t('cookies.addCookie')}>
                 <ItemContent
                   icon="plus-circle"
-                  label="Add Cookie"
+                  label={t('cookies.addCookie')}
                   onClick={addCookie}
                 />
               </DropdownItem>
-              <DropdownItem aria-label='Delete All'>
+              <DropdownItem aria-label={t('cookies.deleteAll')}>
                 <ItemContent
                   icon="trash-o"
-                  label="Delete All"
+                  label={t('cookies.deleteAll')}
                   withPrompt
                   onClick={handleDeleteAll}
                 />
@@ -141,17 +142,17 @@ export const CookieList: FC<CookieListProps> = ({
           <CookieRow
             cookie={cookie}
             index={i}
-            key={i}
+            key={cookie.id || i}
             deleteCookie={handleCookieDelete}
           />
         ))}
       </tbody>
     </table>
     {cookies.length === 0 && <div className="pad faint italic text-center">
-      <p>I couldn't find any cookies for you.</p>
+      <p>{t('cookies.noCookiesFound')}</p>
       <p>
         <button className="btn btn--clicky" onClick={addCookie}>
-          Add Cookie <i className="fa fa-plus-circle" />
+          {t('cookies.addCookie')} <i className="fa fa-plus-circle" />
         </button>
       </p>
     </div>}

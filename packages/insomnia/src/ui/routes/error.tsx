@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { t } from '../../common/i18n';
 import { DEFAULT_ORGANIZATION_ID } from '../../models/organization';
 import { Button } from '../components/themed-button';
 
@@ -32,7 +33,7 @@ export const ErrorRoute: FC = () => {
       return err.message;
     }
 
-    return err?.message || 'Unknown error';
+    return err?.message || t('error.unknownError');
   };
   const getErrorStack = (err: any) => {
     if (isRouteErrorResponse(err)) {
@@ -47,15 +48,15 @@ export const ErrorRoute: FC = () => {
 
   return (
     <Container>
-      <h1 style={{ color: 'var(--color-font)' }}>Application Error</h1>
+      <h1 style={{ color: 'var(--color-font)' }}>{t('error.applicationError')}</h1>
       <p style={{ color: 'var(--color-font)' }}>
-        Failed to render. Please report to <a href="https://github.com/ArchGPT/insomnium/issues">our Github Issues</a>
+        {t('error.failedToRender')} <a href="https://github.com/ArchGPT/insomnium/issues">{t('error.githubIssues')}</a>
       </p>
       <span style={{ color: 'var(--color-font)' }}>
         <code className="selectable" style={{ wordBreak: 'break-word', margin: 'var(--padding-sm)' }}>{errorMessage}</code>
       </span>
       <Button onClick={() => navigate(`/organization/${DEFAULT_ORGANIZATION_ID}`)}>
-        Try to reload the app{' '}
+        {t('error.tryToReloadApp')}{' '}
         <span>{navigation.state === 'loading' ? <Spinner /> : null}</span>
       </Button>
       <code className="selectable" style={{ wordBreak: 'break-word', margin: 'var(--padding-sm)' }}>{getErrorStack(error)}</code>

@@ -4,6 +4,7 @@ import { useFetcher, useParams } from 'react-router-dom';
 import { parseApiSpec } from '../../../common/api-specs';
 import { getProductName } from '../../../common/constants';
 import { getWorkspaceLabel } from '../../../common/get-workspace-label';
+import { t } from '../../../common/i18n';
 import { RENDER_PURPOSE_NO_RENDER } from '../../../common/render';
 import type { ApiSpec } from '../../../models/api-spec';
 import { CaCertificate } from '../../../models/ca-certificate';
@@ -109,16 +110,16 @@ export const WorkspaceCardDropdown: FC<Props> = props => {
           </DropdownButton>
         }
       >
-        <DropdownItem aria-label='Duplicate'>
+        <DropdownItem aria-label={t('menu.duplicate')}>
           <ItemContent
-            label="Duplicate"
+            label={t('menu.duplicate')}
             icon="copy"
             onClick={() => setIsDuplicateModalOpen(true)}
           />
         </DropdownItem>
-        <DropdownItem aria-label='Rename'>
+        <DropdownItem aria-label={t('menu.rename')}>
           <ItemContent
-            label="Rename"
+            label={t('menu.rename')}
             icon="pen-to-square"
             onClick={() => {
               showPrompt({

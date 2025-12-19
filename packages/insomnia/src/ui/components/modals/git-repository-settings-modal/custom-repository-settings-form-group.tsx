@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
+import { t } from '../../../../common/i18n';
 import { docsGitAccessToken } from '../../../../common/documentation';
 import { GitRepository } from '../../../../models/git-repository';
 import { Link } from '../../base/link';
@@ -43,7 +44,7 @@ export const CustomRepositorySettingsFormGroup: FunctionComponent<Props> = ({
     >
       <div className="form-control form-control--outlined">
         <label>
-          Git URI (https)
+          {t('gitCustomRepository.gitUri')}
           <input
             type="url"
             required
@@ -51,19 +52,19 @@ export const CustomRepositorySettingsFormGroup: FunctionComponent<Props> = ({
             name="uri"
             defaultValue={uri}
             disabled={Boolean(uri)}
-            placeholder="https://github.com/org/repo.git"
+            placeholder={t('gitCustomRepository.gitUriPlaceholder')}
           />
         </label>
       </div>
       <div className="form-row">
         <div className="form-control form-control--outlined">
           <label>
-            Author Name
+            {t('gitCustomRepository.authorName')}
             <input
               required
               type="text"
               name="authorName"
-              placeholder="Name"
+              placeholder={t('gitCustomRepository.authorNamePlaceholder')}
               disabled={Boolean(uri)}
               defaultValue={author.name}
             />
@@ -71,12 +72,12 @@ export const CustomRepositorySettingsFormGroup: FunctionComponent<Props> = ({
         </div>
         <div className="form-control form-control--outlined">
           <label>
-            Author Email
+            {t('gitCustomRepository.authorEmail')}
             <input
               required
               type="text"
               name="authorEmail"
-              placeholder="Email"
+              placeholder={t('gitCustomRepository.authorEmailPlaceholder')}
               disabled={Boolean(uri)}
               defaultValue={author.email}
             />
@@ -86,12 +87,12 @@ export const CustomRepositorySettingsFormGroup: FunctionComponent<Props> = ({
       <div className="form-row">
         <div className="form-control form-control--outlined">
           <label>
-            Username
+            {t('gitCustomRepository.username')}
             <input
               required
               type="text"
               name="username"
-              placeholder="MyUser"
+              placeholder={t('gitCustomRepository.usernamePlaceholder')}
               disabled={Boolean(uri)}
               defaultValue={credentials?.username}
             />
@@ -99,9 +100,9 @@ export const CustomRepositorySettingsFormGroup: FunctionComponent<Props> = ({
         </div>
         <div className="form-control form-control--outlined">
           <label>
-            Authentication Token
+            {t('gitCustomRepository.authenticationToken')}
             <HelpTooltip className="space-left">
-              Create a personal access token
+              {t('gitCustomRepository.createPersonalAccessToken')}
               <br />
               <Link href={docsGitAccessToken.github}>GitHub {linkIcon}</Link>
               {' | '}
@@ -123,7 +124,7 @@ export const CustomRepositorySettingsFormGroup: FunctionComponent<Props> = ({
               name="token"
               disabled={Boolean(uri)}
               defaultValue={'token' in credentials ? credentials?.token : ''}
-              placeholder="88e7ee63b254e4b0bf047559eafe86ba9dd49507"
+              placeholder={t('gitCustomRepository.tokenPlaceholder')}
             />
           </label>
         </div>

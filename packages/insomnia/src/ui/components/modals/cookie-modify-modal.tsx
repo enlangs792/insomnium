@@ -7,6 +7,7 @@ import { useFetcher, useParams } from 'react-router-dom';
 import { Cookie as ToughCookie } from 'tough-cookie';
 
 import { cookieToString } from '../../../common/cookies';
+import { t } from '../../../common/i18n';
 import type { Cookie, CookieJar } from '../../../models/cookie-jar';
 import { WorkspaceLoaderData } from '../../routes/workspace';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
@@ -78,16 +79,16 @@ export const CookieModifyModal = ((props: ModalProps & CookieModifyModalOptions)
   return (
     <OverlayContainer>
       <Modal ref={modalRef} onHide={props.onHide}>
-        <ModalHeader>Edit Cookie</ModalHeader>
+        <ModalHeader>{t('cookies.editCookie')}</ModalHeader>
         <ModalBody className="cookie-modify">
           {activeCookieJar && cookie && (
-            <Tabs aria-label="Cookie modify tabs">
-              <TabItem key="friendly" title="Friendly">
+            <Tabs aria-label={t('cookies.modifyTabs')}>
+              <TabItem key="friendly" title={t('cookies.friendly')}>
                 <PanelContainer className="pad">
                   <div className="form-row">
                     <div className="form-control form-control--outlined">
                       <label data-testid="CookieKey">
-                        Key
+                        {t('cookies.key')}
                         <OneLineEditor
                           id="cookie-key"
                           defaultValue={(cookie && cookie.key || '').toString()}
@@ -97,7 +98,7 @@ export const CookieModifyModal = ((props: ModalProps & CookieModifyModalOptions)
                     </div>
                     <div className="form-control form-control--outlined">
                       <label data-testid="CookieValue">
-                        Value
+                        {t('cookies.value')}
                         <OneLineEditor
                           id="cookie-value"
                           defaultValue={(cookie && cookie.value || '').toString()}
@@ -109,7 +110,7 @@ export const CookieModifyModal = ((props: ModalProps & CookieModifyModalOptions)
                   <div className="form-row">
                     <div className="form-control form-control--outlined">
                       <label data-testid="CookieDomain">
-                        Domain
+                        {t('cookies.domain')}
                         <OneLineEditor
                           id="cookie-domain"
                           defaultValue={(cookie && cookie.domain || '').toString()}
@@ -119,7 +120,7 @@ export const CookieModifyModal = ((props: ModalProps & CookieModifyModalOptions)
                     </div>
                     <div className="form-control form-control--outlined">
                       <label data-testid="CookiePath">
-                        Path
+                        {t('cookies.path')}
                         <OneLineEditor
                           id="cookie-path"
                           defaultValue={(cookie && cookie.path || '').toString()}
@@ -130,14 +131,14 @@ export const CookieModifyModal = ((props: ModalProps & CookieModifyModalOptions)
                   </div>
                   <div className="form-control form-control--outlined">
                     <label data-testid="CookieExpires">
-                      Expires
+                      {t('cookies.expires')}
                       <input type="datetime-local" defaultValue={localDateTime} onChange={event => handleCookieUpdate(Object.assign({}, cookie, { expires: event.target.value }))} />
                     </label>
                   </div>
                 </PanelContainer>
                 <div className="pad no-pad-top cookie-modify__checkboxes row-around txt-lg">
                   <label>
-                    Secure
+                    {t('cookies.secure')}
                     <input
                       className="space-left"
                       type="checkbox"
@@ -147,7 +148,7 @@ export const CookieModifyModal = ((props: ModalProps & CookieModifyModalOptions)
                     />
                   </label>
                   <label>
-                    httpOnly
+                    {t('cookies.httpOnly')}
                     <input
                       className="space-left"
                       type="checkbox"
@@ -158,11 +159,11 @@ export const CookieModifyModal = ((props: ModalProps & CookieModifyModalOptions)
                   </label>
                 </div>
               </TabItem>
-              <TabItem key="raw" title="Raw">
+              <TabItem key="raw" title={t('cookies.raw')}>
                 <PanelContainer className="pad">
                   <div className="form-control form-control--outlined">
                     <label>
-                      Raw Cookie String
+                      {t('cookies.rawCookieString')}
                       <input
                         type="text"
                         onChange={event => {

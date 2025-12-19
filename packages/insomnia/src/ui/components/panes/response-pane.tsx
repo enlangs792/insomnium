@@ -4,6 +4,7 @@ import React, { FC, useCallback } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 
 import { PREVIEW_MODE_SOURCE } from '../../../common/constants';
+import { t } from '../../../common/i18n';
 import { getSetCookieHeaders } from '../../../common/misc';
 import * as models from '../../../models';
 import { cancelRequestById } from '../../../network/cancellation';
@@ -81,8 +82,8 @@ export const ResponsePane: FC<Props> = ({
     const { contentType } = activeResponse;
     const extension = mimeExtension(contentType) || 'unknown';
     const { canceled, filePath: outputPath } = await window.dialog.showSaveDialog({
-      title: 'Save Response Body',
-      buttonLabel: 'Save',
+      title: t('responsePane.saveResponseBody'),
+      buttonLabel: t('responsePane.save'),
       defaultPath: `${activeRequest.name.replace(/ +/g, '_')}-${Date.now()}.${extension}`,
     });
 
@@ -102,8 +103,8 @@ export const ResponsePane: FC<Props> = ({
         const finalBuffer = Buffer.concat(dataBuffers);
         to.on('error', err => {
           showError({
-            title: 'Save Failed',
-            message: 'Failed to save response body',
+            title: t('responsePane.saveFailed'),
+            message: t('responsePane.failedToSaveResponseBody'),
             error: err,
           });
         });
@@ -183,7 +184,7 @@ export const ResponsePane: FC<Props> = ({
           key="headers"
           title={
             <>
-              Headers
+              {t('responsePane.headers')}
               {activeResponse.headers.length > 0 && (
                 <span className="bubble">{activeResponse.headers.length}</span>
               )}
@@ -200,7 +201,7 @@ export const ResponsePane: FC<Props> = ({
           key="cookies"
           title={
             <>
-              Cookies
+              {t('responsePane.cookies')}
               {cookieHeaders.length ? (
                 <span className="bubble">{cookieHeaders.length}</span>
               ) : null}
@@ -217,7 +218,7 @@ export const ResponsePane: FC<Props> = ({
             </ErrorBoundary>
           </PanelContainer>
         </TabItem>
-        <TabItem key="timeline" title="Timeline">
+        <TabItem key="timeline" title={t('responsePane.timeline')}>
           <ErrorBoundary key={activeResponse._id} errorClassName="font-error pad text-center">
             <ResponseTimelineViewer
               key={activeResponse._id}

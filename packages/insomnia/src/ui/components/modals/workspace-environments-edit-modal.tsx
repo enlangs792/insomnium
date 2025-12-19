@@ -4,6 +4,7 @@ import { ListDropTargetDelegate, ListKeyboardDelegate, mergeProps, OverlayContai
 import { useFetcher, useParams, useRouteLoaderData } from 'react-router-dom';
 import { DraggableCollectionState, DroppableCollectionState, Item, ListState, useDraggableCollectionState, useDroppableCollectionState, useListState } from 'react-stately';
 
+import { t } from '../../../common/i18n';
 import { docsTemplateTags } from '../../../common/documentation';
 import type { Environment } from '../../../models/environment';
 import { WorkspaceLoaderData } from '../../routes/workspace';
@@ -19,7 +20,7 @@ import { EnvironmentEditor, EnvironmentEditorHandle } from '../editors/environme
 import { HelpTooltip } from '../help-tooltip';
 import { Tooltip } from '../tooltip';
 
-const ROOT_ENVIRONMENT_NAME = 'Base Environment';
+const ROOT_ENVIRONMENT_NAME = t('workspaceEnvironments.baseEnvironment');
 
 interface SidebarListItemProps {
   environment: Environment;
@@ -50,7 +51,7 @@ const SidebarListItem: FC<SidebarListItemProps> = ({
       )}
 
       {environment.isPrivate && (
-        <Tooltip position="top" message="Environment will not be exported or synced">
+        <Tooltip position="top" message={t('workspaceEnvironments.environmentWillNotBeExported')}>
           <i className="fa fa-eye-slash faint space-right" />
         </Tooltip>
       )}
@@ -311,7 +312,7 @@ export const WorkspaceEnvironmentsEditModal = (props: ModalProps) => {
   return (
     <OverlayContainer>
       <Modal ref={modalRef} wide tall onHide={props.onHide}>
-        <ModalHeader>Manage Environments</ModalHeader>
+        <ModalHeader>{t('workspaceEnvironments.manageEnvironments')}</ModalHeader>
         <ModalBody noScroll className="env-modal">
           <div className="env-modal__sidebar">
             <div
@@ -334,15 +335,14 @@ export const WorkspaceEnvironmentsEditModal = (props: ModalProps) => {
               >
                 {ROOT_ENVIRONMENT_NAME}
                 <HelpTooltip className="space-left">
-                  The variables in this environment are always available, regardless of which
-                  sub-environment is active. Useful for storing default or fallback values.
+                  {t('workspaceEnvironments.baseEnvironmentHelp')}
                 </HelpTooltip>
               </button>
             </div>
             <div className="pad env-modal__sidebar-heading">
-              <h3 className="no-margin">Sub Environments</h3>
+              <h3 className="no-margin">{t('workspaceEnvironments.subEnvironments')}</h3>
               <Dropdown
-                aria-label='Create Environment Dropdown'
+                aria-label={t('workspaceEnvironments.createEnvironmentDropdown')}
                 triggerButton={
                   <DropdownButton
                     data-testid='CreateEnvironmentDropdown'
@@ -352,10 +352,10 @@ export const WorkspaceEnvironmentsEditModal = (props: ModalProps) => {
                   </DropdownButton>
                 }
               >
-                <DropdownItem aria-label='Environment'>
+                <DropdownItem aria-label={t('workspaceEnvironments.environment')}>
                   <ItemContent
                     icon="eye"
-                    label="Environment"
+                    label={t('workspaceEnvironments.environment')}
                     onClick={async () => {
                       createEnvironmentFetcher.submit({
                         isPrivate: false,
@@ -368,10 +368,10 @@ export const WorkspaceEnvironmentsEditModal = (props: ModalProps) => {
                     }}
                   />
                 </DropdownItem>
-                <DropdownItem aria-label='Private Environment'>
+                <DropdownItem aria-label={t('workspaceEnvironments.privateEnvironment')}>
                   <ItemContent
                     icon="eye-slash"
-                    label="Private Environment"
+                    label={t('workspaceEnvironments.privateEnvironment')}
                     onClick={async () => {
                       createEnvironmentFetcher.submit({
                         isPrivate: true,
@@ -392,7 +392,7 @@ export const WorkspaceEnvironmentsEditModal = (props: ModalProps) => {
               onReorder={onReorder}
               selectionMode="multiple"
               selectionBehavior="replace"
-              aria-label="list of subenvironments"
+              aria-label={t('workspaceEnvironments.listOfSubenvironments')}
             >
               {(environment: any) =>
                 <Item key={environment._id}>
@@ -430,7 +430,7 @@ export const WorkspaceEnvironmentsEditModal = (props: ModalProps) => {
                   />
 
                   <Dropdown
-                    aria-label='Environment Color Dropdown'
+                    aria-label={t('workspaceEnvironments.environmentColorDropdown')}
                     className="space-right"
                     triggerButton={
                       <DropdownButton
@@ -445,14 +445,14 @@ export const WorkspaceEnvironmentsEditModal = (props: ModalProps) => {
                             }}
                           />
                         )}
-                        Color <i className="fa fa-caret-down" />
+                        {t('workspaceEnvironments.color')} <i className="fa fa-caret-down" />
                       </DropdownButton>
                     }
                   >
-                    <DropdownItem aria-label={activeEnvironment.color ? 'Change Color' : 'Assign Color'}>
+                    <DropdownItem aria-label={activeEnvironment.color ? t('workspaceEnvironments.changeColor') : t('workspaceEnvironments.assignColor')}>
                       <ItemContent
                         icon="circle"
-                        label={activeEnvironment.color ? 'Change Color' : 'Assign Color'}
+                        label={activeEnvironment.color ? t('workspaceEnvironments.changeColor') : t('workspaceEnvironments.assignColor')}
                         iconStyle={{
                           ...(activeEnvironment.color ? { color: activeEnvironment.color } : {}),
                         }}
@@ -467,11 +467,11 @@ export const WorkspaceEnvironmentsEditModal = (props: ModalProps) => {
                       />
                     </DropdownItem>
 
-                    <DropdownItem aria-label='Unset Color'>
+                    <DropdownItem aria-label={t('workspaceEnvironments.unsetColor')}>
                       <ItemContent
                         isDisabled={!activeEnvironment.color}
                         icon="minus-circle"
-                        label="Unset Color"
+                        label={t('workspaceEnvironments.unsetColor')}
                         onClick={() => updateEnvironment(activeEnvironment._id, { color: null })}
                       />
                     </DropdownItem>
@@ -490,7 +490,7 @@ export const WorkspaceEnvironmentsEditModal = (props: ModalProps) => {
                     }}
                     className="btn btn--clicky space-right"
                   >
-                    <i className="fa fa-copy" /> Duplicate
+                    <i className="fa fa-copy" /> {t('workspaceEnvironments.duplicate')}
                   </button>
 
                   {activeEnvironment._id !== baseEnvironment._id && <PromptButton
@@ -529,11 +529,11 @@ export const WorkspaceEnvironmentsEditModal = (props: ModalProps) => {
         </ModalBody>
         <ModalFooter>
           <div className="margin-left italic txt-sm">
-            * Environment data can be used for&nbsp;
-            <Link href={docsTemplateTags}>Nunjucks Templating</Link> in your requests
+            {t('workspaceEnvironments.environmentDataHelp')}&nbsp;
+            <Link href={docsTemplateTags}>{t('workspaceEnvironments.nunjucksTemplating')}</Link> {t('workspaceEnvironments.inYourRequests')}
           </div>
           <button className="btn" onClick={() => modalRef.current?.hide()}>
-            Close
+            {t('modal.close')}
           </button>
         </ModalFooter>
       </Modal>

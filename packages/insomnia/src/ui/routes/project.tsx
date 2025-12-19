@@ -29,12 +29,13 @@ import { parseApiSpec, ParsedApiSpec } from '../../common/api-specs';
 import {
   DASHBOARD_SORT_ORDERS,
   DashboardSortOrder,
-  dashboardSortOrderName,
+  getDashboardSortOrderName,
   getProductName,
 } from '../../common/constants';
 import { fuzzyMatchAll, isNotNullOrUndefined } from '../../common/misc';
 import { descendingNumberSort, sortMethodMap } from '../../common/sorting';
 import { strings } from '../../common/strings';
+import { t } from '../../common/i18n';
 import * as models from '../../models';
 import { ApiSpec } from '../../models/api-spec';
 import { CaCertificate } from '../../models/ca-certificate';
@@ -213,8 +214,8 @@ export const loader: LoaderFunction = async ({
 
     const hasUnsavedChanges = Boolean(
       isDesign(workspace) &&
-        workspaceMeta?.cachedGitLastCommitTime &&
-        modifiedLocally > workspaceMeta?.cachedGitLastCommitTime
+      workspaceMeta?.cachedGitLastCommitTime &&
+      modifiedLocally > workspaceMeta?.cachedGitLastCommitTime
     );
 
     const clientCertificates = await models.clientCertificate.findByParentId(
@@ -253,20 +254,20 @@ export const loader: LoaderFunction = async ({
     .filter(workspace =>
       filter
         ? Boolean(
-            fuzzyMatchAll(
-              filter,
-              // Use the filter string to match against these properties
-              [
-                workspace.name,
-                workspace.workspace.scope === 'design'
-                  ? 'document'
-                  : 'collection',
-                workspace.lastActiveBranch || '',
-                workspace.specFormatVersion || '',
-              ],
-              { splitSpace: true, loose: true }
-            )?.indexes
-          )
+          fuzzyMatchAll(
+            filter,
+            // Use the filter string to match against these properties
+            [
+              workspace.name,
+              workspace.workspace.scope === 'design'
+                ? 'document'
+                : 'collection',
+              workspace.lastActiveBranch || '',
+              workspace.specFormatVersion || '',
+            ],
+            { splitSpace: true, loose: true }
+          )?.indexes
+        )
         : true
     )
     .sort((a, b) => sortMethodMap[sortOrder as DashboardSortOrder](a, b));
@@ -287,9 +288,9 @@ export const loader: LoaderFunction = async ({
       organizationId === DEFAULT_ORGANIZATION_ID
         ? defaultOrganization
         : {
-            _id: organizationId,
-            name: projects[0].name,
-          },
+          _id: organizationId,
+          name: projects[0].name,
+        },
     workspaces,
     projects,
     projectsCount: organizationProjects.length,
@@ -337,10 +338,10 @@ const ProjectRoute: FC = () => {
   >(null);
   const createNewCollection = () => {
     showPrompt({
-      title: 'Create New Request Collection',
-      submitName: 'Create',
-      placeholder: 'My Collection',
-      defaultValue: 'My Collection',
+      title: t('project.createNewRequestCollection'),
+      submitName: t('project.create'),
+      placeholder: t('project.myCollection'),
+      defaultValue: t('project.myCollection'),
       selectText: true,
       onComplete: async (name: string) => {
         fetcher.submit(
@@ -359,10 +360,10 @@ const ProjectRoute: FC = () => {
 
   const createNewDocument = () => {
     showPrompt({
-      title: 'Create New Design Document',
-      submitName: 'Create',
-      placeholder: 'my-spec.yaml',
-      defaultValue: 'my-spec.yaml',
+      title: t('project.createNewDesignDocument'),
+      submitName: t('project.create'),
+      placeholder: t('project.mySpecYaml'),
+      defaultValue: t('project.mySpecYaml'),
       selectText: true,
       onComplete: async (name: string) => {
         fetcher.submit(
@@ -391,33 +392,33 @@ const ProjectRoute: FC = () => {
     icon: IconName;
     action: () => void;
   }[] = [
-    {
-      id: 'new-collection',
-      name: 'Request collection',
-      icon: 'bars',
-      action: createNewCollection,
-    },
-    {
-      id: 'new-document',
-      name: 'Design document',
-      icon: 'file',
-      action: createNewDocument,
-    },
-    {
-      id: 'import',
-      name: 'Import',
-      icon: 'file-import',
-      action: () => {
-        setImportModalType('file');
+      {
+        id: 'new-collection',
+        name: t('project.newCollection'),
+        icon: 'bars',
+        action: createNewCollection,
       },
-    },
-    {
-      id: 'git-clone',
-      name: 'Git Clone',
-      icon: 'code-fork',
-      action: importFromGit,
-    },
-  ];
+      {
+        id: 'new-document',
+        name: t('project.newDocument'),
+        icon: 'file',
+        action: createNewDocument,
+      },
+      {
+        id: 'import',
+        name: t('menu.import'),
+        icon: 'file-import',
+        action: () => {
+          setImportModalType('file');
+        },
+      },
+      {
+        id: 'git-clone',
+        name: t('project.gitClone'),
+        icon: 'code-fork',
+        action: importFromGit,
+      },
+    ];
 
   const scopeActionList: {
     id: string;
@@ -430,35 +431,35 @@ const ProjectRoute: FC = () => {
       run: () => void;
     };
   }[] = [
-    {
-      id: 'all',
-      label: `All files (${allFilesCount})`,
-      icon: 'folder',
-      level: 0,
-    },
-    {
-      id: 'design',
-      label: `Documents (${documentsCount})`,
-      level: 1,
-      icon: 'file',
-      action: {
-        icon: 'plus',
-        label: 'New design document',
-        run: createNewDocument,
+      {
+        id: 'all',
+        label: t('project.allFiles') + ` (${allFilesCount})`,
+        icon: 'folder',
+        level: 0,
       },
-    },
-    {
-      id: 'collection',
-      label: `Collections (${collectionsCount})`,
-      level: 1,
-      icon: 'bars',
-      action: {
-        icon: 'plus',
-        label: 'New request collection',
-        run: createNewCollection,
+      {
+        id: 'design',
+        label: t('project.documents') + ` (${documentsCount})`,
+        level: 1,
+        icon: 'file',
+        action: {
+          icon: 'plus',
+          label: t('project.newDesignDocument'),
+          run: createNewDocument,
+        },
       },
-    },
-  ];
+      {
+        id: 'collection',
+        label: t('project.collections') + ` (${collectionsCount})`,
+        level: 1,
+        icon: 'bars',
+        action: {
+          icon: 'plus',
+          label: t('project.newRequestCollection'),
+          run: createNewCollection,
+        },
+      },
+    ];
 
   return (
     <ErrorBoundary>
@@ -479,6 +480,9 @@ const ProjectRoute: FC = () => {
                   <Button className="px-4 py-1 flex flex-1 items-center justify-center gap-2 aria-pressed:bg-[--hl-sm] rounded-sm text-[--color-font] hover:bg-[--hl-xs] focus:ring-inset ring-1 ring-transparent focus:ring-[--hl-md] transition-all text-sm">
                     <SelectValue<Organization> className="flex truncate items-center justify-center gap-2">
                       {({ selectedItem }) => {
+                        if (selectedItem?._id === DEFAULT_ORGANIZATION_ID) {
+                          return t('organization.personalProjects');
+                        }
                         return selectedItem?.name;
                       }}
                     </SelectValue>
@@ -491,13 +495,13 @@ const ProjectRoute: FC = () => {
                           id={item._id}
                           key={item._id}
                           className="flex gap-2 px-[--padding-md] aria-selected:font-bold items-center text-[--color-font] h-[--line-height-xs] w-full text-md whitespace-nowrap bg-transparent hover:bg-[--hl-sm] disabled:cursor-not-allowed focus:bg-[--hl-xs] focus:outline-none transition-colors"
-                          aria-label={item.name}
-                          textValue={item.name}
+                          aria-label={item._id === DEFAULT_ORGANIZATION_ID ? t('organization.personalProjects') : item.name}
+                          textValue={item._id === DEFAULT_ORGANIZATION_ID ? t('organization.personalProjects') : item.name}
                           value={item}
                         >
                           {({ isSelected }) => (
                             <Fragment>
-                              <span>{item.name}</span>
+                              <span>{item._id === DEFAULT_ORGANIZATION_ID ? t('organization.personalProjects') : item.name}</span>
                               {isSelected && (
                                 <Icon
                                   icon="check"
@@ -544,23 +548,22 @@ const ProjectRoute: FC = () => {
                       onPress={() => {
                         if (activeProject.remoteId) {
                           showAlert({
-                            title: 'This capability is coming soon',
-                            okLabel: 'Close',
+                            title: t('project.thisCapabilityComingSoon'),
+                            okLabel: t('modal.close'),
                             message: (
                               <div>
                                 <p>
-                                  At the moment it is not possible to create more
-                                  cloud projects within a team in Insomnium.
+                                  {t('project.cannotCreateMoreCloudProjects')}
                                 </p>
-                                <p>🚀 This feature is coming soon!</p>
+                                <p>{t('project.featureComingSoon')}</p>
                               </div>
                             ),
                           });
                         } else {
-                          const defaultValue = `My ${strings.project.singular}`;
+                          const defaultValue = t('project.defaultProjectName');
                           showPrompt({
-                            title: `Create New ${strings.project.singular}`,
-                            submitName: 'Create',
+                            title: t('project.createNewProject'),
+                            submitName: t('project.create'),
                             placeholder: defaultValue,
                             defaultValue,
                             selectText: true,
@@ -711,7 +714,7 @@ const ProjectRoute: FC = () => {
                   items={DASHBOARD_SORT_ORDERS.map(order => {
                     return {
                       id: order,
-                      name: dashboardSortOrderName[order],
+                      name: getDashboardSortOrderName(order),
                     };
                   })}
                 >

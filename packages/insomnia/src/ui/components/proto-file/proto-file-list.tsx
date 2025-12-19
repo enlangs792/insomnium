@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
+import { t } from '../../../common/i18n';
 import { ProtoDirectory } from '../../../models/proto-directory';
 import type { ProtoFile } from '../../../models/proto-file';
 import { ListGroup, ListGroupItem } from '../list-group';
@@ -54,7 +55,7 @@ const recursiveRender = (
         <div className="row">
           <Button
             variant="text"
-            title="Re-discover proto files"
+            title={t('protoFile.reDiscover')}
             onClick={event => {
               event.stopPropagation();
               handleUpdate(dir);
@@ -66,7 +67,7 @@ const recursiveRender = (
       )}
       <Button
         variant="text"
-        title="Delete Directory"
+        title={t('protoFile.deleteDirectory')}
         onClick={event => {
           event.stopPropagation();
           handleDeleteDirectory(dir);
@@ -92,7 +93,7 @@ const recursiveRender = (
         <div className="row">
           <Button
             variant="text"
-            title="Re-upload Proto File"
+            title={t('protoFile.reUpload')}
             onClick={event => {
               event.stopPropagation();
               handleUpdate(f);
@@ -103,7 +104,7 @@ const recursiveRender = (
           </Button>
           <Button
             variant="text"
-            title="Delete Proto File"
+            title={t('protoFile.deleteProtoFile')}
             bg="danger"
             onClick={event => {
               event.stopPropagation();
@@ -129,7 +130,7 @@ const recursiveRender = (
 export const ProtoFileList: FunctionComponent<Props> = props => (
   <ListGroup bordered>
     {!props.protoDirectories.length && (
-      <ListGroupItem>No proto files exist for this workspace</ListGroupItem>
+      <ListGroupItem>{t('protoFile.noProtoFilesExist')}</ListGroupItem>
     )}
     {props.protoDirectories.map(dir => recursiveRender(
       0,

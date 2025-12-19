@@ -2,6 +2,7 @@ import React, { Key, useEffect, useRef, useState } from 'react';
 import { useFetcher, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { t } from '../../../../common/i18n';
 import { docsGitSync } from '../../../../common/documentation';
 import type { GitRepository, OauthProviderName } from '../../../../models/git-repository';
 import { Link } from '../../base/link';
@@ -67,7 +68,7 @@ export const GitRepositoryCloneModal = (props: ModalProps) => {
       const errorMessage = errors.map(e => e instanceof Error ? e.message : typeof e === 'string' && e).join(', ');
 
       showAlert({
-        title: 'Error Cloning Repository',
+        title: t('gitClone.errorCloningRepository'),
         message: errorMessage,
       });
     }
@@ -76,22 +77,22 @@ export const GitRepositoryCloneModal = (props: ModalProps) => {
   return (
     <Modal ref={modalRef} {...props}>
       <ModalHeader>
-        Clone Repository{' '}
+        {t('gitClone.title')}{' '}
         <HelpTooltip>
-          Sync and collaborate with Git
+          {t('gitClone.syncAndCollaborate')}
           <br />
-          <Link href={docsGitSync}>Documentation {<i className="fa fa-external-link-square" />}</Link>
+          <Link href={docsGitSync}>{t('gitClone.documentation')} {<i className="fa fa-external-link-square" />}</Link>
         </HelpTooltip>
       </ModalHeader>
       <ModalBody>
         <ErrorBoundary>
           <Tabs
-            aria-label="Git repository settings tabs"
+            aria-label={t('gitRepositorySettings.tabsAriaLabel')}
             selectedKey={selectedTab}
             onSelectionChange={(key: Key) => setTab(key as OauthProviderName)}
           >
 
-            <TabItem key='custom' title={<TabPill><i className="fa fa-code-fork" /> Git</TabPill>}>
+            <TabItem key='custom' title={<TabPill><i className="fa fa-code-fork" /> {t('gitRepositorySettings.git')}</TabPill>}>
               <PanelContainer className="pad pad-top-sm">
                 <CustomRepositorySettingsFormGroup
                   onSubmit={onSubmit}
@@ -104,10 +105,10 @@ export const GitRepositoryCloneModal = (props: ModalProps) => {
       <ModalFooter>
         <div>
           <button className="btn" onClick={() => modalRef.current?.hide()}>
-            Cancel
+            {t('gitClone.cancel')}
           </button>
           <button type="submit" disabled={isSubmitting} form={selectedTab} className="btn" data-testid="git-repository-settings-modal__sync-btn">
-            Clone
+            {t('gitClone.clone')}
           </button>
         </div>
       </ModalFooter>

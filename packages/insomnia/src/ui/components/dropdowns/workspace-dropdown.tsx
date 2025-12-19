@@ -3,6 +3,7 @@ import { useFetcher, useParams, useRouteLoaderData } from 'react-router-dom';
 
 import { getProductName } from '../../../common/constants';
 import { database as db } from '../../../common/database';
+import { t } from '../../../common/i18n';
 import { getWorkspaceLabel } from '../../../common/get-workspace-label';
 import { RENDER_PURPOSE_NO_RENDER } from '../../../common/render';
 import { isRequest } from '../../../models/request';
@@ -154,33 +155,33 @@ export const WorkspaceDropdown: FC = () => {
         </DropdownItem>
         <DropdownSection aria-label='Meta section'>
 
-          <DropdownItem aria-label='Import'>
+          <DropdownItem aria-label={t('menu.import')}>
             <ItemContent
               icon="file-import"
-              label="Import"
+              label={t('menu.import')}
               onClick={() => setIsImportModalOpen(true)}
             />
           </DropdownItem>
 
-        <DropdownItem aria-label='Export'>
+        <DropdownItem aria-label={t('menu.export')}>
           <ItemContent
             icon="file-export"
-            label="Export"
+            label={t('menu.export')}
             onClick={() => setIsExportModalOpen(true)}
           />
         </DropdownItem>
 
-          <DropdownItem aria-label="Settings">
+          <DropdownItem aria-label={t('menu.settings')}>
             <ItemContent
               icon="wrench"
-              label="Settings"
+              label={t('menu.settings')}
               onClick={() => setIsSettingsModalOpen(true)}
             />
           </DropdownItem>
         </DropdownSection>
         <DropdownSection
-          aria-label='Plugins Section'
-          title="Plugins"
+          aria-label={t('settings.plugins')}
+          title={t('settings.plugins')}
         >
           {actionPlugins.map((p: WorkspaceAction) => (
             <DropdownItem

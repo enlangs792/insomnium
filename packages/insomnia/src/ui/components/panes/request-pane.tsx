@@ -3,6 +3,7 @@ import { useFetcher, useParams, useRouteLoaderData } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { getContentTypeFromHeaders } from '../../../common/constants';
+import { t } from '../../../common/i18n';
 import * as models from '../../../models';
 import { queryAllWorkspaceUrls } from '../../../models/helpers/query-all-workspace-urls';
 import type { Settings } from '../../../models/settings';
@@ -180,7 +181,7 @@ export const RequestPane: FC<Props> = ({
           key="query"
           title={
             <>
-              Query{' '}
+              {t('requestPane.query')}{' '}
               {numParameters > 0 && (
                 <span className="bubble space-left">{numParameters}</span>
               )}
@@ -189,7 +190,7 @@ export const RequestPane: FC<Props> = ({
         >
           <QueryEditorContainer>
             <QueryEditorPreview className="pad pad-bottom-sm">
-              <label className="label--small no-pad-top">Url Preview</label>
+              <label className="label--small no-pad-top">{t('requestPane.urlPreview')}</label>
               <code className="txt-sm block faint">
                 <ErrorBoundary
                   key={uniqueKey}
@@ -221,12 +222,12 @@ export const RequestPane: FC<Props> = ({
                 className="btn btn--compact"
                 title={
                   urlHasQueryParameters
-                    ? 'Import querystring'
-                    : 'No query params to import'
+                    ? t('requestPane.importQuerystring')
+                    : t('requestPane.noQueryParamsToImport')
                 }
                 onClick={handleImportQueryFromUrl}
               >
-                Import from URL
+                {t('requestPane.importFromUrl')}
               </button>
               <button
                 className="btn btn--compact"
@@ -237,8 +238,8 @@ export const RequestPane: FC<Props> = ({
                 }
               >
                 {settings.useBulkParametersEditor
-                  ? 'Regular Edit'
-                  : 'Bulk Edit'}
+                  ? t('requestPane.regularEdit')
+                  : t('requestPane.bulkEdit')}
               </button>
             </TabPanelFooter>
           </QueryEditorContainer>
@@ -247,7 +248,7 @@ export const RequestPane: FC<Props> = ({
           key="headers"
           title={
             <>
-              Headers{' '}
+              {t('requestPane.headers')}{' '}
               {numHeaders > 0 && (
                 <span className="bubble space-left">{numHeaders}</span>
               )}
@@ -273,7 +274,7 @@ export const RequestPane: FC<Props> = ({
                   })
                 }
               >
-                {settings.useBulkHeaderEditor ? 'Regular Edit' : 'Bulk Edit'}
+                {settings.useBulkHeaderEditor ? t('requestPane.regularEdit') : t('requestPane.bulkEdit')}
               </button>
             </TabPanelFooter>
           </HeaderContainer>
@@ -282,7 +283,7 @@ export const RequestPane: FC<Props> = ({
           key="docs"
           title={
             <>
-              Docs
+              {t('requestPane.docs')}
               {activeRequest.description && (
                 <span className="bubble space-left">
                   <i className="fa fa--skinny fa-check txt-xxs" />
@@ -299,7 +300,7 @@ export const RequestPane: FC<Props> = ({
                     className="btn btn--clicky"
                     onClick={() => setIsRequestSettingsModalOpen(true)}
                   >
-                    Edit
+                    {t('requestPane.edit')}
                   </button>
                 </div>
                 <div className="pad">
@@ -329,7 +330,7 @@ export const RequestPane: FC<Props> = ({
                     className="btn btn--clicky faint"
                     onClick={() => setIsRequestSettingsModalOpen(true)}
                   >
-                    Add Description
+                    {t('requestPane.addDescription')}
                   </button>
                 </p>
               </div>
