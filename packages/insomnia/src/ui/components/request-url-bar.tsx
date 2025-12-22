@@ -4,6 +4,7 @@ import { useFetcher, useParams, useRouteLoaderData } from 'react-router-dom';
 import { useInterval } from 'react-use';
 import styled from 'styled-components';
 
+import { t } from '../../common/i18n';
 import { RENDER_PURPOSE_SEND } from '../../common/render';
 import * as models from '../../models';
 import { isEventStreamRequest } from '../../models/request';
@@ -153,10 +154,10 @@ export const RequestUrlBar = forwardRef<RequestUrlBarHandle, Props>(({
       });
     } catch (err) {
       showAlert({
-        title: 'Unexpected Request Failure',
+        title: t('requestUrlBar.unexpectedRequestFailure'),
         message: (
           <div>
-            <p>The request failed due to an unhandled error:</p>
+            <p>{t('requestUrlBar.requestFailedUnhandledError')}</p>
             <code className="wide selectable">
               <pre>{err.message}</pre>
             </code>
@@ -190,7 +191,7 @@ export const RequestUrlBar = forwardRef<RequestUrlBarHandle, Props>(({
   const handleSendDropdownHide = useCallback(() => {
     buttonRef.current?.blur();
   }, []);
-  const buttonText = isEventStreamRequest(activeRequest) ? 'Connect' : (downloadPath ? 'Download' : 'Send');
+  const buttonText = isEventStreamRequest(activeRequest) ? t('requestUrlBar.connect') : (downloadPath ? t('requestUrlBar.download') : t('requestUrlBar.send'));
   const { url, method } = activeRequest;
   const isEventStreamOpen = useReadyState({ requestId: activeRequest._id, protocol: 'curl' });
   const isCancellable = currentInterval || currentTimeout || isEventStreamOpen;
@@ -232,113 +233,113 @@ export const RequestUrlBar = forwardRef<RequestUrlBarHandle, Props>(({
               setCurrentTimeout(undefined);
             }}
           >
-            {isEventStreamRequest(activeRequest) ? 'Disconnect' : 'Cancel'}
+            {isEventStreamRequest(activeRequest) ? t('requestUrlBar.disconnect') : t('requestUrlBar.cancel')}
           </button>
         ) : (<>
-            <button
-              onClick={() => sendOrConnect()}
-              className="urlbar__send-btn"
-              type="button"
+          <button
+            onClick={() => sendOrConnect()}
+            className="urlbar__send-btn"
+            type="button"
 
-            >
-              {buttonText}</button>
-            {isEventStreamRequest(activeRequest) ? null : (<Dropdown
-              key="dropdown"
-              className="tall"
-              ref={dropdownRef}
-              aria-label="Request Options"
-              onClose={handleSendDropdownHide}
-              closeOnSelect={false}
-              triggerButton={
-                <StyledDropdownButton
-                  className="urlbar__send-context"
-                  removeBorderRadius={true}
-                >
-                  <i className="fa fa-caret-down" />
-                </StyledDropdownButton>
-              }
-            >
-              <DropdownSection
-                aria-label="Basic Section"
-                title="Basic"
+          >
+            {buttonText}</button>
+          {isEventStreamRequest(activeRequest) ? null : (<Dropdown
+            key="dropdown"
+            className="tall"
+            ref={dropdownRef}
+            aria-label={t('requestUrlBar.requestOptions')}
+            onClose={handleSendDropdownHide}
+            closeOnSelect={false}
+            triggerButton={
+              <StyledDropdownButton
+                className="urlbar__send-context"
+                removeBorderRadius={true}
               >
-                <DropdownItem aria-label="send-now">
-                  <ItemContent icon="arrow-circle-o-right" label="Send Now" hint={hotKeyRegistry.request_send} onClick={sendOrConnect} />
-                </DropdownItem>
-                <DropdownItem aria-label='Show CURL code, etc'>
+                <i className="fa fa-caret-down" />
+              </StyledDropdownButton>
+            }
+          >
+            <DropdownSection
+              aria-label={t('requestUrlBar.basicSection')}
+              title={t('requestUrlBar.basic')}
+            >
+              <DropdownItem aria-label="send-now">
+                <ItemContent icon="arrow-circle-o-right" label={t('requestUrlBar.sendNow')} hint={hotKeyRegistry.request_send} onClick={sendOrConnect} />
+              </DropdownItem>
+              <DropdownItem aria-label={t('requestUrlBar.showCurlCode')}>
+                <ItemContent
+                  icon="code"
+                  label={t('requestUrlBar.showCurlCode')}
+                  onClick={() => showModal(GenerateCodeModal, { request: activeRequest })}
+                />
+              </DropdownItem>
+            </DropdownSection>
+            <DropdownSection
+              aria-label={t('requestUrlBar.advancedSection')}
+              title={t('requestUrlBar.advanced')}
+            >
+              <DropdownItem aria-label={t('requestUrlBar.sendAfterDelay')}>
+                <ItemContent
+                  icon="clock-o"
+                  label={t('requestUrlBar.sendAfterDelay')}
+                  onClick={() => showPrompt({
+                    inputType: 'decimal',
+                    title: t('requestUrlBar.sendAfterDelay'),
+                    label: t('requestUrlBar.delayInSeconds'),
+                    defaultValue: '3',
+                    onComplete: seconds => {
+                      setCurrentTimeout(+seconds * 1000);
+                    },
+                  })}
+                />
+              </DropdownItem>
+              <DropdownItem aria-label={t('requestUrlBar.repeatOnInterval')}>
+                <ItemContent
+                  icon="repeat"
+                  label={t('requestUrlBar.repeatOnInterval')}
+                  onClick={() => showPrompt({
+                    inputType: 'decimal',
+                    title: t('requestUrlBar.sendOnInterval'),
+                    label: t('requestUrlBar.intervalInSeconds'),
+                    defaultValue: '3',
+                    submitName: t('requestUrlBar.start'),
+                    onComplete: seconds => {
+                      setCurrentInterval(+seconds * 1000);
+                    },
+                  })}
+                />
+              </DropdownItem>
+              {downloadPath
+                ? (<DropdownItem aria-label={t('requestUrlBar.stopAutoDownload')}>
                   <ItemContent
-                    icon="code"
-                    label="Show CURL code, etc"
-                    onClick={() => showModal(GenerateCodeModal, { request: activeRequest })}
+                    icon="stop-circle"
+                    label={t('requestUrlBar.stopAutoDownload')}
+                    withPrompt
+                    onClick={() => patchRequestMeta(activeRequest._id, { downloadPath: null })}
                   />
-                </DropdownItem>
-              </DropdownSection>
-              <DropdownSection
-                aria-label="Advanced Section"
-                title="Advanced"
-              >
-                <DropdownItem aria-label='Send After Delay'>
+                </DropdownItem>)
+                : (<DropdownItem aria-label={t('requestUrlBar.downloadAfterSend')}>
                   <ItemContent
-                    icon="clock-o"
-                    label="Send After Delay"
-                    onClick={() => showPrompt({
-                      inputType: 'decimal',
-                      title: 'Send After Delay',
-                      label: 'Delay in seconds',
-                      defaultValue: '3',
-                      onComplete: seconds => {
-                        setCurrentTimeout(+seconds * 1000);
-                      },
-                    })}
+                    icon="download"
+                    label={t('requestUrlBar.downloadAfterSend')}
+                    onClick={async () => {
+                      const { canceled, filePaths } = await window.dialog.showOpenDialog({
+                        title: t('requestUrlBar.selectDownloadLocation'),
+                        buttonLabel: t('requestUrlBar.select'),
+                        properties: ['openDirectory'],
+                      });
+                      if (canceled) {
+                        return;
+                      }
+                      patchRequestMeta(activeRequest._id, { downloadPath: filePaths[0] });
+                    }}
                   />
-                </DropdownItem>
-                <DropdownItem aria-label='Repeat on Interval'>
-                  <ItemContent
-                    icon="repeat"
-                    label="Repeat on Interval"
-                    onClick={() => showPrompt({
-                      inputType: 'decimal',
-                      title: 'Send on Interval',
-                      label: 'Interval in seconds',
-                      defaultValue: '3',
-                      submitName: 'Start',
-                      onComplete: seconds => {
-                        setCurrentInterval(+seconds * 1000);
-                      },
-                    })}
-                  />
-                </DropdownItem>
-                {downloadPath
-                  ? (<DropdownItem aria-label='Stop Auto-Download'>
-                    <ItemContent
-                      icon="stop-circle"
-                      label="Stop Auto-Download"
-                      withPrompt
-                      onClick={() => patchRequestMeta(activeRequest._id, { downloadPath: null })}
-                    />
-                  </DropdownItem>)
-                  : (<DropdownItem aria-label='Download After Send'>
-                    <ItemContent
-                      icon="download"
-                      label="Download After Send"
-                      onClick={async () => {
-                        const { canceled, filePaths } = await window.dialog.showOpenDialog({
-                          title: 'Select Download Location',
-                          buttonLabel: 'Select',
-                          properties: ['openDirectory'],
-                        });
-                        if (canceled) {
-                          return;
-                        }
-                        patchRequestMeta(activeRequest._id, { downloadPath: filePaths[0] });
-                      }}
-                    />
-                  </DropdownItem>)}
-                <DropdownItem aria-label='Send And Download'>
-                  <ItemContent icon="download" label="Send And Download" onClick={() => sendOrConnect(true)} />
-                </DropdownItem>
-              </DropdownSection>
-            </Dropdown>)}
+                </DropdownItem>)}
+              <DropdownItem aria-label={t('requestUrlBar.sendAndDownload')}>
+                <ItemContent icon="download" label={t('requestUrlBar.sendAndDownload')} onClick={() => sendOrConnect(true)} />
+              </DropdownItem>
+            </DropdownSection>
+          </Dropdown>)}
         </>)}
       </div>
     </div>

@@ -6,6 +6,7 @@ import { useInterval, useMount } from 'react-use';
 import { DEFAULT_BRANCH_NAME } from '../../../common/constants';
 import { database as db, Operation } from '../../../common/database';
 import { docsVersionControl } from '../../../common/documentation';
+import { t } from '../../../common/i18n';
 import { strings } from '../../../common/strings';
 import * as models from '../../../models';
 import { isRemoteProject, Project } from '../../../models/project';
@@ -191,7 +192,7 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
       });
     } catch (err) {
       showError({
-        title: 'Push Error',
+        title: t('sync.pushError'),
         message: err.message,
         error: err,
       });
@@ -221,7 +222,7 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
       await db.batchModifyDocs(delta as unknown as Operation);
     } catch (err) {
       showError({
-        title: 'Pull Error',
+        title: t('sync.pullError'),
         message: err.message,
         error: err,
       });
@@ -239,7 +240,7 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
       await db.batchModifyDocs(delta as unknown as Operation);
     } catch (err) {
       showError({
-        title: 'Revert Error',
+        title: t('sync.revertError'),
         message: err.message,
         error: err,
       });
@@ -261,7 +262,7 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
       await db.batchModifyDocs(delta as unknown as Operation);
     } catch (err) {
       showError({
-        title: 'Branch Switch Error',
+        title: t('sync.branchSwitchError'),
         message: err.message,
         error: err,
       });
@@ -275,7 +276,7 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
   }
 
   // if (!session.isLoggedIn()) {
-    return null;
+  return null;
   // }
 
   const {
@@ -296,13 +297,13 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
   const visibleBranches = localBranches.filter(b => !b.match(/\.hidden$/));
   const syncMenuHeader = (
     <>
-      Insomnium Sync{' '}
+      {t('sync.title')}{' '}
       <HelpTooltip>
-        Sync and collaborate on workspaces{' '}
+        {t('sync.helpText')}{' '}
         <Link href={docsVersionControl}>
           <span className="no-wrap">
             <br />
-            Documentation <i className="fa fa-external-link" />
+            {t('sync.documentation')} <i className="fa fa-external-link" />
           </span>
         </Link>
       </HelpTooltip>
@@ -313,7 +314,7 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
     return (
       <div>
         <button className="btn btn--compact wide">
-          <i className="fa fa-refresh fa-spin" /> Initializing
+          <i className="fa fa-refresh fa-spin" /> {t('sync.initializing')}
         </button>
       </div>
     );
@@ -322,7 +323,7 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
   const emptyDropdownItemsArray = [{
     id: 'empty',
     icon: 'plus-circle',
-    name: 'Create Locally',
+    name: t('sync.createLocally'),
     onClick: async () => {
       setState(state => ({
         ...state,
@@ -343,7 +344,7 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
         <Dropdown
           className="wide tall"
           onOpen={() => refreshVCSAndRefetchRemote()}
-          aria-label="Select a project to sync with"
+          aria-label={t('sync.selectProjectToSync')}
           triggerButton={
             <DropdownButton
               size="medium"
@@ -367,7 +368,7 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
                   width: '100%',
                 }}
               >
-                <i className="fa fa-cloud" /> Setup Sync
+                <i className="fa fa-cloud" /> {t('sync.setupSync')}
               </div>
             </DropdownButton>
           }
@@ -375,7 +376,7 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
           <DropdownSection>
             <DropdownItem
               key='gitSync'
-              aria-label='Setup Git Sync'
+              aria-label={t('sync.setupGitSync')}
             >
               <Button
                 variant='contained'
@@ -392,12 +393,12 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
                   justifyContent: 'flex-start!important',
                 }}
               >
-                <i className="fa-brands fa-git-alt" /> Use Git Sync
+                <i className="fa-brands fa-git-alt" /> {t('sync.useGitSync')}
               </Button>
             </DropdownItem>
           </DropdownSection>
           <DropdownSection
-            aria-label='Sync Projects List'
+            aria-label={t('sync.syncProjectsList')}
             items={remoteBackendProjects.length === 0 ? emptyDropdownItemsArray : []}
             title={syncMenuHeader}
           >
@@ -411,18 +412,18 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
             }
           </DropdownSection>
           <DropdownSection
-            aria-label='Sync Projects List'
+            aria-label={t('sync.syncProjectsList')}
             items={remoteBackendProjects.length !== 0 ? remoteBackendProjects : []}
             title={syncMenuHeader}
           >
             {p =>
               <DropdownItem
                 key={p.id}
-                aria-label={`Pull ${p.name}`}
+                aria-label={t('sync.pullProject', { name: p.name })}
               >
                 <ItemContent
                   icon="cloud-download"
-                  label={<>Pull <strong>{p.name}</strong></>}
+                  label={<>{t('sync.pull')} <strong>{p.name}</strong></>}
                   onClick={() => handleSetProject(p)}
                 />
               </DropdownItem>
@@ -441,24 +442,24 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
   const canPull = behind > 0;
   const loadIcon = <i className="fa fa-spin fa-refresh fa--fixed-width" />;
   const pullToolTipMsg = canPull
-    ? `There ${behind === 1 ? 'is' : 'are'} ${behind} snapshot${behind === 1 ? '' : 's'} to pull`
-    : 'No changes to pull';
+    ? t('sync.snapshotsToPull', { count: String(behind) })
+    : t('sync.noChangesToPull');
   const pushToolTipMsg = canPush
-    ? `There ${ahead === 1 ? 'is' : 'are'} ${ahead} snapshot${ahead === 1 ? '' : 's'} to push`
-    : 'No changes to push';
-  const snapshotToolTipMsg = canCreateSnapshot ? 'Local changes made' : 'No local changes made';
+    ? t('sync.snapshotsToPush', { count: String(ahead) })
+    : t('sync.noChangesToPush');
+  const snapshotToolTipMsg = canCreateSnapshot ? t('sync.localChangesMade') : t('sync.noLocalChangesMade');
 
   return (
     <div>
       <Dropdown
         className="wide tall"
-        aria-label='Select a branch to sync with'
+        aria-label={t('sync.selectBranchToSync')}
         onOpen={() => refreshVCSAndRefetchRemote()}
         closeOnSelect={false}
         isDisabled={initializing}
         triggerButton={
           currentBranch === null ?
-            <Fragment>Sync</Fragment> :
+            <Fragment>{t('sync.sync')}</Fragment> :
             <DropdownButton
               size="medium"
               removeBorderRadius
@@ -483,7 +484,7 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
               >
                 <div className="ellipsis">
                   <i className="fa fa-cloud space-right" />{' '}
-                  {initializing ? 'Initializing...' : currentBranch}
+                  {initializing ? t('sync.initializingDot') : currentBranch}
                 </div>
                 <div className="flex space-left">
                   <Tooltip message={snapshotToolTipMsg} delay={800} position="bottom">
@@ -534,7 +535,7 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
         <DropdownSection>
           <DropdownItem
             key='gitSync'
-            aria-label='Setup Git Sync'
+            aria-label={t('sync.setupGitSync')}
           >
             <Button
               variant='contained'
@@ -551,38 +552,38 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
                 justifyContent: 'flex-start!important',
               }}
             >
-              <i className="fa-brands fa-git-alt" /> Use Git Sync
+              <i className="fa-brands fa-git-alt" /> {t('sync.useGitSync')}
             </Button>
           </DropdownItem>
         </DropdownSection>
         <DropdownSection
-          aria-label='Sync Branches List'
+          aria-label={t('sync.syncBranchesList')}
           title={syncMenuHeader}
         >
 
           {/* <DropdownItem aria-label='Login'> */}
 
-          <DropdownItem aria-label='Branches'>
+          <DropdownItem aria-label={t('sync.branches')}>
             <ItemContent
               icon="code-fork"
-              label="Branches"
+              label={t('sync.branches')}
               onClick={() => setIsSyncBranchesModalOpen(true)}
             />
           </DropdownItem>
 
-          <DropdownItem aria-label={`Delete ${strings.collection.singular}`}>
+          <DropdownItem aria-label={t('sync.deleteCollection', { collection: strings.collection.singular })}>
             <ItemContent
               icon="remove"
               isDisabled={historyCount === 0}
-              label={<>Delete {strings.collection.singular}</>}
+              label={<>{t('sync.delete')} {strings.collection.singular}</>}
               onClick={() => setIsSyncDeleteModalOpen(true)}
             />
           </DropdownItem>
         </DropdownSection>
 
         <DropdownSection
-          aria-label='Local Branches List'
-          title="Local Branches"
+          aria-label={t('sync.localBranchesList')}
+          title={t('sync.localBranches')}
         >
           {visibleBranches.map(branch => {
             const isCurrentBranch = branch === currentBranch;
@@ -605,51 +606,51 @@ export const SyncDropdown: FC<Props> = ({ vcs, workspace, project }) => {
         </DropdownSection>
 
         <DropdownSection
-          aria-label='Snapshot action section'
+          aria-label={t('sync.snapshotActionSection')}
           title={currentBranch}
         >
-          <DropdownItem aria-label='History'>
+          <DropdownItem aria-label={t('sync.history')}>
             <ItemContent
               isDisabled={historyCount === 0}
               icon="clock-o"
-              label="History"
+              label={t('sync.history')}
               onClick={() => setIsSyncHistoryModalOpen(true)}
             />
           </DropdownItem>
 
-          <DropdownItem aria-label='Revert Changes'>
+          <DropdownItem aria-label={t('sync.revertChanges')}>
             <ItemContent
               isDisabled={!canCreateSnapshot || historyCount === 0}
               icon="undo"
-              label="Revert Changes"
+              label={t('sync.revertChanges')}
               withPrompt
               onClick={handleRevert}
             />
           </DropdownItem>
 
-          <DropdownItem aria-label='Create Snapshot'>
+          <DropdownItem aria-label={t('sync.createSnapshot')}>
             <ItemContent
               isDisabled={!canCreateSnapshot}
               icon="cube"
-              label="Create Snapshot"
+              label={t('sync.createSnapshot')}
               onClick={() => setIsSyncStagingModalOpen(true)
               }
             />
           </DropdownItem>
 
-          <DropdownItem aria-label={loadingPull ? 'Pulling Snapshots...' : `Pull ${behind || ''} Snapshot${behind === 1 ? '' : 's'}`}>
+          <DropdownItem aria-label={loadingPull ? t('sync.pullingSnapshots') : t('sync.pullSnapshots', { count: String(behind || 0) })}>
             <ItemContent
               isDisabled={behind === 0 || loadingPull}
               icon={loadingPull ? 'spin fa-refresh' : 'cloud-download'}
-              label={loadingPull ? 'Pulling Snapshots...' : `Pull ${behind || ''} Snapshot${behind === 1 ? '' : 's'}`}
+              label={loadingPull ? t('sync.pullingSnapshots') : t('sync.pullSnapshots', { count: String(behind || 0) })}
               onClick={handlePull}
             />
           </DropdownItem>
-          <DropdownItem aria-label={loadingPush ? 'Pushing Snapshots...' : `Push ${ahead || ''} Snapshot${ahead === 1 ? '' : 's'}`}>
+          <DropdownItem aria-label={loadingPush ? t('sync.pushingSnapshots') : t('sync.pushSnapshots', { count: String(ahead || 0) })}>
             <ItemContent
               isDisabled={ahead === 0 || loadingPush}
               icon={loadingPush ? 'spin fa-refresh' : 'cloud-upload'}
-              label={loadingPush ? 'Pushing Snapshots...' : `Push ${ahead || ''} Snapshot${ahead === 1 ? '' : 's'}`}
+              label={loadingPush ? t('sync.pushingSnapshots') : t('sync.pushSnapshots', { count: String(ahead || 0) })}
               onClick={handlePush}
             />
           </DropdownItem>

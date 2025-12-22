@@ -1,6 +1,7 @@
 import React, { FC, memo } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 
+import { t } from '../../../common/i18n';
 import { docsBase } from '../../../common/documentation';
 import { RootLoaderData } from '../../routes/root';
 import { Link } from '../base/link';
@@ -20,19 +21,19 @@ export const ResponseErrorViewer: FC<Props> = memo(({ error }) => {
   if (error?.toLowerCase().indexOf('certificate') !== -1) {
     msg = (
       <button className="btn btn--clicky" onClick={() => showModal(SettingsModal)}>
-        Disable SSL Validation
+        {t('responseError.disableSslValidation')}
       </button>
     );
   } else if (error?.toLowerCase().indexOf('getaddrinfo') !== -1) {
     msg = (
       <button className="btn btn--clicky" onClick={() => showModal(SettingsModal)}>
-        Setup Network Proxy
+        {t('responseError.setupNetworkProxy')}
       </button>
     );
   } else {
     msg = (
       <Link button className="btn btn--clicky" href={docsBase}>
-        Documentation
+        {t('responseError.documentation')}
       </Link>
     );
   }
@@ -49,7 +50,7 @@ export const ResponseErrorViewer: FC<Props> = memo(({ error }) => {
       </pre>
       <hr />
       <div className="text-center pad">
-        <p className="faint pad-left pad-right">Here are some additional things that may help.</p>
+        <p className="faint pad-left pad-right">{t('responseError.additionalHelp')}</p>
         {msg}
         &nbsp;&nbsp;
         <Link
@@ -57,7 +58,7 @@ export const ResponseErrorViewer: FC<Props> = memo(({ error }) => {
           className="btn btn--clicky margin-top-sm"
           href="https://github.com/ArchGPT/insomnium#bugs-and-feature-requests"
         >
-          Submit an Issue
+          {t('responseError.submitIssue')}
         </Link>
       </div>
     </div>

@@ -3,6 +3,7 @@ import React, { FC, Fragment, useEffect, useRef, useState } from 'react';
 import { useFetcher, useParams, useRevalidator } from 'react-router-dom';
 import { useInterval } from 'react-use';
 
+import { t } from '../../../common/i18n';
 import { docsGitSync } from '../../../common/documentation';
 import { GitRepository } from '../../../models/git-repository';
 import { deleteGitRepository } from '../../../models/helpers/git-repository-operations';
@@ -103,7 +104,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
     const errors = [...(gitPushFetcher.data?.errors ?? [])];
     if (errors.length > 0) {
       showAlert({
-        title: 'Push Failed',
+        title: t('gitSync.pushFailed'),
         message: errors.join('\n'),
       });
     }
@@ -117,7 +118,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
     const errors = [...gitRepoDataErrors];
     if (errors.length > 0) {
       showAlert({
-        title: 'Loading of Git Repository Failed',
+        title: t('gitSync.loadingGitRepositoryFailed'),
         message: errors.join('\n'),
       });
     }
@@ -127,7 +128,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
     const errors = [...(gitPullFetcher.data?.errors ?? [])];
     if (errors.length > 0) {
       showAlert({
-        title: 'Pull Failed',
+        title: t('gitSync.pullFailed'),
         message: errors.join('\n'),
       });
     }
@@ -137,7 +138,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
     const errors = [...(gitCheckoutFetcher.data?.errors ?? [])];
     if (errors.length > 0) {
       showAlert({
-        title: 'Checkout Failed',
+        title: t('gitSync.checkoutFailed'),
         message: errors.join('\n'),
       });
     }
@@ -185,14 +186,14 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
     {
       id: 1,
       icon: 'check',
-      label: 'Commit',
+      label: t('gitSync.commit'),
       onClick: () => setIsGitStagingModalOpen(true),
     },
     {
       id: 2,
       stayOpenAfterClick: true,
       icon: loadingPull ? 'refresh fa-spin' : 'cloud-download',
-      label: 'Pull',
+      label: t('gitSync.pull'),
       onClick: async () => {
         gitPullFetcher.submit(
           {},
@@ -207,20 +208,20 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
       id: 3,
       stayOpenAfterClick: true,
       icon: loadingPush ? 'refresh fa-spin' : 'cloud-upload',
-      label: 'Push',
+      label: t('gitSync.push'),
       onClick: () => handlePush({ force: false }),
     },
     {
       id: 4,
       icon: 'clock-o',
-      label: <span>History</span>,
+      label: <span>{t('gitSync.history')}</span>,
       onClick: () => setIsGitLogModalOpen(true),
     },
     {
       id: 5,
       stayOpenAfterClick: true,
       icon: loadingFetch ? 'refresh fa-spin' : 'refresh',
-      label: 'Fetch',
+      label: t('gitSync.fetch'),
       onClick: () => {
         gitFetchFetcher.submit(
           {},
@@ -245,7 +246,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
 
   const status = gitStatusFetcher.data?.status;
 
-  const commitToolTipMsg = status?.localChanges ? 'Local changes made' : 'No local changes made';
+  const commitToolTipMsg = status?.localChanges ? t('gitSync.localChangesMade') : t('gitSync.noLocalChangesMade');
 
   if (isSynced) {
     dropdown = (
@@ -304,15 +305,15 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
         >
           <DropdownSection
             items={isInsomniaSyncEnabled ? [{
-              value: 'Use Insomnia Sync',
+              value: t('gitSync.useInsomniaSync'),
               id: 'use-insomnia-sync',
             }] : []}
           >
             {item => (
               <DropdownItem
                 key={item.id}
-                textValue='Use Insomnia Sync'
-                aria-label='Use Insomnia Sync'
+                textValue={t('gitSync.useInsomniaSync')}
+                aria-label={t('gitSync.useInsomniaSync')}
               >
                 <Button
                   variant='contained'
@@ -332,7 +333,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
                     margin: '0 var(--padding-sm)',
                   }}
                 >
-                  <i className="fa fa-cloud" /> Use Insomnia Sync
+                  <i className="fa fa-cloud" /> {t('gitSync.useInsomniaSync')}
                 </Button>
               </DropdownItem>
             )}
@@ -340,34 +341,34 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
           <DropdownSection
             title={
               <span>
-                Git Sync
+                {t('gitSync.title')}
                 <HelpTooltip>
-                  Sync and collaborate with Git{' '}
+                  {t('gitSync.helpText')}{' '}
                   <Link href={docsGitSync}>
                     <span className="no-wrap">
                       <br />
-                      Documentation <i className="fa fa-external-link" />
+                      {t('gitSync.documentation')} <i className="fa fa-external-link" />
                     </span>
                   </Link>
                 </HelpTooltip>
               </span>
             }
           >
-            <DropdownItem textValue="Settings">
+            <DropdownItem textValue={t('gitSync.settings')}>
               <ItemContent
                 icon="wrench"
-                label="Repository Settings"
+                label={t('gitSync.repositorySettings')}
                 onClick={() => {
                   setIsGitRepoSettingsModalOpen(true);
                 }}
               />
             </DropdownItem>
 
-            <DropdownItem textValue="Branches">
+            <DropdownItem textValue={t('gitSync.branches')}>
               {currentBranch && (
                 <ItemContent
                   icon="code-fork"
-                  label="Branches"
+                  label={t('gitSync.branches')}
                   onClick={() => {
                     setIsGitBranchesModalOpen(true);
                   }}
@@ -377,7 +378,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
           </DropdownSection>
 
           <DropdownSection
-            title="Branches"
+            title={t('gitSync.branches')}
             items={currentBranch ? branches.map(b => ({ branch: b })) : []}
           >
             {({ branch }) => {
@@ -459,7 +460,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
                 {iconClassName && (
                   <i className={classnames('space-right', iconClassName)} />
                 )}
-                <span className="ellipsis">Git Sync</span>
+                <span className="ellipsis">{t('gitSync.title')}</span>
               </div>
 
             </DropdownButton>
@@ -467,14 +468,14 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
         >
           <DropdownSection
             items={isInsomniaSyncEnabled ? [{
-              value: 'Use Insomnia Sync',
+              value: t('gitSync.useInsomniaSync'),
               id: 'use-insomnia-sync',
             }] : []}
           >
             {item => (
               <DropdownItem
                 key={item.id}
-                aria-label='Use Insomnia Sync'
+                aria-label={t('gitSync.useInsomniaSync')}
               >
                 <Button
                   variant='contained'
@@ -494,7 +495,7 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
                     margin: '0 var(--padding-sm)',
                   }}
                 >
-                  <i className="fa fa-cloud" /> Use Insomnia Sync
+                  <i className="fa fa-cloud" /> {t('gitSync.useInsomniaSync')}
                 </Button>
               </DropdownItem>
             )}
@@ -502,23 +503,23 @@ export const GitSyncDropdown: FC<Props> = ({ className, gitRepository, isInsomni
           <DropdownSection
             title={
               <span>
-                Git Sync
+                {t('gitSync.title')}
                 <HelpTooltip>
-                  Sync and collaborate with Git{' '}
+                  {t('gitSync.helpText')}{' '}
                   <Link href={docsGitSync}>
                     <span className="no-wrap">
                       <br />
-                      Documentation <i className="fa fa-external-link" />
+                      {t('gitSync.documentation')} <i className="fa fa-external-link" />
                     </span>
                   </Link>
                 </HelpTooltip>
               </span>
             }
           >
-            <DropdownItem textValue="Settings">
+            <DropdownItem textValue={t('gitSync.settings')}>
               <ItemContent
                 icon="wrench"
-                label="Setup Git Sync"
+                label={t('gitSync.setupGitSync')}
                 onClick={() => {
                   setIsGitRepoSettingsModalOpen(true);
                 }}

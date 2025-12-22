@@ -1,11 +1,11 @@
 // 国际化系统
 export type Locale = 'en' | 'zh-CN';
 
-type TranslationMap = { [key: string]: string };
-type Translations = { [locale in Locale]: TranslationMap };
+type TranslationMap = Record<string, string>;
+type Translations = Record<Locale, TranslationMap>;
 
 let currentLocale: Locale = 'zh-CN';
-let localeChangeListeners: Array<() => void> = [];
+let localeChangeListeners: (() => void)[] = [];
 
 // 翻译字典
 const translations: Translations = {
@@ -41,12 +41,19 @@ export function registerTranslations(locale: Locale, translationsMap: Translatio
     translations[locale] = { ...translations[locale], ...translationsMap };
 }
 
-// 翻译函数 - 简化版本，暂时不支持参数替换
+// 翻译函数 - 支持参数替换
 export function t(key: string, params?: { [key: string]: string | number }): string {
-    const translationKey: string = translations[currentLocale][key] || translations['en'][key] || key;
+    let translationKey: string = translations[currentLocale][key] || translations['en'][key] || key;
 
-    // 暂时不支持参数替换，直接返回翻译
-    // TODO: 如果需要参数替换，可以在后续版本中实现
+    // 支持参数替换，使用 {{param}} 格式
+    if (params) {
+        for (const paramKey in params) {
+            const paramValue = String(params[paramKey]);
+            const placeholder = `{{${paramKey}}}`;
+            translationKey = translationKey.replace(new RegExp(placeholder.replace(/[{}]/g, '\\$&'), 'g'), paramValue);
+        }
+    }
+
     return translationKey;
 }
 
