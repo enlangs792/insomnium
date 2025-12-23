@@ -64,6 +64,7 @@ const main: Window['main'] = {
   axiosRequest: options => ipcRenderer.invoke('axiosRequest', options),
   insomniaFetch: options => ipcRenderer.invoke('insomniaFetch', options),
   showContextMenu: options => ipcRenderer.send('show-context-menu', options),
+  updateMenu: () => ipcRenderer.send('update-menu'),
 };
 const dialog: Window['dialog'] = {
   showOpenDialog: options => ipcRenderer.invoke('showOpenDialog', options),

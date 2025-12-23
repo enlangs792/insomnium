@@ -15,6 +15,7 @@ import { axiosRequest } from '../network/axios-request';
 import { CurlBridgeAPI } from '../network/curl';
 import { cancelCurlRequest, curlRequest } from '../network/libcurl-promise';
 import { WebSocketBridgeAPI } from '../network/websocket';
+import { updateMenu } from '../window-utils';
 import { gRPCBridgeAPI } from './grpc';
 
 export interface MainBridgeAPI {
@@ -41,6 +42,7 @@ export interface MainBridgeAPI {
   axiosRequest: typeof axiosRequest;
   insomniaFetch: typeof insomniaFetch;
   showContextMenu: (options: { key: string }) => void;
+  updateMenu: () => void;
 }
 export function registerMainHandlers() {
   ipcMain.handle('insomniaFetch', async (_, options: Parameters<typeof insomniaFetch>[0]) => {
@@ -83,7 +85,7 @@ export function registerMainHandlers() {
   });
 
   ipcMain.on('trackSegmentEvent', (_, options: {}): void => {
-  //  removed tracking from insomnia
+    //  removed tracking from insomnia
   });
   ipcMain.on('trackPageView', (_, options: { name: string }): void => {
     // removed tracking from insomnia
@@ -133,5 +135,10 @@ export function registerMainHandlers() {
     const diagnostics = await spectral.run(contents);
 
     return diagnostics;
+  });
+
+  // 监听语言更改，更新菜单
+  ipcMain.on('update-menu', async () => {
+    await updateMenu();
   });
 }

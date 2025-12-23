@@ -50,6 +50,10 @@ export const General: FC = () => {
     const newLocale = event.target.value as Locale;
     setLocale(newLocale);
     patchSettings({ locale: newLocale });
+    // 更新菜单栏
+    if (window.main?.updateMenu) {
+      window.main.updateMenu();
+    }
     // 提示用户刷新页面以应用语言更改
     setTimeout(() => {
       if (window.confirm(t('settings.language.refreshPrompt') || 'Language changed. Refresh page to apply?')) {

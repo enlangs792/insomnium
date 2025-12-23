@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import React, { FC, Fragment } from 'react';
 import styled from 'styled-components';
 
+import { t } from '../../../common/i18n';
 import { generateId } from '../../../common/misc';
 import { PromptButton } from '../base/prompt-button';
 import { AutocompleteHandler, Pair, Row } from './row';
@@ -96,16 +97,16 @@ export const KeyValueEditor: FC<Props> = ({
             ])
           }
         >
-          Add
+          {t('keyValueEditor.add')}
         </button>
         <PromptButton className="btn btn--compact" onClick={() => onChange([])}>
-          Delete All
+          {t('keyValueEditor.deleteAll')}
         </PromptButton>
         <button
           className="btn btn--compact"
           onClick={() => setShowDescription(!showDescription)}
         >
-          Toggle Description
+          {t('keyValueEditor.toggleDescription')}
         </button>
       </Toolbar>}
       {title && <Toolbar> <button

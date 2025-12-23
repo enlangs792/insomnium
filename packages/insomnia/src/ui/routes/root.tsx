@@ -53,7 +53,8 @@ import {
   SettingsModal,
   showSettingsModal,
   TAB_INDEX_PLUGINS,
-  TAB_INDEX_THEMES } from '../components/modals/settings-modal';
+  TAB_INDEX_THEMES,
+} from '../components/modals/settings-modal';
 
 import { AppHooks } from '../containers/app-hooks';
 
@@ -93,10 +94,10 @@ const Root = () => {
   const patchSettings = useSettingsPatcher();
 
   useEffect(() => {
-      navigate({
-        pathname: location.pathname,
-        hash: 'revalidate=true',
-      });
+    navigate({
+      pathname: location.pathname,
+      hash: 'revalidate=true',
+    });
   }, [location.pathname, navigate]);
 
   useEffect(() => {
@@ -134,14 +135,14 @@ const Root = () => {
 
           case 'insomnia://plugins/install':
             showModal(AskModal, {
-              title: 'Plugin Install',
+              title: t('root.pluginInstall'),
               message: (
                 <>
-                  Do you want to install <code>{params.name}</code>?
+                  {t('root.doYouWantToInstall')} <code>{params.name}</code>?
                 </>
               ),
-              yesText: 'Install',
-              noText: 'Cancel',
+              yesText: t('root.install'),
+              noText: t('root.cancel'),
               onDone: async (isYes: boolean) => {
                 if (isYes) {
                   try {
@@ -149,8 +150,8 @@ const Root = () => {
                     showModal(SettingsModal, { tab: TAB_INDEX_PLUGINS });
                   } catch (err) {
                     showError({
-                      title: 'Plugin Install',
-                      message: 'Failed to install plugin',
+                      title: t('root.pluginInstall'),
+                      message: t('root.failedToInstallPlugin'),
                       error: err.message,
                     });
                   }
@@ -162,14 +163,14 @@ const Root = () => {
           case 'insomnia://plugins/theme':
             const parsedTheme = JSON.parse(decodeURIComponent(params.theme));
             showModal(AskModal, {
-              title: 'Install Theme',
+              title: t('root.installTheme'),
               message: (
                 <>
-                  Do you want to install <code>{parsedTheme.displayName}</code>?
+                  {t('root.doYouWantToInstall')} <code>{parsedTheme.displayName}</code>?
                 </>
               ),
-              yesText: 'Install',
-              noText: 'Cancel',
+              yesText: t('root.install'),
+              noText: t('root.cancel'),
               onDone: async (isYes: boolean) => {
                 if (isYes) {
                   const mainJsContent = `module.exports.themes = [${JSON.stringify(
@@ -197,7 +198,7 @@ const Root = () => {
               (error: Error) => {
                 showError({
                   error,
-                  title: 'Error authorizing GitHub',
+                  title: t('root.errorAuthorizingGitHub'),
                   message: error.message,
                 });
               }
@@ -211,7 +212,7 @@ const Root = () => {
               (error: Error) => {
                 showError({
                   error,
-                  title: 'Error authorizing GitLab',
+                  title: t('root.errorAuthorizingGitLab'),
                   message: error.message,
                 });
               }
@@ -240,98 +241,96 @@ const Root = () => {
 
   const crumbs = workspaceData
     ? [
-        {
-          id: workspaceData.activeProject._id,
-          label: workspaceData.activeProject.name,
-          node: (
-            <Link data-testid="project">
-              <NavLink
-                to={`/organization/${organizationId}/project/${workspaceData.activeProject._id}`}
-              >
-                {workspaceData.activeProject.name}
-              </NavLink>
-            </Link>
-          ),
-        },
-        {
-          id: workspaceData.activeWorkspace._id,
-          label: workspaceData.activeWorkspace.name,
-          node: <WorkspaceDropdown />,
-        },
-      ]
+      {
+        id: workspaceData.activeProject._id,
+        label: workspaceData.activeProject.name,
+        node: (
+          <Link data-testid="project">
+            <NavLink
+              to={`/organization/${organizationId}/project/${workspaceData.activeProject._id}`}
+            >
+              {workspaceData.activeProject.name}
+            </NavLink>
+          </Link>
+        ),
+      },
+      {
+        id: workspaceData.activeWorkspace._id,
+        label: workspaceData.activeWorkspace.name,
+        node: <WorkspaceDropdown />,
+      },
+    ]
     : [];
 
   return (
-      <NunjucksEnabledProvider>
-        <AppHooks />
-        <div className="app">
-          <Modals />
-          {/* triggered by insomnia://app/import */}
-          {importUri && (
-            <ImportModal
-              onHide={() => setImportUri('')}
-              projectName="Insomnium"
-              organizationId={organizationId}
-              from={{ type: 'uri', defaultValue: importUri }}
-            />
-          )}
-          <div className="w-full h-full divide-x divide-solid divide-y divide-[--hl-md] grid-template-app-layout grid relative bg-[--color-bg]">
-            <header className="[grid-area:Header] grid grid-cols-3 items-center">
-              <div className="flex items-center">
-                <div className="flex w-[50px] py-2">
+    <NunjucksEnabledProvider>
+      <AppHooks />
+      <div className="app">
+        <Modals />
+        {/* triggered by insomnia://app/import */}
+        {importUri && (
+          <ImportModal
+            onHide={() => setImportUri('')}
+            projectName="Insomnium"
+            organizationId={organizationId}
+            from={{ type: 'uri', defaultValue: importUri }}
+          />
+        )}
+        <div className="w-full h-full divide-x divide-solid divide-y divide-[--hl-md] grid-template-app-layout grid relative bg-[--color-bg]">
+          <header className="[grid-area:Header] grid grid-cols-3 items-center">
+            <div className="flex items-center">
+              <div className="flex w-[50px] py-2">
                 &nbsp;
-                </div>
-
               </div>
-              <div className="flex gap-2 flex-nowrap items-center justify-center">
-                {workspaceData && (
-                  <Fragment>
+
+            </div>
+            <div className="flex gap-2 flex-nowrap items-center justify-center">
+              {workspaceData && (
+                <Fragment>
                   <Breadcrumbs items={crumbs}>
-                      {item => (
-                        <Item key={item.id} id={item.id}>
-                          {item.node}
-                        </Item>
+                    {item => (
+                      <Item key={item.id} id={item.id}>
+                        {item.node}
+                      </Item>
                     )}
-                    </Breadcrumbs>
-                    {isDesign(workspaceData?.activeWorkspace) && (
-                      <nav className="flex rounded-full justify-between content-evenly font-semibold bg-[--hl-xs] p-[--padding-xxs]">
-                        {['spec', 'debug', 'test'].map(item => (
-                          <NavLink
-                            key={item}
-                            to={`/organization/${organizationId}/project/${projectId}/workspace/${workspaceId}/${item}`}
-                            className={({ isActive }) =>
-                              `${
-                                isActive
-                                  ? 'text-[--color-font] bg-[--color-bg]'
-                                  : ''
-                              } no-underline transition-colors text-center outline-none min-w-[4rem] uppercase text-[--color-font] text-xs px-[--padding-xs] py-[--padding-xxs] rounded-full`
-                            }
-                          >
-                            {item}
-                          </NavLink>
-                        ))}
-                      </nav>
-                    )}
-                  </Fragment>
-                )}
+                  </Breadcrumbs>
+                  {isDesign(workspaceData?.activeWorkspace) && (
+                    <nav className="flex rounded-full justify-between content-evenly font-semibold bg-[--hl-xs] p-[--padding-xxs]">
+                      {['spec', 'debug', 'test'].map(item => (
+                        <NavLink
+                          key={item}
+                          to={`/organization/${organizationId}/project/${projectId}/workspace/${workspaceId}/${item}`}
+                          className={({ isActive }) =>
+                            `${isActive
+                              ? 'text-[--color-font] bg-[--color-bg]'
+                              : ''
+                            } no-underline transition-colors text-center outline-none min-w-[4rem] uppercase text-[--color-font] text-xs px-[--padding-xs] py-[--padding-xxs] rounded-full`
+                          }
+                        >
+                          {item}
+                        </NavLink>
+                      ))}
+                    </nav>
+                  )}
+                </Fragment>
+              )}
             </div>
 
-              {/* /**** ><> ↑ --------- Root Component */}
-            </header>
-            <div className="[grid-area:Navbar] overflow-hidden">
-              <nav className="flex flex-col items-center place-content-stretch gap-[--padding-md] w-full h-full overflow-y-auto py-[--padding-md]">
+            {/* /**** ><> ↑ --------- Root Component */}
+          </header>
+          <div className="[grid-area:Navbar] overflow-hidden">
+            <nav className="flex flex-col items-center place-content-stretch gap-[--padding-md] w-full h-full overflow-y-auto py-[--padding-md]">
               <TooltipTrigger key={organizations[0]._id}>
-                    <Link>
-                      <NavLink
-                        className={({ isActive }) =>
-                          `select-none text-[--color-font-surprise] flex-shrink-0 hover:no-underline transition-all duration-150 bg-gradient-to-br box-border from-[#4000BF] to-[#154B62] p-[--padding-sm] font-bold outline-[3px] rounded-md w-[28px] h-[28px] flex items-center justify-center active:outline overflow-hidden outline-offset-[3px] outline ${
-                            isActive
-                              ? 'outline-[--color-font]'
-                              : 'outline-transparent focus:outline-[--hl-md] hover:outline-[--hl-md]'
-                          }`
-                        }
+                <Link>
+                  <NavLink
+                    className={({ isActive }) =>
+                      `select-none text-[--color-font-surprise] flex-shrink-0 hover:no-underline transition-all duration-150 bg-gradient-to-br box-border from-[#4000BF] to-[#154B62] p-[--padding-sm] font-bold outline-[3px] rounded-md w-[28px] h-[28px] flex items-center justify-center active:outline overflow-hidden outline-offset-[3px] outline ${isActive
+                        ? 'outline-[--color-font]'
+                        : 'outline-transparent focus:outline-[--hl-md] hover:outline-[--hl-md]'
+                      }`
+                    }
 
-                        to={(() => {
+                    to={(() => {
 
                       const currentLocation = location.pathname;
 
@@ -341,26 +340,26 @@ const Root = () => {
                         const prevLocationHistoryEntry = localStorage.getItem('requester_locationHistoryEntry');
 
                         if (prevLocationHistoryEntry) {
- return prevLocationHistoryEntry;
-}
+                          return prevLocationHistoryEntry;
+                        }
                       }
 
                       return `/organization/${organizations[0]._id}`;
 
-                        })()}
-                      >
+                    })()}
+                  >
 
-                        <Icon icon="home" />
-                      </NavLink>
-                    </Link>
-                    <Tooltip
-                      placement="right"
-                      offset={8}
-                      className="border select-none text-sm min-w-max border-solid border-[--hl-sm] shadow-lg bg-[--color-bg] text-[--color-font] px-4 py-2 rounded-md overflow-y-auto max-h-[85vh] focus:outline-none"
-                    >
+                    <Icon icon="home" />
+                  </NavLink>
+                </Link>
+                <Tooltip
+                  placement="right"
+                  offset={8}
+                  className="border select-none text-sm min-w-max border-solid border-[--hl-sm] shadow-lg bg-[--color-bg] text-[--color-font] px-4 py-2 rounded-md overflow-y-auto max-h-[85vh] focus:outline-none"
+                >
                   <span>{organizations[0]._id === DEFAULT_ORGANIZATION_ID ? t('organization.personalProjects') : organizations[0].name}</span>
-                    </Tooltip>
-                  </TooltipTrigger>
+                </Tooltip>
+              </TooltipTrigger>
 
               {/* <TooltipTrigger>
                 <Link>
@@ -385,46 +384,46 @@ const Root = () => {
                   <span>Large Language Models</span>
                 </Tooltip>
               </TooltipTrigger> */}
-              </nav>
-            </div>
-            {/* /**** ><> ↑ --------- Navbar */}
-            <Outlet />
-            <div className="relative [grid-area:Statusbar] flex items-center justify-between overflow-hidden">
-              <TooltipTrigger>
-                <Button
-                  data-testid="settings-button"
-                  className="px-4 py-1 h-full flex items-center justify-center gap-2 aria-pressed:bg-[--hl-sm] text-[--color-font] text-xs hover:bg-[--hl-xs] focus:ring-inset ring-1 ring-transparent focus:ring-[--hl-md] transition-all"
-                  onPress={showSettingsModal}
-                >
-                  <Icon icon="gear" /> Preferences
-                </Button>
-                <Tooltip
-                  placement="top"
-                  offset={8}
-                  className="border flex items-center gap-2 select-none text-sm min-w-max border-solid border-[--hl-sm] shadow-lg bg-[--color-bg] text-[--color-font] px-4 py-2 rounded-md overflow-y-auto max-h-[85vh] focus:outline-none"
-                >
-                  Preferences
-                  <Hotkey
-                    keyBindings={
-                      settings.hotKeyRegistry.preferences_showGeneral
-                    }
-                  />
-                </Tooltip>
-              </TooltipTrigger>
-              <Link>
-
-                <a
-                  className="flex focus:outline-none focus:underline gap-1 items-center text-xs text-[--color-font] px-[--padding-md]"
-                >
-                  a 100% local and privacy-focus fork of Insomnia <Icon className="text-white" icon="heart" />
-                </a>
-              </Link>
-            </div>
+            </nav>
           </div>
-          {/* /**** ><> ↑ --------- Statusbar */}
+          {/* /**** ><> ↑ --------- Navbar */}
+          <Outlet />
+          <div className="relative [grid-area:Statusbar] flex items-center justify-between overflow-hidden">
+            <TooltipTrigger>
+              <Button
+                data-testid="settings-button"
+                className="px-4 py-1 h-full flex items-center justify-center gap-2 aria-pressed:bg-[--hl-sm] text-[--color-font] text-xs hover:bg-[--hl-xs] focus:ring-inset ring-1 ring-transparent focus:ring-[--hl-md] transition-all"
+                onPress={showSettingsModal}
+              >
+                <Icon icon="gear" /> {t('root.preferences')}
+              </Button>
+              <Tooltip
+                placement="top"
+                offset={8}
+                className="border flex items-center gap-2 select-none text-sm min-w-max border-solid border-[--hl-sm] shadow-lg bg-[--color-bg] text-[--color-font] px-4 py-2 rounded-md overflow-y-auto max-h-[85vh] focus:outline-none"
+              >
+                {t('root.preferences')}
+                <Hotkey
+                  keyBindings={
+                    settings.hotKeyRegistry.preferences_showGeneral
+                  }
+                />
+              </Tooltip>
+            </TooltipTrigger>
+            <Link>
 
-          {/* <Toast /> */}
+              <a
+                className="flex focus:outline-none focus:underline gap-1 items-center text-xs text-[--color-font] px-[--padding-md]"
+              >
+                {t('root.footerDescription')} <Icon className="text-white" icon="heart" />
+              </a>
+            </Link>
+          </div>
         </div>
+        {/* /**** ><> ↑ --------- Statusbar */}
+
+        {/* <Toast /> */}
+      </div>
     </NunjucksEnabledProvider>
   );
 };
