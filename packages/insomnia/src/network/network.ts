@@ -34,6 +34,7 @@ import {
 } from '../utils/url/querystring';
 import { getAuthHeader, getAuthQueryParams } from './authentication';
 import { cancellableCurlRequest } from './cancellation';
+import { runPostResponseScripts, runPreRequestScripts } from './script-runtime';
 import { addSetCookiesToToughCookieJar } from './set-cookie-util';
 import { urlMatchesCertHost } from './url-matches-cert-host';
 
@@ -51,10 +52,13 @@ export const fetchRequestData = async (requestId: string) => {
   guard(workspace, 'failed to find workspace');
   const workspaceMeta = await models.workspaceMeta.getOrCreateByParentId(workspace._id);
 
+  const baseEnvironment = await models.environment.getOrCreateForParentId(workspace._id);
+  guard(baseEnvironment, 'failed to find base environment');
+
   // fallback to base environment
   const activeEnvironmentId = workspaceMeta.activeEnvironmentId;
   const activeEnvironment = activeEnvironmentId && await models.environment.getById(activeEnvironmentId);
-  const environment = activeEnvironment || await models.environment.getOrCreateForParentId(workspace._id);
+  const environment = activeEnvironment || baseEnvironment;
   guard(environment, 'failed to find environment ' + activeEnvironmentId);
 
   const settings = await models.settings.getOrCreate();
@@ -62,7 +66,16 @@ export const fetchRequestData = async (requestId: string) => {
   const clientCertificates = await models.clientCertificate.findByParentId(workspaceId);
   const caCert = await models.caCertificate.findByParentId(workspaceId);
 
-  return { request, environment, settings, clientCertificates, caCert, activeEnvironmentId };
+  return {
+    request,
+    environment,
+    baseEnvironment,
+    activeEnvironment: activeEnvironment || baseEnvironment,
+    settings,
+    clientCertificates,
+    caCert,
+    activeEnvironmentId,
+  };
 };
 
 export const tryToInterpolateRequest = async (request: Request, environmentId: string, purpose?: RenderPurpose, extraInfo?: ExtraRenderInfo) => {
@@ -83,6 +96,25 @@ export const tryToInterpolateRequest = async (request: Request, environmentId: s
 export const tryToTransformRequestWithPlugins = async (renderResult: RequestAndContext) => {
   const { request, context } = renderResult;
   try {
+    const { request: requestModel, baseEnvironment, activeEnvironment } = await fetchRequestData(request._id);
+    await runPreRequestScripts({
+      request,
+      context,
+      requestModel,
+      baseEnvironment,
+      activeEnvironment,
+    });
+    await models.environment.update(baseEnvironment, {
+      data: baseEnvironment.data,
+    });
+    if (activeEnvironment._id !== baseEnvironment._id) {
+      await models.environment.update(activeEnvironment, {
+        data: activeEnvironment.data,
+      });
+    }
+    await models.cookieJar.update(request.cookieJar, {
+      cookies: request.cookieJar.cookies,
+    });
     return await _applyRequestPluginHooks(request, context);
   } catch (err) {
     throw new Error(`Failed to transform request with plugins: ${request._id}`);
@@ -176,6 +208,26 @@ export const responseTransform = async (patch: ResponsePatch, environmentId: str
     return response;
   }
   console.log(`[network] Response succeeded req=${patch.parentId} status=${response.statusCode || '?'}`,);
+  const { request: requestModel, baseEnvironment, activeEnvironment } = await fetchRequestData(renderedRequest._id);
+  await runPostResponseScripts({
+    request: renderedRequest,
+    context,
+    response,
+    requestModel,
+    baseEnvironment,
+    activeEnvironment,
+  });
+  await models.environment.update(baseEnvironment, {
+    data: baseEnvironment.data,
+  });
+  if (activeEnvironment._id !== baseEnvironment._id) {
+    await models.environment.update(activeEnvironment, {
+      data: activeEnvironment.data,
+    });
+  }
+  await models.cookieJar.update(renderedRequest.cookieJar, {
+    cookies: renderedRequest.cookieJar.cookies,
+  });
   return await _applyResponsePluginHooks(
     response,
     renderedRequest,

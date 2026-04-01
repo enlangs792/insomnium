@@ -1022,3 +1022,130 @@ describe('getCurrentUrl for tough-cookie', () => {
     expect(networkUtils.getCurrentUrl({ headerResults, finalUrl })).toEqual(finalUrl + '/biscuit');
   });
 });
+
+describe('request scripts', () => {
+  beforeEach(async () => {
+    await globalBeforeEach();
+    await models.project.all();
+  });
+
+  it('runs environment and request pre-request scripts before plugin hooks', async () => {
+    const workspace = await models.workspace.create();
+    const baseEnvironment = await models.environment.getOrCreateForParentId(workspace._id);
+    await models.environment.update(baseEnvironment, {
+      preRequestScriptConfig: {
+        language: 'javascript',
+        description: 'base pre-request',
+        content: "request.setHeader('X-Env-Script', 'base');",
+        enabled: true,
+      },
+    });
+    const request = await models.request.create({
+      parentId: workspace._id,
+      url: 'http://localhost',
+      method: 'GET',
+      preRequestScriptConfig: {
+        language: 'javascript',
+        description: 'request pre-request',
+        content: "request.setHeader('X-Request-Script', 'request'); request.setParameter('scripted', 'true');",
+        enabled: true,
+      },
+    });
+
+    const renderResult = await getRenderedRequestAndContext({
+      request,
+      environmentId: baseEnvironment._id,
+    });
+    const transformedRequest = await networkUtils.tryToTransformRequestWithPlugins(renderResult);
+
+    expect(filterHeaders(transformedRequest.headers, 'X-Env-Script')[0]?.value).toBe('base');
+    expect(filterHeaders(transformedRequest.headers, 'X-Request-Script')[0]?.value).toBe('request');
+    expect(transformedRequest.parameters).toEqual([
+      {
+        name: 'scripted',
+        value: 'true',
+      },
+    ]);
+  });
+
+  it('runs request and environment post-response scripts with active environment persistence', async () => {
+    const workspace = await models.workspace.create();
+    const baseEnvironment = await models.environment.getOrCreateForParentId(workspace._id);
+    const activeEnvironment = await models.environment.create({
+      parentId: baseEnvironment._id,
+      name: 'Production',
+      postResponseScriptConfig: {
+        language: 'javascript',
+        description: 'environment post-response',
+        content: "environment.set('refreshRequired', response.getStatusCode() === 200);",
+        enabled: true,
+      },
+    });
+    const workspaceMeta = await models.workspaceMeta.getOrCreateByParentId(workspace._id);
+    await models.workspaceMeta.update(workspaceMeta, {
+      activeEnvironmentId: activeEnvironment._id,
+    });
+    const request = await models.request.create({
+      parentId: workspace._id,
+      url: 'http://localhost',
+      method: 'GET',
+      postResponseScriptConfig: {
+        language: 'javascript',
+        description: 'request post-response',
+        content: "const payload = response.getBodyJson(); environment.set('token', payload.token);",
+        enabled: true,
+      },
+    });
+    const renderResult = await getRenderedRequestAndContext({
+      request,
+      environmentId: activeEnvironment._id,
+    });
+    const responseBodyPath = pathJoin(electron.app.getPath('temp'), 'insomnium-script-response.json');
+    fs.writeFileSync(responseBodyPath, JSON.stringify({ token: 'abc123' }));
+
+    await networkUtils.responseTransform({
+      parentId: request._id,
+      bodyPath: responseBodyPath,
+      headers: [],
+      statusCode: 200,
+      statusMessage: 'OK',
+      elapsedTime: 10,
+      bytesRead: 10,
+      bytesContent: 10,
+    }, activeEnvironment._id, renderResult.request, renderResult.context);
+
+    const updatedBaseEnvironment = await models.environment.getById(baseEnvironment._id);
+    const updatedActiveEnvironment = await models.environment.getById(activeEnvironment._id);
+
+    expect(updatedBaseEnvironment?.data).toEqual({});
+    expect(updatedActiveEnvironment?.data).toEqual({
+      token: 'abc123',
+      refreshRequired: true,
+    });
+  });
+
+  it('rejects non-javascript scripts at runtime', async () => {
+    const workspace = await models.workspace.create();
+    const baseEnvironment = await models.environment.getOrCreateForParentId(workspace._id);
+    const request = await models.request.create({
+      parentId: workspace._id,
+      url: 'http://localhost',
+      method: 'GET',
+      preRequestScriptConfig: {
+        language: 'typescript',
+        description: 'typescript placeholder',
+        content: 'request.setHeader("X-Test", "1");',
+        enabled: true,
+      },
+    });
+
+    const renderResult = await getRenderedRequestAndContext({
+      request,
+      environmentId: baseEnvironment._id,
+    });
+
+    await expect(networkUtils.tryToTransformRequestWithPlugins(renderResult)).rejects.toThrow(
+      'Failed to transform request with plugins',
+    );
+  });
+});

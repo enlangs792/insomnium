@@ -4,6 +4,12 @@ import { globalBeforeEach } from '../../__jest__/before-each';
 import { CONTENT_TYPE_GRAPHQL } from '../../common/constants';
 import { newBodyGraphQL, updateMimeType } from '../../ui/components/dropdowns/content-type-dropdown';
 import * as models from '../index';
+import { createDefaultScriptConfig } from '../script';
+
+const defaultScriptConfigs = {
+  preRequestScriptConfig: createDefaultScriptConfig(),
+  postResponseScriptConfig: createDefaultScriptConfig(),
+};
 
 describe('init()', () => {
   beforeEach(globalBeforeEach);
@@ -28,6 +34,7 @@ describe('init()', () => {
       settingEncodeUrl: true,
       settingRebuildPath: true,
       settingFollowRedirects: 'global',
+      ...defaultScriptConfigs,
     });
   });
 });
@@ -65,6 +72,7 @@ describe('create()', () => {
       settingEncodeUrl: true,
       settingRebuildPath: true,
       settingFollowRedirects: 'global',
+      ...defaultScriptConfigs,
     };
     expect(request).toEqual(expected);
     expect(await models.request.getById(expected._id)).toEqual(expected);
@@ -190,7 +198,10 @@ describe('migrate()', () => {
       },
       url: '',
     };
-    expect(models.request.migrate(original)).toEqual(expected);
+    expect(models.request.migrate(original)).toEqual({
+      ...expected,
+      ...defaultScriptConfigs,
+    });
   });
 
   it('migrates form-urlencoded', () => {
@@ -225,7 +236,10 @@ describe('migrate()', () => {
       },
       url: '',
     };
-    expect(models.request.migrate(original)).toEqual(expected);
+    expect(models.request.migrate(original)).toEqual({
+      ...expected,
+      ...defaultScriptConfigs,
+    });
   });
 
   it('migrates form-urlencoded with charset', () => {
@@ -260,7 +274,10 @@ describe('migrate()', () => {
       },
       url: '',
     };
-    expect(models.request.migrate(original)).toEqual(expected);
+    expect(models.request.migrate(original)).toEqual({
+      ...expected,
+      ...defaultScriptConfigs,
+    });
   });
 
   it('migrates form-urlencoded malformed', () => {
@@ -291,7 +308,10 @@ describe('migrate()', () => {
       },
       url: '',
     };
-    expect(models.request.migrate(original)).toEqual(expected);
+    expect(models.request.migrate(original)).toEqual({
+      ...expected,
+      ...defaultScriptConfigs,
+    });
   });
 
   it('migrates mime-type', () => {
@@ -324,7 +344,10 @@ describe('migrate()', () => {
         },
         url: '',
       };
-      expect(models.request.migrate(original)).toEqual(expected);
+      expect(models.request.migrate(original)).toEqual({
+        ...expected,
+        ...defaultScriptConfigs,
+      });
     }
   });
 
@@ -335,7 +358,14 @@ describe('migrate()', () => {
         text: 'foo',
       },
     };
-    expect(models.request.migrate(original)).toBe(original);
+    expect(models.request.migrate(original)).toEqual({
+      body: {
+        mimeType: 'text/plain',
+        text: 'foo',
+      },
+      url: '',
+      ...defaultScriptConfigs,
+    });
   });
 
   it('migrates with weird data', () => {
@@ -363,10 +393,47 @@ describe('migrate()', () => {
       body: {},
       url: '',
     };
-    expect(models.request.migrate(newBody)).toEqual(expected);
-    expect(models.request.migrate(stringBody)).toEqual(expected);
-    expect(models.request.migrate(nullBody)).toEqual(expected2);
-    expect(models.request.migrate(noBody)).toEqual(expected2);
+    expect(models.request.migrate(newBody)).toEqual({
+      ...expected,
+      ...defaultScriptConfigs,
+    });
+    expect(models.request.migrate(stringBody)).toEqual({
+      ...expected,
+      ...defaultScriptConfigs,
+    });
+    expect(models.request.migrate(nullBody)).toEqual({
+      ...expected2,
+      ...defaultScriptConfigs,
+    });
+    expect(models.request.migrate(noBody)).toEqual({
+      ...expected2,
+      ...defaultScriptConfigs,
+    });
+  });
+
+  it('migrates legacy string scripts to structured script configs', () => {
+    const original = {
+      body: {},
+      preRequestScript: 'request.setHeader("X-Test", "1");',
+      postResponseScript: 'environment.set("token", "abc");',
+    };
+
+    expect(models.request.migrate(original)).toEqual({
+      body: {},
+      url: '',
+      preRequestScriptConfig: {
+        language: 'javascript',
+        description: '',
+        content: 'request.setHeader("X-Test", "1");',
+        enabled: true,
+      },
+      postResponseScriptConfig: {
+        language: 'javascript',
+        description: '',
+        content: 'environment.set("token", "abc");',
+        enabled: true,
+      },
+    });
   });
 
   it('migrates from initModel()', async () => {
@@ -402,6 +469,7 @@ describe('migrate()', () => {
       settingEncodeUrl: true,
       settingRebuildPath: true,
       settingFollowRedirects: 'global',
+      ...defaultScriptConfigs,
     };
     const migrated = await models.initModel(models.request.type, original);
     expect(migrated).toEqual(expected);

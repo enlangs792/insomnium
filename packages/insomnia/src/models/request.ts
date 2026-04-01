@@ -19,6 +19,7 @@ import { SIGNATURE_METHOD_HMAC_SHA1 } from '../network/o-auth-1/constants';
 import { GRANT_TYPE_AUTHORIZATION_CODE } from '../network/o-auth-2/constants';
 import { deconstructQueryStringToParams } from '../utils/url/querystring';
 import type { BaseModel } from './index';
+import { createDefaultScriptConfig, normalizeScriptConfig, type ScriptConfig } from './script';
 
 export const name = 'Request';
 
@@ -101,6 +102,8 @@ export interface BaseRequest {
   url: string;
   name: string;
   description: string;
+  preRequestScriptConfig: ScriptConfig;
+  postResponseScriptConfig: ScriptConfig;
   method: string;
   body: RequestBody;
   parameters: RequestParameter[];
@@ -137,6 +140,8 @@ export function init(): BaseRequest {
     url: '',
     name: 'New Request',
     description: '',
+    preRequestScriptConfig: createDefaultScriptConfig(),
+    postResponseScriptConfig: createDefaultScriptConfig(),
     method: METHOD_GET,
     body: {},
     parameters: [],
@@ -246,6 +251,7 @@ export function migrate(doc: Request): Request {
     doc = migrateBody(doc);
     doc = migrateWeirdUrls(doc);
     doc = migrateAuthType(doc);
+    doc = migrateScripts(doc);
     return doc;
   } catch (e) {
     console.log('[db] Error during request migration', e);
@@ -376,5 +382,22 @@ function migrateAuthType(request: Request) {
     request.authentication.type = AUTH_BASIC;
   }
 
+  return request;
+}
+
+function migrateScripts(request: Request) {
+  const legacyRequest = request as Request & {
+    preRequestScript?: string;
+    postResponseScript?: string;
+  };
+  request.preRequestScriptConfig = normalizeScriptConfig(
+    request.preRequestScriptConfig ?? legacyRequest.preRequestScript,
+  );
+  request.postResponseScriptConfig = normalizeScriptConfig(
+    request.postResponseScriptConfig ?? legacyRequest.postResponseScript,
+  );
+
+  delete legacyRequest.preRequestScript;
+  delete legacyRequest.postResponseScript;
   return request;
 }

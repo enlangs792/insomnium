@@ -534,6 +534,8 @@ export async function getRenderedRequestAndContext(
       created: renderedRequest.created,
       modified: renderedRequest.modified,
       description: renderedRequest.description,
+      preRequestScriptConfig: renderedRequest.preRequestScriptConfig,
+      postResponseScriptConfig: renderedRequest.postResponseScriptConfig,
       headers: renderedRequest.headers,
       metaSortKey: renderedRequest.metaSortKey,
       method: renderedRequest.method,

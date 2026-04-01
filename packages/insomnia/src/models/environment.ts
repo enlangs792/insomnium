@@ -2,6 +2,7 @@ import * as crypto from 'crypto';
 
 import { database as db } from '../common/database';
 import type { BaseModel } from './index';
+import { createDefaultScriptConfig, normalizeScriptConfig, type ScriptConfig } from './script';
 
 export const name = 'Environment';
 export const type = 'Environment';
@@ -13,6 +14,8 @@ export interface BaseEnvironment {
   name: string;
   data: Record<string, any>;
   dataPropertyOrder: Record<string, any> | null;
+  preRequestScriptConfig: ScriptConfig;
+  postResponseScriptConfig: ScriptConfig;
   color: string | null;
   metaSortKey: number;
   // For sync control
@@ -30,6 +33,8 @@ export function init() {
     name: 'New Environment',
     data: {},
     dataPropertyOrder: null,
+    preRequestScriptConfig: createDefaultScriptConfig(),
+    postResponseScriptConfig: createDefaultScriptConfig(),
     color: null,
     isPrivate: false,
     metaSortKey: Date.now(),
@@ -37,6 +42,19 @@ export function init() {
 }
 
 export function migrate(doc: Environment) {
+  const legacyEnvironment = doc as Environment & {
+    preRequestScript?: string;
+    postResponseScript?: string;
+  };
+  doc.preRequestScriptConfig = normalizeScriptConfig(
+    doc.preRequestScriptConfig ?? legacyEnvironment.preRequestScript,
+  );
+  doc.postResponseScriptConfig = normalizeScriptConfig(
+    doc.postResponseScriptConfig ?? legacyEnvironment.postResponseScript,
+  );
+
+  delete legacyEnvironment.preRequestScript;
+  delete legacyEnvironment.postResponseScript;
   return doc;
 }
 

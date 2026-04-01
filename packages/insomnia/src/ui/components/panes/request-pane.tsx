@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { useFetcher, useParams, useRouteLoaderData } from 'react-router-dom';
+import { useParams, useRouteLoaderData } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { getContentTypeFromHeaders } from '../../../common/constants';
@@ -7,6 +7,8 @@ import { t } from '../../../common/i18n';
 import * as models from '../../../models';
 import { queryAllWorkspaceUrls } from '../../../models/helpers/query-all-workspace-urls';
 import type { Settings } from '../../../models/settings';
+import type { Request } from '../../../models/request';
+import { normalizeScriptConfig } from '../../../models/script';
 import { deconstructQueryStringToParams, extractQueryStringFromUrl } from '../../../utils/url/querystring';
 import { useRequestSetter, useSettingsPatcher } from '../../hooks/use-request';
 import { useActiveRequestSyncVCSVersion, useGitVCSVersion } from '../../hooks/use-vcs-version';
@@ -29,10 +31,10 @@ import { MarkdownPreview } from '../markdown-preview';
 import { RequestSettingsModal } from '../modals/request-settings-modal';
 import { RenderedQueryString } from '../rendered-query-string';
 import { RequestUrlBar } from '../request-url-bar';
+import { RequestScriptEditor } from '../editors/request-script-editor';
 import { Pane, PaneHeader } from './pane';
 import { PlaceholderRequestPane } from './placeholder-request-pane';
 import { RequestSegmentEditor } from '../editors/request-segment-editor';
-import { GitRepoLoaderData } from '../../routes/git-actions';
 const HeaderContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
@@ -80,7 +82,6 @@ export const RequestPane: FC<Props> = ({
     useState(false);
   const patchRequest = useRequestSetter();
 
-  useState(false);
   const handleImportQueryFromUrl = () => {
     let query;
 
@@ -114,16 +115,6 @@ export const RequestPane: FC<Props> = ({
   //   ':workspaceId'
   // ) as WorkspaceLoaderData;
 
-  // const gitRepoDataFetcher = useFetcher<GitRepoLoaderData>();
-  // alert(gitVersion)
-  // const { branches, branch: currentBranch } =
-  //   gitRepoDataFetcher.data && 'branches' in gitRepoDataFetcher.data
-  //     ? gitRepoDataFetcher.data
-  //     : { branches: [], branch: '' };
-
-  console.log("gitVersion ->", gitVersion);
-
-
   const activeRequestSyncVersion = useActiveRequestSyncVCSVersion();
 
   const { activeEnvironment } = useRouteLoaderData(
@@ -146,6 +137,7 @@ export const RequestPane: FC<Props> = ({
   const contentType =
     getContentTypeFromHeaders(activeRequest.headers) ||
     activeRequest.body.mimeType;
+  const updateRequestScript = (patch: Partial<Request>) => patchRequest(requestId, patch);
   return (
     <Pane type="request">
 
@@ -335,6 +327,42 @@ export const RequestPane: FC<Props> = ({
                 </p>
               </div>
             )}
+          </PanelContainer>
+        </TabItem>
+        <TabItem key="pre-request-script" title={t('requestPane.preRequestAction')}>
+          <PanelContainer className="pad">
+            <RequestScriptEditor
+              editorId={`request-pane-pre-script-${requestId}`}
+              title={t('requestPane.preRequestScript')}
+              help={t('requestPane.preRequestScriptHelp')}
+              placeholder={t('requestPane.preRequestScriptPlaceholder')}
+              script={normalizeScriptConfig(activeRequest.preRequestScriptConfig)}
+              onChange={patch =>
+                updateRequestScript({
+                  preRequestScriptConfig: {
+                    ...normalizeScriptConfig(activeRequest.preRequestScriptConfig),
+                    ...patch,
+                  },
+                })}
+            />
+          </PanelContainer>
+        </TabItem>
+        <TabItem key="post-response-script" title={t('requestPane.postResponseAction')}>
+          <PanelContainer className="pad">
+            <RequestScriptEditor
+              editorId={`request-pane-post-script-${requestId}`}
+              title={t('requestPane.postResponseScript')}
+              help={t('requestPane.postResponseScriptHelp')}
+              placeholder={t('requestPane.postResponseScriptPlaceholder')}
+              script={normalizeScriptConfig(activeRequest.postResponseScriptConfig)}
+              onChange={patch =>
+                updateRequestScript({
+                  postResponseScriptConfig: {
+                    ...normalizeScriptConfig(activeRequest.postResponseScriptConfig),
+                    ...patch,
+                  },
+                })}
+            />
           </PanelContainer>
         </TabItem>
       </Tabs>

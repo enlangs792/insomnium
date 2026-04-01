@@ -3,7 +3,6 @@ import { OverlayContainer } from 'react-aria';
 import { useFetcher, useNavigate, useParams } from 'react-router-dom';
 
 import { t } from '../../../common/i18n';
-import * as models from '../../../models';
 import { GrpcRequest, isGrpcRequest } from '../../../models/grpc-request';
 import { isRequest, Request } from '../../../models/request';
 import { isWebSocketRequest, WebSocketRequest } from '../../../models/websocket-request';
@@ -142,7 +141,7 @@ export const RequestSettingsModal = ({ request, onHide }: ModalProps & RequestSe
                       <select
                         defaultValue={request.settingFollowRedirects}
                         name="settingFollowRedirects"
-                        onChange={toggleCheckBox}
+                        onChange={event => patchRequest(request._id, { [event.currentTarget.name]: event.currentTarget.value })}
                       >
                         <option value={'global'}>{t('requestSettings.useGlobalSetting')}</option>
                         <option value={'off'}>{t('requestSettings.dontFollowRedirects')}</option>
@@ -290,12 +289,7 @@ export const RequestSettingsModal = ({ request, onHide }: ModalProps & RequestSe
                       <select
                         defaultValue={request.settingFollowRedirects}
                         name="settingFollowRedirects"
-                        onChange={async event => {
-                          const updated = await models.request.update(request, {
-                            [event.currentTarget.name]: event.currentTarget.value,
-                          });
-                          setState(state => ({ ...state, request: updated }));
-                        }}
+                        onChange={event => patchRequest(request._id, { [event.currentTarget.name]: event.currentTarget.value })}
                       >
                         <option value={'global'}>{t('requestSettings.useGlobalSetting')}</option>
                         <option value={'off'}>{t('requestSettings.dontFollowRedirects')}</option>

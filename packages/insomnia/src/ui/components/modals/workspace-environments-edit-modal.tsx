@@ -7,6 +7,7 @@ import { DraggableCollectionState, DroppableCollectionState, Item, ListState, us
 import { t } from '../../../common/i18n';
 import { docsTemplateTags } from '../../../common/documentation';
 import type { Environment } from '../../../models/environment';
+import { normalizeScriptConfig } from '../../../models/script';
 import { WorkspaceLoaderData } from '../../routes/workspace';
 import { Dropdown, DropdownButton, DropdownItem, ItemContent } from '../base/dropdown';
 import { Editable } from '../base/editable';
@@ -18,6 +19,7 @@ import { ModalHeader } from '../base/modal-header';
 import { PromptButton } from '../base/prompt-button';
 import { EnvironmentEditor, EnvironmentEditorHandle } from '../editors/environment-editor';
 import { HelpTooltip } from '../help-tooltip';
+import { RequestScriptEditor } from '../editors/request-script-editor';
 import { Tooltip } from '../tooltip';
 
 const ROOT_ENVIRONMENT_NAME = t('workspaceEnvironments.baseEnvironment');
@@ -281,10 +283,10 @@ export const WorkspaceEnvironmentsEditModal = (props: ModalProps) => {
   }
 
   const updateEnvironment = async (environmentId: string, patch: Partial<Environment>) => {
-    updateEnvironmentFetcher.submit({
+    updateEnvironmentFetcher.submit(JSON.stringify({
       patch,
       environmentId,
-    },
+    }),
       {
         encType: 'application/json',
         method: 'post',
@@ -524,6 +526,36 @@ export const WorkspaceEnvironmentsEditModal = (props: ModalProps) => {
                   }
                 }}
               />
+            </div>
+            <div className="pad-top">
+              <RequestScriptEditor
+                editorId={`environment-pre-script-${activeEnvironment._id}`}
+                title={t('workspaceEnvironments.preRequestScript')}
+                help={t('workspaceEnvironments.preRequestScriptHelp')}
+                placeholder={t('workspaceEnvironments.preRequestScriptPlaceholder')}
+                script={normalizeScriptConfig(activeEnvironment.preRequestScriptConfig)}
+                onChange={patch => updateEnvironment(activeEnvironment._id, {
+                  preRequestScriptConfig: {
+                    ...normalizeScriptConfig(activeEnvironment.preRequestScriptConfig),
+                    ...patch,
+                  },
+                })}
+              />
+              <div className="margin-top">
+                <RequestScriptEditor
+                  editorId={`environment-post-script-${activeEnvironment._id}`}
+                  title={t('workspaceEnvironments.postResponseScript')}
+                  help={t('workspaceEnvironments.postResponseScriptHelp')}
+                  placeholder={t('workspaceEnvironments.postResponseScriptPlaceholder')}
+                  script={normalizeScriptConfig(activeEnvironment.postResponseScriptConfig)}
+                  onChange={patch => updateEnvironment(activeEnvironment._id, {
+                    postResponseScriptConfig: {
+                      ...normalizeScriptConfig(activeEnvironment.postResponseScriptConfig),
+                      ...patch,
+                    },
+                  })}
+                />
+              </div>
             </div>
           </div>
         </ModalBody>
