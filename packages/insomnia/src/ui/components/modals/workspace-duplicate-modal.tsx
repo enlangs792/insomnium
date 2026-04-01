@@ -3,6 +3,7 @@ import { OverlayContainer } from 'react-aria';
 import { useFetcher, useParams } from 'react-router-dom';
 
 import { getWorkspaceLabel } from '../../../common/get-workspace-label';
+import { t } from '../../../common/i18n';
 import { strings } from '../../../common/strings';
 import { isDefaultProject, isLocalProject, Project } from '../../../models/project';
 import { Workspace } from '../../../models/workspace';
@@ -27,7 +28,7 @@ export const WorkspaceDuplicateModal: FC<WorkspaceDuplicateModalProps> = ({ work
   return (
     <OverlayContainer onClick={e => e.stopPropagation()}>
       <Modal onHide={onHide} ref={modalRef}>
-        <ModalHeader>{`Duplicate ${workspace && getWorkspaceLabel(workspace).singular}`}</ModalHeader>
+        <ModalHeader>{t('workspaceDuplicate.duplicateWorkspace', { type: workspace && getWorkspaceLabel(workspace).singular })}</ModalHeader>
         <ModalBody className="wide">
           <Form
             action={`/organization/${organizationId}/project/${workspace.parentId}/workspace/${workspace._id}/duplicate`}
@@ -37,14 +38,14 @@ export const WorkspaceDuplicateModal: FC<WorkspaceDuplicateModalProps> = ({ work
           >
             <div className="form-control form-control--wide form-control--outlined">
               <label>
-                New Name
+                {t('workspaceDuplicate.newName')}
                 <input name="name" defaultValue={workspace.name} />
               </label>
             </div>
             <input name="workspaceId" value={workspace._id} readOnly className="hidden" />
             <div className="form-control form-control--outlined">
               <label>
-                {strings.project.singular} to duplicate into
+                {t('workspaceDuplicate.projectToDuplicateInto', { project: strings.project.singular })}
                 <select defaultValue={workspace.parentId} name="projectId">
                   {projects.map(project => (
                     <option key={project._id} value={project._id}>
@@ -58,7 +59,7 @@ export const WorkspaceDuplicateModal: FC<WorkspaceDuplicateModalProps> = ({ work
         </ModalBody>
         <ModalFooter>
           <button type="submit" form="workspace-duplicate-form" className="btn">
-            Duplicate
+            {t('menu.duplicate')}
           </button>
         </ModalFooter>
       </Modal>

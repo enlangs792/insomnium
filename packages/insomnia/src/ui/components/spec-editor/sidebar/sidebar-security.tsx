@@ -1,5 +1,6 @@
 import React, { Component, Fragment, ReactNode } from 'react';
 
+import { t } from '../../../../common/i18n';
 import { IconEnum, SvgIcon } from '../../svg-icon';
 import { SidebarInvalidSection } from './sidebar-invalid-section';
 import { SidebarItem } from './sidebar-item';
@@ -45,6 +46,6 @@ export class SidebarSecurity extends Component<SidebarSecurityProps> {
   };
 
   render() {
-    return <SidebarSection title="SECURITY" renderBody={this.renderBody} />;
+    return <SidebarSection title={t('specEditor.sidebar.securityTitle')} renderBody={this.renderBody} />;
   }
 }

@@ -10,6 +10,7 @@ import styled from 'styled-components';
 
 import { database } from '../../common/database';
 import { documentationLinks } from '../../common/documentation';
+import { t } from '../../common/i18n';
 import * as models from '../../models';
 import { isRequest, Request } from '../../models/request';
 import { isUnitTest, UnitTest } from '../../models/unit-test';
@@ -145,14 +146,14 @@ const UnitTestItemView = ({
           const variableName = 'response' + (highestNumberedConstant + 1);
           return [
             {
-              name: 'Send Current Request',
+              name: t('test.sendCurrentRequest'),
               displayValue: '',
               value:
                 `const ${variableName} = await insomnia.send();\n` +
                 `expect(${variableName}.status).to.equal(200);`,
             },
             ...requests.map(({ name, _id }) => ({
-              name: `Send: ${name}`,
+              name: t('test.sendNamedRequest', { name }),
               displayValue: '',
               value:
                 `const ${variableName} = await insomnia.send('${_id}');\n` +
@@ -285,10 +286,10 @@ const TestSuiteRoute = () => {
           variant="outlined"
           onClick={() => {
             showPrompt({
-              title: 'New Test',
-              defaultValue: 'Returns 200',
-              submitName: 'New Test',
-              label: 'Test Name',
+              title: t('test.newTest'),
+              defaultValue: t('test.returns200'),
+              submitName: t('test.newTest'),
+              label: t('test.testName'),
               selectText: true,
               onComplete: name => {
                 createUnitTestFetcher.submit(
@@ -304,7 +305,7 @@ const TestSuiteRoute = () => {
             });
           }}
         >
-          New Test
+          {t('test.newTest')}
         </HeaderButton>
         <HeaderButton
           variant="contained"
@@ -321,7 +322,7 @@ const TestSuiteRoute = () => {
           size="default"
           disabled={testsRunning}
         >
-          {testsRunning ? 'Running... ' : 'Run Tests'}
+          {testsRunning ? t('test.running') : t('test.runTests')}
           <i className="fa fa-play space-left" />
         </HeaderButton>
       </div>
@@ -333,8 +334,8 @@ const TestSuiteRoute = () => {
               documentationLinks.unitTesting,
               documentationLinks.introductionToInsoCLI,
             ]}
-            title="Add unit tests to verify your API"
-            secondaryAction="You can run these tests in CI with Inso CLI"
+            title={t('test.addUnitTestsToVerifyApi')}
+            secondaryAction={t('test.runInCiWithInsoCli')}
           />
         </div>
       ) : null}

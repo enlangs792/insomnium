@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import React, { FC, ReactNode, useRef } from 'react';
 
+import { t } from '../../../common/i18n';
 import type { RequestGroup } from '../../../models/request-group';
 
 interface Props {
@@ -42,7 +43,7 @@ export const RequestGroupRow: FC<Props> = ({
         <button onClick={() => handleSetRequestGroupCollapsed(requestGroup._id, !isCollapsed)}>
           <i className={classnames('tree__item__icon', 'fa', `fa-folder${isCollapsed ? '' : '-open'}`)} />
           {requestGroup.name}
-          <span className="total-requests">{totalRequests} requests</span>
+          <span className="total-requests">{t('exportRequests.requestCount', { count: totalRequests })}</span>
         </button>
       </div>
 

@@ -12,6 +12,7 @@ import {
   PREVIEW_MODE_FRIENDLY,
   PREVIEW_MODE_RAW,
 } from '../../../common/constants';
+import { t } from '../../../common/i18n';
 import { CodeEditor, CodeEditorHandle } from '../codemirror/code-editor';
 import { useDocBodyKeyboardShortcuts } from '../keydown-binder';
 import { ResponseCSVViewer } from './response-csv-viewer';
@@ -81,7 +82,7 @@ export const ResponseViewer = ({
       initialBody = getBody();
     }
   } catch (err) {
-    setParseError(`Failed reading response from filesystem: ${err.stack}`);
+    setParseError(t('responseViewer.failedReadingResponse', { error: err.stack }));
   }
   const [bodyBuffer, setBodyBuffer] = useState<Buffer | null>(initialBody);
 
@@ -95,7 +96,7 @@ export const ResponseViewer = ({
       setBodyBuffer(bodyBuffer);
       setBlockingBecauseTooLarge(false);
     } catch (err) {
-      setParseError(`Failed reading response from filesystem: ${err.stack}`);
+      setParseError(t('responseViewer.failedReadingResponse', { error: err.stack }));
     }
   }
 
@@ -183,30 +184,30 @@ export const ResponseViewer = ({
         {hugeResponse ? (
           <Fragment>
             <p className="pad faint">
-              Responses over {HUGE_RESPONSE_MB}MB cannot be shown
+              {t('responseViewer.responsesOverMbCannotBeShown', { size: HUGE_RESPONSE_MB })}
             </p>
             <button onClick={download} className="inline-block btn btn--clicky">
-              Save Response To File
+              {t('responseViewer.saveResponseToFile')}
             </button>
           </Fragment>
         ) : (
           <Fragment>
             <p className="pad faint">
-              Response over {LARGE_RESPONSE_MB}MB hidden for performance reasons
+              {t('responseViewer.responseOverMbHidden', { size: LARGE_RESPONSE_MB })}
             </p>
             <div>
               <button
                 onClick={download}
                 className="inline-block btn btn--clicky margin-xs"
               >
-                Save To File
+                {t('responseViewer.saveToFile')}
               </button>
               <button
                 onClick={_handleDismissBlocker}
                 disabled={hugeResponse}
                 className=" inline-block btn btn--clicky margin-xs"
               >
-                Show Anyway
+                {t('responseViewer.showAnyway')}
               </button>
             </div>
             <div className="pad-top-sm">
@@ -214,7 +215,7 @@ export const ResponseViewer = ({
                 className="faint inline-block btn btn--super-compact"
                 onClick={_handleDisableBlocker}
               >
-                Always Show
+                {t('responseViewer.alwaysShow')}
               </button>
             </div>
           </Fragment>
@@ -226,13 +227,13 @@ export const ResponseViewer = ({
   if (!bodyBuffer) {
     return (
       <div className="pad faint">
-        Failed to read response body from filesystem
+        {t('responseViewer.failedToReadResponseBody')}
       </div>
     );
   }
 
   if (bodyBuffer.length === 0) {
-    return <div className="pad faint">No body returned for response</div>;
+    return <div className="pad faint">{t('responseViewer.noBodyReturned')}</div>;
   }
 
   if (previewMode === FRONT_END) {

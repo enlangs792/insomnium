@@ -1,6 +1,7 @@
 import type { GraphQLSchema, GraphQLType } from 'graphql';
 import React, { Fragment, PureComponent } from 'react';
 
+import { t } from '../../../common/i18n';
 import { GraphQLExplorerTypeLink } from './graph-ql-explorer-type-link';
 
 interface Props {
@@ -60,8 +61,8 @@ export class GraphQLExplorerSchema extends PureComponent<Props> {
   render() {
     return (
       <div className="graphql-explorer__schema">
-        <p>A GraphQL schema provides a root type for each kind of operation.</p>
-        <h2 className="graphql-explorer__subheading">Root Types</h2>
+        <p>{t('graphqlExplorer.schemaDescription')}</p>
+        <h2 className="graphql-explorer__subheading">{t('graphqlExplorer.rootTypes')}</h2>
         <ul className="graphql-explorer__defs">
           <li>{this.renderQueryType()}</li>
           <li>{this.renderMutationType()}</li>

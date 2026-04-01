@@ -1,5 +1,6 @@
 import React, { Component, Fragment, ReactNode } from 'react';
 
+import { t } from '../../../../common/i18n';
 import { IconEnum, SvgIcon } from '../../svg-icon';
 import { SidebarInvalidSection } from './sidebar-invalid-section';
 import { SidebarItem } from './sidebar-item';
@@ -49,6 +50,6 @@ export class SidebarServers extends Component<SidebarServersProps> {
   };
 
   render() {
-    return <SidebarSection title="SERVERS" renderBody={this.renderBody} />;
+    return <SidebarSection title={t('specEditor.sidebar.serversTitle')} renderBody={this.renderBody} />;
   }
 }

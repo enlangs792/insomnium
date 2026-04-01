@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { OverlayContainer } from 'react-aria';
 import { useFetcher, useNavigate, useParams } from 'react-router-dom';
 
+import { t } from '../../../common/i18n';
 import type { RequestGroup } from '../../../models/request-group';
 import { guard } from '../../../utils/guard';
 import { useRequestGroupPatcher } from '../../hooks/use-request';
@@ -78,7 +79,7 @@ export const RequestGroupSettingsModal = ({ requestGroup, onHide }: ModalProps &
     <OverlayContainer onClick={e => e.stopPropagation()}>
       <Modal ref={modalRef} onHide={onHide}>
         <ModalHeader>
-          Folder Settings{' '}
+          {t('requestGroupSettings.folderSettings')}{' '}
           <span className="txt-sm selectable faint monospace">
             {requestGroup?._id || ''}
           </span>
@@ -86,10 +87,10 @@ export const RequestGroupSettingsModal = ({ requestGroup, onHide }: ModalProps &
         <ModalBody className="pad"><div>
           <div className="form-control form-control--outlined">
             <label>
-              Name
+              {t('requestGroupSettings.name')}
               <input
                 type="text"
-                placeholder={requestGroup?.name || 'My Folder'}
+                placeholder={requestGroup?.name || t('debug.myFolder')}
                 defaultValue={requestGroup?.name}
                 onChange={async event => {
                   guard(requestGroup, 'No request group');
@@ -102,7 +103,7 @@ export const RequestGroupSettingsModal = ({ requestGroup, onHide }: ModalProps &
             ref={editorRef}
             className="margin-top"
             defaultPreviewMode={defaultPreviewMode}
-            placeholder="Write a description"
+            placeholder={t('requestGroupSettings.writeDescription')}
             defaultValue={requestGroup?.description || ''}
             onChange={async (description: string) => {
               guard(requestGroup, 'No request group');
@@ -113,10 +114,9 @@ export const RequestGroupSettingsModal = ({ requestGroup, onHide }: ModalProps &
           <div className="form-row">
             <div className="form-control form-control--outlined">
               <label>
-                Move/Copy to Workspace
+                {t('requestGroupSettings.moveCopyToWorkspace')}
                 <HelpTooltip position="top" className="space-left">
-                  Copy or move the current folder to a new workspace. It will be
-                  placed at the root of the new workspace's folder structure.
+                  {t('requestGroupSettings.moveCopyToWorkspaceHelp')}
                 </HelpTooltip>
                 <select
                   value={activeWorkspaceIdToCopyTo}
@@ -128,7 +128,7 @@ export const RequestGroupSettingsModal = ({ requestGroup, onHide }: ModalProps &
                     }));
                   }}
                 >
-                  <option value="">-- Select Workspace --</option>
+                  <option value="">{t('requestGroupSettings.selectWorkspace')}</option>
                   {workspacesForActiveProject
                     .filter(w => workspaceId !== w._id)
                     .map(w => (
@@ -146,7 +146,7 @@ export const RequestGroupSettingsModal = ({ requestGroup, onHide }: ModalProps &
                 className="btn btn--clicky"
                 onClick={handleCopyToWorkspace}
               >
-                Copy
+                {t('requestGroupSettings.copy')}
               </button>
             </div>
             <div className="form-control form-control--no-label width-auto">
@@ -155,7 +155,7 @@ export const RequestGroupSettingsModal = ({ requestGroup, onHide }: ModalProps &
                 className="btn btn--clicky"
                 onClick={handleMoveToWorkspace}
               >
-                Move
+                {t('requestGroupSettings.move')}
               </button>
             </div>
           </div>

@@ -2,6 +2,7 @@ import React, { forwardRef, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import { HTTP_METHODS } from '../../../common/constants';
+import { t } from '../../../common/i18n';
 import { Dropdown, DropdownButton, type DropdownHandle, DropdownItem, DropdownSection, ItemContent } from '../base/dropdown';
 import { showPrompt } from '../modals/index';
 
@@ -31,13 +32,13 @@ export const MethodDropdown = forwardRef<DropdownHandle, Props>(({
   const handleSetCustomMethod = useCallback(() => {
     showPrompt({
       defaultValue: method,
-      title: 'HTTP Method',
-      submitName: 'Done',
+      title: t('methodDropdown.httpMethod'),
+      submitName: t('modal.done'),
       upperCase: true,
       selectText: true,
-      hint: 'Common examples are LINK, UNLINK, FIND, PURGE',
-      label: 'Name',
-      placeholder: 'CUSTOM',
+      hint: t('methodDropdown.commonExamples'),
+      label: t('workspaceDropdown.name'),
+      placeholder: t('methodDropdown.custom'),
       hints: recent,
       onDeleteHint: methodToDelete => {
         // Note: We need to read and remove the method from localStorage and not rely on react state
@@ -100,7 +101,7 @@ export const MethodDropdown = forwardRef<DropdownHandle, Props>(({
         <DropdownItem>
           <ItemContent
             className="http-method-custom"
-            label="Custom Method"
+            label={t('methodDropdown.customMethod')}
             onClick={handleSetCustomMethod}
           />
         </DropdownItem>

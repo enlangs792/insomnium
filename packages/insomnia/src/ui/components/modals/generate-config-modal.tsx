@@ -2,6 +2,7 @@ import React, { forwardRef, Key, useImperativeHandle, useRef, useState } from 'r
 import YAML from 'yaml';
 
 import { parseApiSpec } from '../../../common/api-specs';
+import { t } from '../../../common/i18n';
 import type { ApiSpec } from '../../../models/api-spec';
 import { CopyButton } from '../base/copy-button';
 import { Link } from '../base/link';
@@ -109,15 +110,16 @@ export const GenerateConfigModal = forwardRef<GenerateConfigModalHandle, ModalPr
   const activeConfig = configs[activeTab];
   return (
     <Modal ref={modalRef} tall>
-      <ModalHeader>Generate Config</ModalHeader>
+      <ModalHeader>{t('generateConfig.generateConfig')}</ModalHeader>
       <ModalBody className="wide">
         <div className="notice warning">
           <p>
-            Kong config generation has been moved to decK CLI, <Link href={'https://github.com/Kong/deck'}>https://github.com/Kong/deck</Link>.
+            {t('generateConfig.kongConfigMoved')}{' '}
+            <Link href={'https://github.com/Kong/deck'}>https://github.com/Kong/deck</Link>.
           </p>
         </div>
         <Tabs
-          aria-label="General configuration tabs"
+          aria-label={t('generateConfig.generalConfigurationTabs')}
           defaultSelectedKey={activeTab}
           onSelectionChange={onSelect}
         >
@@ -131,9 +133,9 @@ export const GenerateConfigModal = forwardRef<GenerateConfigModalHandle, ModalPr
                   <>
                     {' '}
                     <HelpTooltip>
-                      To learn more about {config.label}
+                      {t('generateConfig.learnMoreAbout', { label: config.label })}
                       <br />
-                      <Link href={config.docsLink}>Documentation {<i className="fa fa-external-link-square" />}</Link>
+                      <Link href={config.docsLink}>{t('tooltip.documentation')} {<i className="fa fa-external-link-square" />}</Link>
                     </HelpTooltip>
                   </> : null}
               </>
@@ -143,7 +145,7 @@ export const GenerateConfigModal = forwardRef<GenerateConfigModalHandle, ModalPr
               {config.error ?
                 <p className="notice error margin-md">
                   {config.error}
-                  {config.docsLink ? <><br /><Link href={config.docsLink}>Documentation {<i className="fa fa-external-link-square" />}</Link></> : null}
+                  {config.docsLink ? <><br /><Link href={config.docsLink}>{t('tooltip.documentation')} {<i className="fa fa-external-link-square" />}</Link></> : null}
                 </p> :
                 <CodeEditor
                   id="generate-config-modal"
@@ -160,7 +162,7 @@ export const GenerateConfigModal = forwardRef<GenerateConfigModalHandle, ModalPr
       {activeConfig && (
         <ModalFooter>
           <CopyButton className="btn" content={activeConfig.content}>
-            Copy to Clipboard
+            {t('generateConfig.copyToClipboard')}
           </CopyButton>
         </ModalFooter>
       )}

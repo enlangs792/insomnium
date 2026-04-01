@@ -3,6 +3,7 @@ import { useParams, useRouteLoaderData } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { AuthType, CONTENT_TYPE_JSON } from '../../../common/constants';
+import { t } from '../../../common/i18n';
 import * as models from '../../../models';
 import { Environment } from '../../../models/environment';
 import { WebSocketRequest } from '../../../models/websocket-request';
@@ -73,7 +74,7 @@ const PaneReadOnlyBanner = () => {
   return (
     <PaneReadOnlyBannerContainer>
       <p className="notice info no-margin-top no-margin-bottom">
-        This section is now locked since the connection has already been established. To change these settings, please disconnect first.
+        {t('websocket.sectionLocked')}
       </p>
     </PaneReadOnlyBannerContainer>
   );
@@ -147,10 +148,10 @@ const WebSocketRequestForm: FC<FormProps> = ({
         });
       } else {
         showAlert({
-          title: 'Unexpected Request Failure',
+          title: t('websocket.unexpectedRequestFailure'),
           message: (
             <div>
-              <p>The request failed due to an unhandled error:</p>
+              <p>{t('websocket.requestFailedUnhandledError')}</p>
               <code className="wide selectable">
                 <pre>{err.message}</pre>
               </code>
@@ -272,7 +273,7 @@ export const WebSocketRequestPane: FC<Props> = ({ environment }) => {
           onChange={url => patchRequest(requestId, { url })}
         />
       </PaneHeader>
-      <Tabs aria-label="Websocket request pane tabs">
+      <Tabs aria-label={t('websocket.requestPaneTabs')}>
         <TabItem key="websocket-preview-mode" title={<WebSocketPreviewMode previewMode={previewMode} onClick={changeMode} />}>
           <div
             style={{
@@ -287,7 +288,7 @@ export const WebSocketRequestPane: FC<Props> = ({ environment }) => {
                 form="websocketMessageForm"
                 isConnected={readyState}
               >
-                Send
+                {t('websocket.send')}
               </SendButton>
             </PaneSendButton>
             <WebSocketRequestForm
@@ -306,11 +307,11 @@ export const WebSocketRequestPane: FC<Props> = ({ environment }) => {
             disabled={disabled}
           />
         </TabItem>
-        <TabItem key="query" title="Query">
+        <TabItem key="query" title={t('websocket.query')}>
           <QueryEditorContainer>
             {disabled && <PaneReadOnlyBanner />}
             <QueryEditorPreview className="pad pad-bottom-sm">
-              <label className="label--small no-pad-top">Url Preview</label>
+              <label className="label--small no-pad-top">{t('websocket.urlPreview')}</label>
               <code className="txt-sm block faint">
                 <ErrorBoundary
                   key={uniqueKey}
@@ -338,7 +339,7 @@ export const WebSocketRequestPane: FC<Props> = ({ environment }) => {
             </QueryEditorWrapper>
           </QueryEditorContainer>
         </TabItem>
-        <TabItem key="headers" title="Headers">
+        <TabItem key="headers" title={t('responsePane.headers')}>
           {disabled && <PaneReadOnlyBanner />}
           <RequestHeadersEditor
             key={uniqueKey}
@@ -350,7 +351,7 @@ export const WebSocketRequestPane: FC<Props> = ({ environment }) => {
           key="docs"
           title={
             <>
-              Docs
+              {t('websocket.docs')}
               {activeRequest.description && (
                 <span className="bubble space-left">
                   <i className="fa fa--skinny fa-check txt-xxs" />
@@ -363,7 +364,7 @@ export const WebSocketRequestPane: FC<Props> = ({ environment }) => {
             <div>
               <div className="pull-right pad bg-default">
                 <button className="btn btn--clicky" onClick={() => setIsRequestSettingsModalOpen(true)}>
-                  Edit
+                  {t('requestPane.edit')}
                 </button>
               </div>
               <div className="pad">
@@ -390,7 +391,7 @@ export const WebSocketRequestPane: FC<Props> = ({ environment }) => {
                 <br />
                 <br />
                   <button className="btn btn--clicky faint" onClick={() => setIsRequestSettingsModalOpen(true)}>
-                  Add Description
+                  {t('requestPane.addDescription')}
                 </button>
               </p>
             </div>

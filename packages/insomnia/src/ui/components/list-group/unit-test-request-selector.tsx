@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
+import { t } from '../../../common/i18n';
 import { Request } from '../../../models/request';
 
 export interface UnitTestRequestSelectorProps {
@@ -46,7 +47,7 @@ export const UnitTestRequestSelector: FunctionComponent<UnitTestRequestSelectorP
         defaultValue={selectedRequestId || '__NULL__'}
       >
         <option value="__NULL__">
-          {selectableRequests.length ? '-- Select Request --' : '-- No Requests --'}
+          {selectableRequests.length ? t('test.selectRequest') : t('test.noRequests')}
         </option>
         {selectableRequests.map(({ name, _id }) => (
           <option key={_id} value={_id}>

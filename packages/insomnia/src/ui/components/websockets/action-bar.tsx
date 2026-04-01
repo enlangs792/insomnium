@@ -2,6 +2,7 @@ import React, { FC, useLayoutEffect, useRef } from 'react';
 import { useFetcher, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { t } from '../../../common/i18n';
 import * as models from '../../../models';
 import { WebSocketRequest } from '../../../models/websocket-request';
 import { tryToInterpolateRequestOrShowRenderErrorModal } from '../../../utils/try-interpolate';
@@ -125,7 +126,7 @@ export const WebSocketActionBar: FC<ActionBarProps> = ({ request, environmentId,
       {isOpen && (
         <ConnectionStatus>
           <ConnectionCircle />
-          CONNECTED
+          {t('websocket.connected')}
         </ConnectionStatus>
       )}
       <Form
@@ -143,14 +144,14 @@ export const WebSocketActionBar: FC<ActionBarProps> = ({ request, environmentId,
               'Enter': () => handleSubmit(),
             })}
             readOnly={readyState}
-            placeholder="wss://example.com/chat"
+            placeholder={t('websocket.urlPlaceholder')}
             defaultValue={defaultValue}
             onChange={onChange}
             type="text"
           />
         </StyledUrlBar>
         {isConnectingOrClosed
-          ? <Button type="submit">Connect</Button>
+          ? <Button type="submit">{t('websocket.connect')}</Button>
           : <DisconnectButton requestId={request._id} />}
       </Form>
     </>

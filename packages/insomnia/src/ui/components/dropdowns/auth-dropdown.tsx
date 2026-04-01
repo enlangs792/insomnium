@@ -6,6 +6,7 @@ import {
   getAuthTypeName,
   HAWK_ALGORITHM_SHA256,
 } from '../../../common/constants';
+import { t } from '../../../common/i18n';
 import { RequestAuthentication } from '../../../models/request';
 import { SIGNATURE_METHOD_HMAC_SHA1 } from '../../../network/o-auth-1/constants';
 import { GRANT_TYPE_AUTHORIZATION_CODE } from '../../../network/o-auth-2/constants';
@@ -159,8 +160,8 @@ export const AuthDropdown: FC<Props> = ({ authTypes = defaultTypes, disabled = f
 
       if (changedSinceDefault && willChange) {
         await showModal(AlertModal, {
-          title: 'Switch Authentication?',
-          message: 'Current authentication settings will be lost',
+          title: t('authDropdown.switchAuthentication'),
+          message: t('authDropdown.currentAuthenticationWillBeLost'),
           addCancel: true,
         });
         break;
@@ -181,18 +182,18 @@ export const AuthDropdown: FC<Props> = ({ authTypes = defaultTypes, disabled = f
 
   return (
     <Dropdown
-      aria-label='Authentication Dropdown'
+      aria-label={t('authDropdown.authenticationDropdown')}
       isDisabled={disabled}
       triggerButton={
         <DropdownButton className="tall">
-          {'authentication' in activeRequest ? getAuthTypeName(activeRequest.authentication.type) || 'Auth' : 'Auth'}
+          {'authentication' in activeRequest ? getAuthTypeName(activeRequest.authentication.type) || t('authDropdown.auth') : t('authDropdown.auth')}
           <i className="fa fa-caret-down space-left" />
         </DropdownButton>
       }
     >
       <DropdownSection
-        aria-label='Auth types section'
-        title="Auth Types"
+        aria-label={t('authDropdown.authTypesSection')}
+        title={t('authDropdown.authTypes')}
       >
         {authTypes.map(authType =>
           <DropdownItem
@@ -208,13 +209,13 @@ export const AuthDropdown: FC<Props> = ({ authTypes = defaultTypes, disabled = f
         )}
       </DropdownSection>
       <DropdownSection
-        aria-label="Other types section"
-        title="Other"
+        aria-label={t('authDropdown.otherTypesSection')}
+        title={t('contentTypeDropdown.other')}
       >
-        <DropdownItem aria-label='None' key="none">
+        <DropdownItem aria-label={t('authDropdown.none')} key="none">
           <ItemContent
             icon={isCurrent('none') ? 'check' : 'empty'}
-            label={'No Authentication'}
+            label={t('authDropdown.noAuthentication')}
             onClick={() => onClick('none')}
           />
         </DropdownItem>

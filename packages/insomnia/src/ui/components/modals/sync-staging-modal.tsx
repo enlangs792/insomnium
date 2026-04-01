@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { OverlayContainer } from 'react-aria';
 import { useRouteLoaderData } from 'react-router-dom';
 
+import { t } from '../../../common/i18n';
 import { strings } from '../../../common/strings';
 import * as models from '../../../models';
 import { BaseModel } from '../../../models';
@@ -68,7 +69,7 @@ export const SyncStagingModal = ({ vcs, branch, onSnapshot, handlePush, onHide }
         lookupMap[key] = {
           changes: hasDocAndLastSnapshot ? describeChanges(document, lastSnapshot) : null,
           entry: entry,
-          type: models.getModel(docOrLastSnapshot.type)?.name || 'Unknown',
+          type: models.getModel(docOrLastSnapshot.type)?.name || t('sync.unknown'),
           checked: !!status.stage[key],
         };
       }
@@ -184,7 +185,7 @@ export const SyncStagingModal = ({ vcs, branch, onSnapshot, handlePush, onHide }
   return (
     <OverlayContainer onClick={e => e.stopPropagation()}>
       <Modal ref={modalRef} onHide={onHide}>
-        <ModalHeader>Create Snapshot</ModalHeader>
+        <ModalHeader>{t('sync.createSnapshot')}</ModalHeader>
         <ModalBody className="wide pad">
           {error && (
             <p className="notice error margin-bottom-sm no-margin-top">
@@ -197,13 +198,13 @@ export const SyncStagingModal = ({ vcs, branch, onSnapshot, handlePush, onHide }
           <div className="form-group">
             <div className="form-control form-control--outlined">
               <label>
-                Snapshot Message
+                {t('sync.snapshotMessage')}
                 <textarea
                   cols={30}
                   rows={3}
                   onChange={event => setState(state => ({ ...state, message: event.target.value }))}
                   value={message}
-                  placeholder="This is a helpful message that describe the changes made in this snapshot"
+                  placeholder={t('sync.snapshotMessagePlaceholder')}
                   required
                 />
               </label>
@@ -211,7 +212,7 @@ export const SyncStagingModal = ({ vcs, branch, onSnapshot, handlePush, onHide }
           </div>
           <ChangesTable
             keys={nonAddedKeys}
-            title='Modified Objects'
+            title={t('sync.modifiedObjects')}
             status={status}
             lookupMap={state.lookupMap}
             toggleAll={handleAllToggle}
@@ -219,7 +220,7 @@ export const SyncStagingModal = ({ vcs, branch, onSnapshot, handlePush, onHide }
           />
           <ChangesTable
             keys={addedKeys}
-            title='Unversioned Objects'
+            title={t('sync.unversionedObjects')}
             status={status}
             lookupMap={state.lookupMap}
             toggleAll={handleAllToggle}
@@ -232,10 +233,10 @@ export const SyncStagingModal = ({ vcs, branch, onSnapshot, handlePush, onHide }
           </div>
           <div>
             <button className="btn" onClick={handleTakeSnapshot}>
-              Create
+              {t('project.create')}
             </button>
             <button className="btn" onClick={handleTakeSnapshotAndPush}>
-              Create and Push
+              {t('sync.createAndPush')}
             </button>
           </div>
         </ModalFooter>
@@ -253,27 +254,27 @@ const OperationTooltip = ({ entry, type, changes }: OperationTooltipProps) => {
   const operationType = type === models.workspace.type ? type = strings.collection.singular : type;
   if ('added' in entry) {
     return (
-      <Tooltip message="Added">
+      <Tooltip message={t('sync.added')}>
         <i className="fa fa-plus-circle success" /> {operationType}
       </Tooltip>
     );
   }
   if ('modified' in entry) {
     return (
-      <Tooltip message={`Modified (${changes.join(', ')})`}>
+      <Tooltip message={t('sync.modifiedChanges', { changes: changes.join(', ') })}>
         <i className="fa fa-circle faded" /> {operationType}
       </Tooltip>
     );
   }
   if ('deleted' in entry) {
     return (
-      <Tooltip message="Deleted">
+      <Tooltip message={t('sync.deleted')}>
         <i className="fa fa-minus-circle danger" /> {operationType}
       </Tooltip>
     );
   }
   return (
-    <Tooltip message="Unknown">
+    <Tooltip message={t('sync.unknown')}>
       <i className="fa fa-question-circle info" /> {operationType}
     </Tooltip>
   );
@@ -327,8 +328,8 @@ const ChangesTable = ({
                 name
               </label>
             </th>
-            <th className="text-right ">Changes</th>
-            <th className="text-right">Description</th>
+            <th className="text-right ">{t('sync.changes')}</th>
+            <th className="text-right">{t('sync.description')}</th>
           </tr>
         </thead>
         <tbody>

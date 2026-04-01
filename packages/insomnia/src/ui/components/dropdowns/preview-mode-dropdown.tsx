@@ -4,6 +4,7 @@ import { useRouteLoaderData } from 'react-router-dom';
 
 import { getPreviewModeName, PREVIEW_MODE_SOURCE, PREVIEW_MODES } from '../../../common/constants';
 import { exportHarCurrentRequest } from '../../../common/har';
+import { t } from '../../../common/i18n';
 import * as models from '../../../models';
 import { isRequest } from '../../../models/request';
 import { isResponse } from '../../../models/response';
@@ -37,8 +38,8 @@ export const PreviewModeDropdown: FC<Props> = ({
     const har = JSON.stringify(data, null, '\t');
 
     const { filePath } = await window.dialog.showSaveDialog({
-      title: 'Export As HAR',
-      buttonLabel: 'Save',
+      title: t('previewMode.exportAsHar'),
+      buttonLabel: t('responsePane.save'),
       defaultPath: `${activeRequest.name.replace(/ +/g, '_')}-${Date.now()}.har`,
     });
 
@@ -65,8 +66,8 @@ export const PreviewModeDropdown: FC<Props> = ({
       .join('');
 
     const { canceled, filePath } = await window.dialog.showSaveDialog({
-      title: 'Save Full Response',
-      buttonLabel: 'Save',
+      title: t('previewMode.saveFullResponse'),
+      buttonLabel: t('responsePane.save'),
       defaultPath: `${activeRequest.name.replace(/ +/g, '_')}-${Date.now()}.txt`,
     });
 
@@ -88,7 +89,7 @@ export const PreviewModeDropdown: FC<Props> = ({
 
   return (
     <Dropdown
-      aria-label='Preview Mode Dropdown'
+      aria-label={t('previewMode.dropdown')}
       triggerButton={
         <DropdownButton className="tall">
           {getPreviewModeName(previewMode)}
@@ -97,8 +98,8 @@ export const PreviewModeDropdown: FC<Props> = ({
       }
     >
       <DropdownSection
-        aria-label='Preview Mode Section'
-        title="Preview Mode"
+        aria-label={t('previewMode.previewModeSection')}
+        title={t('previewMode.previewMode')}
       >
         {PREVIEW_MODES.map(mode =>
           <DropdownItem
@@ -114,43 +115,43 @@ export const PreviewModeDropdown: FC<Props> = ({
         )}
       </DropdownSection>
       <DropdownSection
-        aria-label='Action Section'
-        title="Action"
+        aria-label={t('previewMode.actionSection')}
+        title={t('previewMode.action')}
       >
-        <DropdownItem aria-label='Copy raw response'>
+        <DropdownItem aria-label={t('previewMode.copyRawResponse')}>
           <ItemContent
             icon="copy"
-            label="Copy raw response"
+            label={t('previewMode.copyRawResponse')}
             onClick={copyToClipboard}
           />
         </DropdownItem>
-        <DropdownItem aria-label='Export raw response'>
+        <DropdownItem aria-label={t('previewMode.exportRawResponse')}>
           <ItemContent
             icon="save"
-            label="Export raw response"
+            label={t('previewMode.exportRawResponse')}
             onClick={handleDownloadNormal}
           />
         </DropdownItem>
-        <DropdownItem aria-label='Export prettified response'>
+        <DropdownItem aria-label={t('previewMode.exportPrettifiedResponse')}>
           {shouldPrettifyOption &&
             <ItemContent
               icon="save"
-              label="Export prettified response"
+              label={t('previewMode.exportPrettifiedResponse')}
               onClick={handleDownloadPrettify}
             />
           }
         </DropdownItem>
-        <DropdownItem aria-label='Export HTTP debug'>
+        <DropdownItem aria-label={t('previewMode.exportHttpDebug')}>
           <ItemContent
             icon="bug"
-            label="Export HTTP debug"
+            label={t('previewMode.exportHttpDebug')}
             onClick={exportDebugFile}
           />
         </DropdownItem>
-        <DropdownItem aria-label='Export as HAR'>
+        <DropdownItem aria-label={t('previewMode.exportAsHar')}>
           <ItemContent
             icon="save"
-            label="Export as HAR"
+            label={t('previewMode.exportAsHar')}
             onClick={exportAsHAR}
           />
         </DropdownItem>

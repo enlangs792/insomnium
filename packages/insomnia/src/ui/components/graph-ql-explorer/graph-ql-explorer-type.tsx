@@ -1,6 +1,7 @@
 import { GraphQLInterfaceType, GraphQLObjectType, GraphQLSchema, GraphQLType, GraphQLUnionType } from 'graphql';
 import React, { FC, Fragment } from 'react';
 
+import { t } from '../../../common/i18n';
 import { ascendingNameSort } from '../../../common/sorting';
 import { MarkdownPreview } from '../markdown-preview';
 import { GraphQLExplorerFieldsList } from './graph-ql-explorer-fields-list';
@@ -16,15 +17,15 @@ interface Props {
 export const GraphQLExplorerType: FC<Props> = ({ schema, type, onNavigateType, onNavigateField }) => {
   const getTitle = () => {
     if (type instanceof GraphQLUnionType) {
-      return 'Possible Types';
+      return t('graphqlExplorer.possibleTypes');
     }
     if (type instanceof GraphQLInterfaceType) {
-      return 'Implementations';
+      return t('graphqlExplorer.implementations');
     }
     if (type instanceof GraphQLObjectType) {
-      return 'Implements';
+      return t('graphqlExplorer.implements');
     }
-    return 'Types';
+    return t('graphqlExplorer.types');
   };
   const getTypes = () => {
     const isUnionOrInterface = type instanceof GraphQLUnionType || type instanceof GraphQLInterfaceType;
@@ -37,7 +38,7 @@ export const GraphQLExplorerType: FC<Props> = ({ schema, type, onNavigateType, o
     return [];
   };
 
-  const markdown = ('description' in type) ? (type.description || '') : '*no description*';
+  const markdown = ('description' in type) ? (type.description || '') : t('graphqlExplorer.noDescriptionMarkdown');
 
   const types = getTypes();
   const hasSchemaAndTypes = schema && types.length;
@@ -63,7 +64,7 @@ export const GraphQLExplorerType: FC<Props> = ({ schema, type, onNavigateType, o
         : null}
       {sortedFields.length
         ? (<Fragment>
-          <h2 className="graphql-explorer__subheading">Fields</h2>
+          <h2 className="graphql-explorer__subheading">{t('graphqlExplorer.fields')}</h2>
           <GraphQLExplorerFieldsList
             fields={sortedFields}
             onNavigateType={onNavigateType}

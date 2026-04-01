@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import React, { FC, memo } from 'react';
 
+import { t } from '../../../common/i18n';
 import * as misc from '../../../common/misc';
 import { Tooltip } from '../tooltip';
 
@@ -20,12 +21,12 @@ export const SizeTag: FC<Props> = memo(({ bytesRead, bytesContent, small, classN
     <table>
       <tbody>
         <tr>
-          <td className="text-left pad-right">Read</td>
+          <td className="text-left pad-right">{t('sizeTag.read')}</td>
           <td className="text-right selectable no-wrap">{responseSizeReadString}</td>
         </tr>
         {bytesContent >= 0 && (
           <tr>
-            <td className="text-left pad-right">Content</td>
+            <td className="text-left pad-right">{t('sizeTag.content')}</td>
             <td className="text-right selectable no-wrap">{responseSizeRawString}</td>
           </tr>
         )}

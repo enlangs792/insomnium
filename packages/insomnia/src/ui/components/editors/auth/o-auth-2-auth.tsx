@@ -1,6 +1,7 @@
 import React, { ChangeEvent, FC, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 
+import { t } from '../../../../common/i18n';
 import { toKebabCase } from '../../../../common/misc';
 import accessTokenUrls from '../../../../datasets/access-token-urls';
 import authorizationUrls from '../../../../datasets/authorization-urls';
@@ -34,19 +35,19 @@ const getAccessTokenUrls = () => accessTokenUrls;
 
 const grantTypeOptions = [
   {
-    name: 'Authorization Code',
+    name: t('auth.authorizationCode'),
     value: GRANT_TYPE_AUTHORIZATION_CODE,
   },
   {
-    name: 'Implicit',
+    name: t('auth.implicit'),
     value: GRANT_TYPE_IMPLICIT,
   },
   {
-    name: 'Resource Owner Password Credentials',
+    name: t('auth.resourceOwnerPasswordCredentials'),
     value: GRANT_TYPE_PASSWORD,
   },
   {
-    name: 'Client Credentials',
+    name: t('auth.clientCredentials'),
     value: GRANT_TYPE_CLIENT_CREDENTIALS,
   },
 ];
@@ -57,72 +58,72 @@ const pkceMethodOptions = [
     value: PKCE_CHALLENGE_S256,
   },
   {
-    name: 'Plain',
+    name: t('auth.plain'),
     value: PKCE_CHALLENGE_PLAIN,
   },
 ];
 
 const responseTypeOptions: { name: string; value: OAuth2ResponseType }[] = [
   {
-    name: 'Access Token',
+    name: t('auth.accessToken'),
     value: 'token',
   },
   {
-    name: 'ID Token',
+    name: t('auth.identityToken'),
     value: 'id_token',
   },
   {
-    name: 'ID and Access Token',
+    name: t('auth.idAndAccessToken'),
     value: 'id_token token',
   },
 ];
 
 const credentialsInBodyOptions = [
   {
-    name: 'As Basic Auth Header (default)',
+    name: t('auth.asBasicAuthHeaderDefault'),
     value: 'false',
   },
   {
-    name: 'In Request Body',
+    name: t('auth.inRequestBody'),
     value: 'true',
   },
 ];
 
 const getFields = (authentication: Request['authentication']) => {
-  const clientId = <AuthInputRow label='Client ID' property='clientId' key='clientId' />;
-  const clientSecret = <AuthInputRow label='Client Secret' property='clientSecret' key='clientSecret' />;
-  const usePkce = <AuthToggleRow label='Use PKCE' property='usePkce' key='usePkce' onTitle='Disable PKCE' offTitle='Enable PKCE' />;
+  const clientId = <AuthInputRow label={t('auth.clientId')} property='clientId' key='clientId' />;
+  const clientSecret = <AuthInputRow label={t('auth.clientSecret')} property='clientSecret' key='clientSecret' />;
+  const usePkce = <AuthToggleRow label={t('auth.usePkce')} property='usePkce' key='usePkce' onTitle={t('auth.disablePkce')} offTitle={t('auth.enablePkce')} />;
   const pkceMethod = <AuthSelectRow
-    label='Code Challenge Method'
+    label={t('auth.codeChallengeMethod')}
     property='pkceMethod'
     key='pkceMethod'
     disabled={!authentication.usePkce}
     options={pkceMethodOptions}
   />;
-  const authorizationUrl = <AuthInputRow label='Authorization URL' property='authorizationUrl' key='authorizationUrl' getAutocompleteConstants={getAuthorizationUrls} />;
-  const accessTokenUrl = <AuthInputRow label='Access Token URL' property='accessTokenUrl' key='accessTokenUrl' getAutocompleteConstants={getAccessTokenUrls} />;
-  const redirectUri = <AuthInputRow label='Redirect URL' property='redirectUrl' key='redirectUrl' help='This can be whatever you want or need it to be. Insomnium will automatically detect a redirect in the client browser window and extract the code from the redirected URL.' />;
-  const state = <AuthInputRow label='State' property='state' key='state' />;
-  const scope = <AuthInputRow label='Scope' property='scope' key='scope' />;
-  const username = <AuthInputRow label='Username' property='username' key='username' />;
-  const password = <AuthInputRow label='Password' property='password' key='password' mask />;
-  const tokenPrefix = <AuthInputRow label='Header Prefix' property='tokenPrefix' key='tokenPrefix' help='Change Authorization header prefix from "Bearer" to something else. Use "NO_PREFIX" to send raw token without prefix.' />;
+  const authorizationUrl = <AuthInputRow label={t('auth.authorizationUrl')} property='authorizationUrl' key='authorizationUrl' getAutocompleteConstants={getAuthorizationUrls} />;
+  const accessTokenUrl = <AuthInputRow label={t('auth.accessTokenUrl')} property='accessTokenUrl' key='accessTokenUrl' getAutocompleteConstants={getAccessTokenUrls} />;
+  const redirectUri = <AuthInputRow label={t('auth.redirectUrl')} property='redirectUrl' key='redirectUrl' help={t('auth.redirectUrlHelp')} />;
+  const state = <AuthInputRow label={t('auth.state')} property='state' key='state' />;
+  const scope = <AuthInputRow label={t('auth.scope')} property='scope' key='scope' />;
+  const username = <AuthInputRow label={t('auth.username')} property='username' key='username' />;
+  const password = <AuthInputRow label={t('auth.password')} property='password' key='password' mask />;
+  const tokenPrefix = <AuthInputRow label={t('auth.headerPrefix')} property='tokenPrefix' key='tokenPrefix' help={t('auth.headerPrefixHelp')} />;
   const responseType = <AuthSelectRow
-    label='Response Type'
+    label={t('auth.responseType')}
     property='responseType'
     key='responseType'
     options={responseTypeOptions}
-    help='Indicates the type of credentials returned in the response'
+    help={t('auth.responseTypeHelp')}
   />;
-  const audience = <AuthInputRow label='Audience' property='audience' key='audience' help='Indicate what resource server to access' />;
-  const resource = <AuthInputRow label='Resource' property='resource' key='resource' help='Indicate what resource to access' />;
-  const origin = <AuthInputRow label='Origin' property='origin' key='origin' help='Specify Origin header when CORS is required for oauth endpoints' />;
+  const audience = <AuthInputRow label={t('auth.audience')} property='audience' key='audience' help={t('auth.audienceHelp')} />;
+  const resource = <AuthInputRow label={t('auth.resource')} property='resource' key='resource' help={t('auth.resourceHelp')} />;
+  const origin = <AuthInputRow label={t('auth.origin')} property='origin' key='origin' help={t('auth.originHelp')} />;
   const credentialsInBody = <AuthSelectRow
-    label='Credentials'
+    label={t('auth.credentials')}
     property='credentialsInBody'
     key='credentialsInBody'
     options={credentialsInBodyOptions}
-    help='Whether or not to send credentials as Basic Auth, or as plain text in the request body'
+    help={t('auth.credentialsHelp')}
   />;
 
   return {
@@ -251,14 +252,14 @@ export const OAuth2Auth: FC = () => {
   return (
     <>
       <AuthTableBody>
-        <AuthToggleRow label="Enabled" property="disabled" invert />
+        <AuthToggleRow label={t('auth.enabled')} property="disabled" invert />
         <AuthSelectRow
-          label='Grant Type'
+          label={t('auth.grantType')}
           property='grantType'
           options={grantTypeOptions}
         />
         {basic}
-        <AuthAccordion accordionKey='OAuth2AdvancedOptions' label='Advanced Options'>
+        <AuthAccordion accordionKey='OAuth2AdvancedOptions' label={t('auth.advancedOptions')}>
           {advanced}
           {
             <tr>
@@ -266,7 +267,7 @@ export const OAuth2Auth: FC = () => {
               <td className="wide">
                 <div className="pad-top text-right">
                   <button className="btn btn--clicky" onClick={initNewOAuthSession}>
-                    Clear OAuth 2 session
+                    {t('auth.clearOAuth2Session')}
                   </button>
                 </div>
               </td>
@@ -305,12 +306,12 @@ const renderIdentityTokenExpiry = (token?: Pick<OAuth2Token, 'identityToken'>) =
   try {
     const { exp } = JSON.parse(decodedString);
     if (!exp) {
-      return '(never expires)';
+      return `(${t('auth.neverExpires')})`;
     }
     const convertedExp = convertEpochToMilliseconds(exp);
     return (
       <span>
-        &#x28;expires <TimeFromNow timestamp={convertedExp} />
+        &#x28;{t('auth.expires')} <TimeFromNow timestamp={convertedExp} />
         &#x29;
       </span>
     );
@@ -326,12 +327,12 @@ const renderAccessTokenExpiry = (token?: Pick<OAuth2Token, 'accessToken' | 'expi
   }
 
   if (!token.expiresAt) {
-    return '(never expires)';
+    return `(${t('auth.neverExpires')})`;
   }
 
   return (
     <span>
-      &#x28;expires <TimeFromNow timestamp={token.expiresAt} />
+      &#x28;{t('auth.expires')} <TimeFromNow timestamp={token.expiresAt} />
       &#x29;
     </span>
   );
@@ -366,7 +367,7 @@ const OAuth2TokenInput: FC<{ token: OAuth2Token | null; label: string; property:
         <small>{label}{expiryLabel ? <em> {expiryLabel}</em> : null}</small>
         <input
           value={token?.[property] || ''}
-          placeholder='n/a'
+          placeholder={t('auth.notAvailable')}
           onChange={onChange}
         />
       </label>
@@ -390,9 +391,9 @@ const OAuth2Error: FC<{ token: OAuth2Token | null }> = ({ token }) => {
     <Button
       onClick={debug}
       className="margin-top-sm"
-      title="View response timeline"
+      title={t('auth.viewResponseTimeline')}
     >
-      <i className="fa fa-bug space-right" /> Response Timeline
+      <i className="fa fa-bug space-right" /> {t('auth.responseTimeline')}
     </Button>
   ) : null;
 
@@ -410,7 +411,7 @@ const OAuth2Error: FC<{ token: OAuth2Token | null }> = ({ token }) => {
       <div className="notice error margin-bottom">
         <h2 className="no-margin-top txt-lg force-wrap">{error}</h2>
         <p>
-          {errorDescription || 'no description provided'}
+          {errorDescription || t('auth.noDescriptionProvided')}
           {errorUriButton}
         </p>
         {debugButton}
@@ -442,9 +443,9 @@ const OAuth2Tokens: FC = () => {
         </p>
       )}
       <OAuth2Error token={token} />
-      <OAuth2TokenInput token={token} label='Refresh Token' property='refreshToken' />
-      <OAuth2TokenInput token={token} label='Identity Token' property='identityToken' />
-      <OAuth2TokenInput token={token} label='Access Token' property='accessToken' />
+      <OAuth2TokenInput token={token} label={t('auth.refreshToken')} property='refreshToken' />
+      <OAuth2TokenInput token={token} label={t('auth.identityToken')} property='identityToken' />
+      <OAuth2TokenInput token={token} label={t('auth.accessToken')} property='accessToken' />
       <div className='pad-top text-right'>
         {token ? (
           <button
@@ -457,7 +458,7 @@ const OAuth2Tokens: FC = () => {
               }
             }}
           >
-            Clear
+            {t('modal.clear')}
           </button>
         ) : null}
         &nbsp;&nbsp;
@@ -486,11 +487,11 @@ const OAuth2Tokens: FC = () => {
         >
           {loading
             ? token
-              ? 'Refreshing...'
-              : 'Fetching...'
+              ? t('auth.refreshing')
+              : t('auth.fetching')
             : token
-              ? 'Refresh Token'
-              : 'Fetch Tokens'}
+              ? t('auth.refreshTokenAction')
+              : t('auth.fetchTokens')}
         </button>
       </div>
     </div>

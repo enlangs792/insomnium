@@ -2,6 +2,7 @@ import React, { FunctionComponent } from 'react';
 import useToggle from 'react-use/lib/useToggle';
 import styled from 'styled-components';
 
+import { t } from '../../../../common/i18n';
 import { Dropdown, DropdownButton, DropdownItem, DropdownSection, ItemContent } from '../../base/dropdown';
 import { IconEnum, SvgIcon } from '../../svg-icon';
 import { SidebarHeader } from './sidebar-header';
@@ -122,9 +123,9 @@ export const Sidebar: FunctionComponent<SidebarProps> = ({ jsonData, onClick }) 
     <StyledSidebar className="theme--sidebar">
       {info && (
         <StyledSection>
-          <SidebarHeader headerTitle="INFO" sectionVisible={infoSec} toggleSection={setInfoSec}>
+          <SidebarHeader headerTitle={t('specEditor.sidebar.info')} sectionVisible={infoSec} toggleSection={setInfoSec}>
             <Dropdown
-              aria-label='Info Dropdown'
+              aria-label={t('specEditor.sidebar.infoDropdown')}
               closeOnSelect={false}
               triggerButton={
                 <DropdownButton>
@@ -133,10 +134,10 @@ export const Sidebar: FunctionComponent<SidebarProps> = ({ jsonData, onClick }) 
               }
             >
               <DropdownSection
-                aria-label='Visibility section'
-                title="VISIBILITY"
+                aria-label={t('specEditor.sidebar.visibilitySection')}
+                title={t('specEditor.sidebar.visibility')}
               >
-                <DropdownItem aria-label='Servers'>
+                <DropdownItem aria-label={t('specEditor.sidebar.servers')}>
                   <ItemContent
                     stayOpenAfterClick
                     onClick={setServersVisible}
@@ -144,11 +145,11 @@ export const Sidebar: FunctionComponent<SidebarProps> = ({ jsonData, onClick }) 
                     <ItemWrapper
                       checked={serversVisible}
                       htmlFor="servers"
-                      label="Servers"
+                      label={t('specEditor.sidebar.servers')}
                     />
                   </ItemContent>
                 </DropdownItem>
-                <DropdownItem aria-label='Paths'>
+                <DropdownItem aria-label={t('specEditor.sidebar.paths')}>
                   <ItemContent
                     stayOpenAfterClick
                     onClick={setPathsVisible}
@@ -156,11 +157,11 @@ export const Sidebar: FunctionComponent<SidebarProps> = ({ jsonData, onClick }) 
                     <ItemWrapper
                       checked={pathsVisible}
                       htmlFor="paths"
-                      label="Paths"
+                      label={t('specEditor.sidebar.paths')}
                     />
                   </ItemContent>
                 </DropdownItem>
-                <DropdownItem aria-label='Requests'>
+                <DropdownItem aria-label={t('specEditor.sidebar.requests')}>
                   <ItemContent
                     stayOpenAfterClick
                     onClick={setRequestsVisible}
@@ -168,11 +169,11 @@ export const Sidebar: FunctionComponent<SidebarProps> = ({ jsonData, onClick }) 
                     <ItemWrapper
                       checked={requestsVisible}
                       htmlFor="requests"
-                      label="Requests"
+                      label={t('specEditor.sidebar.requests')}
                     />
                   </ItemContent>
                 </DropdownItem>
-                <DropdownItem aria-label='Responses'>
+                <DropdownItem aria-label={t('specEditor.sidebar.responses')}>
                   <ItemContent
                     stayOpenAfterClick
                     onClick={setResponsesVisible}
@@ -180,22 +181,22 @@ export const Sidebar: FunctionComponent<SidebarProps> = ({ jsonData, onClick }) 
                     <ItemWrapper
                       checked={responsesVisible}
                       htmlFor="responses"
-                      label="Responses"
+                      label={t('specEditor.sidebar.responses')}
                     />
                   </ItemContent>
                 </DropdownItem>
-                <DropdownItem aria-label='Parameters'>
+                <DropdownItem aria-label={t('specEditor.sidebar.parameters')}>
                   <ItemContent
                     stayOpenAfterClick
                     onClick={setParametersVisible}
                   >
                     <StyledItem>
                       <input type="checkbox" checked={parametersVisible} readOnly />
-                      <label htmlFor="parameters">Parameters</label>
+                      <label htmlFor="parameters">{t('specEditor.sidebar.parameters')}</label>
                     </StyledItem>
                   </ItemContent>
                 </DropdownItem>
-                <DropdownItem aria-label='Headers'>
+                <DropdownItem aria-label={t('specEditor.sidebar.headers')}>
                   <ItemContent
                     stayOpenAfterClick
                     onClick={setHeadersVisible}
@@ -203,11 +204,11 @@ export const Sidebar: FunctionComponent<SidebarProps> = ({ jsonData, onClick }) 
                     <ItemWrapper
                       checked={headersVisible}
                       htmlFor="headers"
-                      label="Headers"
+                      label={t('specEditor.sidebar.headers')}
                     />
                   </ItemContent>
                 </DropdownItem>
-                <DropdownItem aria-label='Schemas'>
+                <DropdownItem aria-label={t('specEditor.sidebar.schemas')}>
                   <ItemContent
                     stayOpenAfterClick
                     onClick={setSchemasVisible}
@@ -215,11 +216,11 @@ export const Sidebar: FunctionComponent<SidebarProps> = ({ jsonData, onClick }) 
                     <ItemWrapper
                       checked={schemasVisible}
                       htmlFor="schemas"
-                      label="Schemas"
+                      label={t('specEditor.sidebar.schemas')}
                     />
                   </ItemContent>
                 </DropdownItem>
-                <DropdownItem aria-label='Security'>
+                <DropdownItem aria-label={t('specEditor.sidebar.security')}>
                   <ItemContent
                     stayOpenAfterClick
                     onClick={setSecurityVisible}
@@ -227,7 +228,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = ({ jsonData, onClick }) 
                     <ItemWrapper
                       checked={securityVisible}
                       htmlFor="security"
-                      label="Security"
+                      label={t('specEditor.sidebar.security')}
                     />
                   </ItemContent>
                 </DropdownItem>

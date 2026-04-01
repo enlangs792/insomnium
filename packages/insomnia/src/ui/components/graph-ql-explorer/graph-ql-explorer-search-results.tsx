@@ -1,6 +1,7 @@
 import { GraphQLNamedType, GraphQLSchema, GraphQLType } from 'graphql';
 import React, { PureComponent } from 'react';
 
+import { t } from '../../../common/i18n';
 import { fuzzyMatch, fuzzyMatchAll } from '../../../common/misc';
 import { GraphQLExplorerFieldsList } from './graph-ql-explorer-fields-list';
 import { GraphQLExplorerTypeLink } from './graph-ql-explorer-type-link';
@@ -109,7 +110,7 @@ export class GraphQLExplorerSearchResults extends PureComponent<Props, State> {
             className="surprise"
             onClick={() => this.setState(({ displayedTypeBatches: oldValue }) => ({ displayedTypeBatches: oldValue + 1 }))}
           >
-            And {numberOfAllTypes - numberOfTypesToRender} more types found... Click here to show {BATCH_SIZE} more.
+            {t('graphqlExplorer.moreTypesFound', { count: numberOfAllTypes - numberOfTypesToRender, batchSize: BATCH_SIZE })}
           </a>
         )}
       </>
@@ -140,7 +141,7 @@ export class GraphQLExplorerSearchResults extends PureComponent<Props, State> {
             className="surprise"
             onClick={() => this.setState(({ displayedFieldBatches: oldValue }) => ({ displayedFieldBatches: oldValue + 1 }))}
           >
-            And {numberOfAllFields - numberOfFieldsToRender} more fields found... Click here to show {BATCH_SIZE} more.
+            {t('graphqlExplorer.moreFieldsFound', { count: numberOfAllFields - numberOfFieldsToRender, batchSize: BATCH_SIZE })}
           </a>
         )}
       </>
@@ -151,10 +152,10 @@ export class GraphQLExplorerSearchResults extends PureComponent<Props, State> {
     const { foundTypes, foundFields } = this.state;
     return (
       <div ref={this.ref} className="graphql-explorer__search-reults">
-        {!foundTypes.length && !foundFields.length && <p>No results found.</p>}
-        {foundTypes.length > 0 && <h2 className="graphql-explorer__subheading">Found Types</h2>}
+        {!foundTypes.length && !foundFields.length && <p>{t('graphqlExplorer.noResultsFound')}</p>}
+        {foundTypes.length > 0 && <h2 className="graphql-explorer__subheading">{t('graphqlExplorer.foundTypes')}</h2>}
         {this.renderFoundTypes()}
-        {foundFields.length > 0 && <h2 className="graphql-explorer__subheading">Found Fields</h2>}
+        {foundFields.length > 0 && <h2 className="graphql-explorer__subheading">{t('graphqlExplorer.foundFields')}</h2>}
         {this.renderFoundFields()}
       </div>
     );

@@ -3,6 +3,7 @@ import React, { forwardRef, KeyboardEvent, useImperativeHandle, useRef, useState
 
 import { constructKeyCombinationDisplay, isModifierKeyCode } from '../../../common/hotkeys';
 import { keyboardKeys } from '../../../common/keyboard-keys';
+import { t } from '../../../common/i18n';
 import { KeyCombination } from '../../../common/settings';
 import { KeyboardShortcut } from '../../../common/settings';
 import { Modal, ModalHandle, ModalProps } from '../base/modal';
@@ -105,17 +106,17 @@ export const AddKeyCombinationModal = forwardRef<AddKeyCombinationModalHandle, M
       ref={modalRef}
       className="shortcuts add-key-comb-modal"
     >
-      <ModalHeader>Add Keyboard Shortcut</ModalHeader>
+      <ModalHeader>{t('shortcuts.addKeyboardShortcut')}</ModalHeader>
       <ModalBody noScroll>
         <div className="pad-left pad-right pad-top pad-bottom-sm">
           <div className="form-control form-control--outlined">
             <label>
-              Press desired key combination and then press ENTER.
+              {t('shortcuts.pressDesiredKeyCombination')}
               <input onKeyDown={handleKeyDown} autoFocus type="text" className="key-comb" value={keyCombDisplay} readOnly />
             </label>
           </div>
         </div>
-        <div className={duplicateMessageClasses}>Duplicate key combination</div>
+        <div className={duplicateMessageClasses}>{t('shortcuts.duplicateKeyCombination')}</div>
       </ModalBody>
     </Modal>
   );

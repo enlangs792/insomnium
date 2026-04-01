@@ -3,6 +3,7 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { t } from '../../../common/i18n';
 import { getSetCookieHeaders } from '../../../common/misc';
 import { CurlEvent } from '../../../main/network/curl';
 import { ResponseTimelineEntry } from '../../../main/network/libcurl-promise';
@@ -178,8 +179,8 @@ const RealtimeActiveResponsePane: FC<{ response: WebSocketResponse | Response }>
           activeResponse={response}
         />
       </PaneHeader>
-      <Tabs aria-label="Curl response pane tabs">
-        <TabItem key="events" title="Events">
+      <Tabs aria-label={t('websocket.responsePaneTabs')}>
+        <TabItem key="events" title={t('websocket.events')}>
           <PaneBodyContent>
             {response.error ? <ResponseErrorViewer url={response.url} error={response.error} />
               : <>
@@ -193,18 +194,18 @@ const RealtimeActiveResponsePane: FC<{ response: WebSocketResponse | Response }>
                     }}
                   >
                     <select disabled={protocol === 'curl'} onChange={e => setEventType(e.currentTarget.value as CurlEvent['type'])}>
-                      <option value="">All</option>
-                      <option value="message">Message</option>
-                      <option value="open">Open</option>
-                      <option value="close">Close</option>
-                      <option value="error">Error</option>
+                      <option value="">{t('websocket.all')}</option>
+                      <option value="message">{t('websocket.message')}</option>
+                      <option value="open">{t('websocket.open')}</option>
+                      <option value="close">{t('websocket.close')}</option>
+                      <option value="error">{t('websocket.error')}</option>
                     </select>
 
                     <EventSearchFormControl>
                       <EventSearchInput
                         ref={searchInputRef}
                         type="search"
-                        placeholder="Search"
+                        placeholder={t('websocket.search')}
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.currentTarget.value)}
                       />
@@ -252,7 +253,7 @@ const RealtimeActiveResponsePane: FC<{ response: WebSocketResponse | Response }>
           key="headers"
           title={
             <>
-              Headers{' '}
+              {t('responsePane.headers')}{' '}
               {response?.headers.length > 0 && (
                 <span className="bubble">{response.headers.length}</span>
               )}
@@ -269,7 +270,7 @@ const RealtimeActiveResponsePane: FC<{ response: WebSocketResponse | Response }>
           key="cookies"
           title={
             <>
-              Cookies{' '}
+              {t('responsePane.cookies')}{' '}
               {cookieHeaders.length ? (
                 <span className="bubble">{cookieHeaders.length}</span>
               ) : null}
@@ -286,7 +287,7 @@ const RealtimeActiveResponsePane: FC<{ response: WebSocketResponse | Response }>
             </ErrorBoundary>
           </PanelContainer>
         </TabItem>
-        <TabItem key="timeline" title="Timeline">
+        <TabItem key="timeline" title={t('responsePane.timeline')}>
           <ResponseTimelineViewer
             key={response._id}
             timeline={timeline}

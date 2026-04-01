@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
+import { t } from '../../../../common/i18n';
 import type { GrpcMethodInfo } from '../../../../main/ipc/grpc';
 import { Dropdown, DropdownButton, DropdownItem, DropdownSection, ItemContent } from '../../base/dropdown';
 import { GrpcMethodTag } from '../../tags/grpc-method-tag';
@@ -63,7 +64,7 @@ export const GrpcMethodDropdown: FunctionComponent<Props> = ({
 
   return (
     <Dropdown
-      aria-label='Select gRPC method dropdown'
+      aria-label={t('grpcMethodDropdown.selectGrpcMethodDropdown')}
       className="tall wide"
       isDisabled={methods.length === 0}
       triggerButton={
@@ -77,13 +78,13 @@ export const GrpcMethodDropdown: FunctionComponent<Props> = ({
           style={{ maxWidth: '250px' }}
         >
           <Tooltip
-            message={selectedPath || 'Add proto file or use server reflection'}
+            message={selectedPath || t('grpcMethodDropdown.addProtoFileOrUseServerReflection')}
             position="bottom"
             delay={500}
             style={{ maxWidth: '240px', display: 'flex', alignItems: 'center' }}
           >
             <span style={{ maxWidth: '240px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {selectedPath ? getShortGrpcPath(selectedPath) : methods.length > 0 ? 'Select Method' : 'No methods in proto'}
+              {selectedPath ? getShortGrpcPath(selectedPath) : methods.length > 0 ? t('grpcMethodDropdown.selectMethod') : t('grpcMethodDropdown.noMethodsInProto')}
             </span>
             <i className="fa fa-caret-down pad-left-sm" />
           </Tooltip>
@@ -93,8 +94,8 @@ export const GrpcMethodDropdown: FunctionComponent<Props> = ({
       {Object.entries(groupedByPkg).map(([name, pkg]) => (
         <DropdownSection
           key={name}
-          aria-label='Select gRPC method section'
-          title={name !== NO_PACKAGE_KEY && <NormalCase>pkg: {name}</NormalCase>}
+          aria-label={t('grpcMethodDropdown.selectGrpcMethodSection')}
+          title={name !== NO_PACKAGE_KEY && <NormalCase>{t('grpcMethodDropdown.packagePrefix', { name })}</NormalCase>}
         >
           {pkg.map(({ type, fullPath }) => (
             <DropdownItem

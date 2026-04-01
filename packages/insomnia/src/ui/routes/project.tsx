@@ -470,7 +470,7 @@ const ProjectRoute: FC = () => {
             <div className="flex flex-1 flex-col overflow-hidden divide-solid divide-y divide-[--hl-md]">
               <div className="p-[--padding-sm]">
                 <Select
-                  aria-label="Organizations"
+                  aria-label={t('project.organizations')}
                   onSelectionChange={id => {
                     navigate(`/organization/${id}`);
                   }}
@@ -518,12 +518,12 @@ const ProjectRoute: FC = () => {
               </div>
               <div className="flex flex-col flex-1">
                 <Heading className="p-[--padding-sm] uppercase text-xs">
-                  Projects ({projectsCount})
+                  {t('project.plural')} ({projectsCount})
                 </Heading>
                 {organizationId === DEFAULT_ORGANIZATION_ID && (
                   <div className="flex justify-between gap-1 p-[--padding-sm]">
                     <SearchField
-                      aria-label="Projects filter"
+                      aria-label={t('project.projectsFilter')}
                       className="group relative flex-1"
                       defaultValue={searchParams.get('filter')?.toString() ?? ''}
                       onChange={projectName => {
@@ -534,7 +534,7 @@ const ProjectRoute: FC = () => {
                       }}
                     >
                       <Input
-                        placeholder="Filter"
+                        placeholder={t('project.filter')}
                         className="py-1 placeholder:italic w-full pl-2 pr-7 rounded-sm border border-solid border-[--hl-sm] bg-[--color-bg] text-[--color-font] focus:outline-none focus:ring-1 focus:ring-[--hl-md] transition-colors"
                       />
                       <div className="flex items-center px-2 absolute right-0 top-0 h-full">
@@ -580,7 +580,7 @@ const ProjectRoute: FC = () => {
                           });
                         }
                       }}
-                      aria-label="Create new Project"
+                      aria-label={t('project.createNewProject')}
                       className="flex items-center justify-center h-full aspect-square aria-pressed:bg-[--hl-sm] rounded-sm text-[--color-font] hover:bg-[--hl-xs] focus:ring-inset ring-1 ring-transparent focus:ring-[--hl-md] transition-all text-sm"
                     >
                       <Icon icon="plus-circle" />
@@ -589,7 +589,7 @@ const ProjectRoute: FC = () => {
                 )}
 
                 <GridList
-                  aria-label="Projects"
+                  aria-label={t('project.plural')}
                   items={projects}
                   className="overflow-y-auto flex-1 data-[empty]:py-0 py-[--padding-sm]"
                   disallowEmptySelection
@@ -630,7 +630,7 @@ const ProjectRoute: FC = () => {
                 </GridList>
               </div>
               <GridList
-                aria-label="Scope filter"
+                aria-label={t('project.scopeFilter')}
                 items={scopeActionList}
                 className="overflow-y-auto flex-1 data-[empty]:py-0 py-[--padding-sm]"
                 disallowEmptySelection
@@ -681,7 +681,7 @@ const ProjectRoute: FC = () => {
             <div className="w-full h-full flex flex-col overflow-hidden">
               <div className="flex justify-between w-full gap-1 p-[--padding-md]">
                 <SearchField
-                  aria-label="Workspaces filter"
+                  aria-label={t('project.workspacesFilter')}
                   className="group relative flex-1"
                   defaultValue={searchParams.get('filter')?.toString()}
                   onChange={filter => {
@@ -692,7 +692,7 @@ const ProjectRoute: FC = () => {
                   }}
                 >
                   <Input
-                    placeholder="Filter"
+                    placeholder={t('project.filter')}
                     className="py-1 placeholder:italic w-full pl-2 pr-7 rounded-sm border border-solid border-[--hl-sm] bg-[--color-bg] text-[--color-font] focus:outline-none focus:ring-1 focus:ring-[--hl-md] transition-colors"
                   />
                   <div className="flex items-center px-2 absolute right-0 top-0 h-full">
@@ -702,7 +702,7 @@ const ProjectRoute: FC = () => {
                   </div>
                 </SearchField>
                 <Select
-                  aria-label="Sort order"
+                  aria-label={t('project.sortOrder')}
                   className="h-full aspect-square"
                   selectedKey={sortOrder}
                   onSelectionChange={order =>
@@ -719,7 +719,7 @@ const ProjectRoute: FC = () => {
                   })}
                 >
                   <Button
-                    aria-label="Select sort order"
+                    aria-label={t('project.selectSortOrder')}
                     className="flex flex-shrink-0 items-center justify-center aspect-square h-full aria-pressed:bg-[--hl-sm] rounded-sm text-[--color-font] hover:bg-[--hl-xs] focus:ring-inset ring-1 ring-transparent focus:ring-[--hl-md] transition-all text-sm"
                   >
                     <Icon icon="sort" />
@@ -758,14 +758,14 @@ const ProjectRoute: FC = () => {
 
                 <MenuTrigger>
                   <Button
-                    aria-label="Create in project"
+                    aria-label={t('project.createInProject')}
                     className="flex items-center justify-center h-full aspect-square aria-pressed:bg-[--hl-sm] rounded-sm text-[--color-font] hover:bg-[--hl-xs] focus:ring-inset ring-1 ring-transparent focus:ring-[--hl-md] transition-all text-sm"
                   >
                     <Icon icon="plus-circle" />
                   </Button>
                   <Popover className="min-w-max">
                     <Menu
-                      aria-label="Create in project actions"
+                      aria-label={t('project.createInProjectActions')}
                       selectionMode="single"
                       onAction={key => {
                         const item = createInProjectActionList.find(
@@ -796,7 +796,7 @@ const ProjectRoute: FC = () => {
               </div>
 
               <GridList
-                aria-label="Workspaces"
+                aria-label={t('project.workspaces')}
                 items={workspaces}
                 onAction={key => {
                   navigate(
@@ -809,7 +809,7 @@ const ProjectRoute: FC = () => {
                     return (
                       <div className="w-full h-full flex items-center justify-center">
                         <p className="notice subtle">
-                          No documents found for <strong>{filter}</strong>
+                          {t('project.noDocumentsFoundFor', { filter })}
                         </p>
                       </div>
                     );
@@ -846,8 +846,8 @@ const ProjectRoute: FC = () => {
                           )}
                           <span className="truncate pr-2">
                             {isDesign(item.workspace)
-                              ? 'Document'
-                              : 'Collection'}
+                              ? t('workspace.document')
+                              : t('workspace.collection')}
                           </span>
                         </div>
                         <span className="flex-1" />
@@ -872,8 +872,8 @@ const ProjectRoute: FC = () => {
                             <Icon icon="file-alt" />
                             <span>
                               {item.specFormat === 'openapi'
-                                ? 'OpenAPI'
-                                : 'Swagger'}{' '}
+                                ? t('project.openApi')
+                                : t('project.swagger')}{' '}
                               {item.specFormatVersion}
                             </span>
                           </div>
@@ -901,7 +901,7 @@ const ProjectRoute: FC = () => {
                               {!item.hasUnsavedChanges &&
                                 item.lastCommitTime &&
                                 item.lastCommitAuthor &&
-                                `by ${item.lastCommitAuthor}`}
+                                t('project.byAuthor', { author: item.lastCommitAuthor })}
                             </span>
                           </div>
                         )}

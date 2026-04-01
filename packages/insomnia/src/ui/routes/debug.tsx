@@ -31,6 +31,7 @@ import { SORT_ORDERS, SortOrder, getSortOrderName } from '../../common/constants
 import { ChangeBufferEvent, database as db } from '../../common/database';
 import { generateId } from '../../common/misc';
 import { PlatformKeyCombinations } from '../../common/settings';
+import { t } from '../../common/i18n';
 import type { GrpcMethodInfo } from '../../main/ipc/grpc';
 import * as models from '../../models';
 import { Environment } from '../../models/environment';
@@ -96,7 +97,9 @@ export interface GrpcMessage {
 }
 
 const getRequestNameOrFallback = (doc: Request | RequestGroup | GrpcRequest | WebSocketRequest): string => {
-  return !isRequestGroup(doc) ? doc.name || doc.url || 'Untitled request' : doc.name || 'Untitled folder';
+  return !isRequestGroup(doc)
+    ? doc.name || doc.url || t('debug.untitledRequest')
+    : doc.name || t('debug.untitledFolder');
 };
 
 export interface GrpcRequestState {
@@ -303,8 +306,8 @@ export const Debug: FC = () => {
     request_showDelete: () => {
       if (activeRequest) {
         showModal(AskModal, {
-          title: 'Delete Request?',
-          message: `Really delete ${activeRequest.name}?`,
+          title: t('debug.deleteRequestTitle'),
+          message: t('debug.deleteRequestMessage', { name: activeRequest.name }),
           onDone: async (confirmed: boolean) => {
             if (confirmed) {
               requestFetcher.submit(
@@ -322,10 +325,10 @@ export const Debug: FC = () => {
     request_showDuplicate: () => {
       if (activeRequest) {
         showModal(PromptModal, {
-          title: 'Duplicate Request',
+          title: t('debug.duplicateRequest'),
           defaultValue: activeRequest.name,
-          submitName: 'Create',
-          label: 'New Name',
+          submitName: t('project.create'),
+          label: t('debug.newName'),
           selectText: true,
           onComplete: async (name: string) => {
             requestFetcher.submit(
@@ -356,10 +359,10 @@ export const Debug: FC = () => {
     request_showCreateFolder: () => {
       const parentId = activeRequest ? activeRequest.parentId : workspaceId;
       showPrompt({
-        title: 'New Folder',
-        defaultValue: 'My Folder',
-        submitName: 'Create',
-        label: 'Name',
+        title: t('debug.newFolder'),
+        defaultValue: t('debug.myFolder'),
+        submitName: t('project.create'),
+        label: t('debug.name'),
         selectText: true,
         onComplete: name =>
           requestFetcher.submit(
@@ -527,7 +530,7 @@ export const Debug: FC = () => {
   }[] = [
       {
         id: 'HTTP',
-        name: 'HTTP Request',
+        name: t('debug.httpRequest'),
         icon: 'plus-circle',
         hint: hotKeyRegistry.request_createHTTP,
         action: () =>
@@ -538,7 +541,7 @@ export const Debug: FC = () => {
       },
       {
         id: 'Event Stream',
-        name: 'Event Stream Request',
+        name: t('debug.eventStreamRequest'),
         icon: 'plus-circle',
         action: () =>
           createRequest({
@@ -548,7 +551,7 @@ export const Debug: FC = () => {
       },
       {
         id: 'GraphQL Request',
-        name: 'GraphQL Request',
+        name: t('debug.graphqlRequest'),
         icon: 'plus-circle',
         action: () =>
           createRequest({
@@ -558,7 +561,7 @@ export const Debug: FC = () => {
       },
       {
         id: 'gRPC Request',
-        name: 'gRPC Request',
+        name: t('debug.grpcRequest'),
         icon: 'plus-circle',
         action: () =>
           createRequest({
@@ -568,7 +571,7 @@ export const Debug: FC = () => {
       },
       {
         id: 'WebSocket Request',
-        name: 'WebSocket Request',
+        name: t('debug.webSocketRequest'),
         icon: 'plus-circle',
         action: () =>
           createRequest({
@@ -578,20 +581,20 @@ export const Debug: FC = () => {
       },
       {
         id: 'From Curl',
-        name: 'From Curl',
+        name: t('debug.fromCurl'),
         icon: 'terminal',
         action: () => setPasteCurlModalOpen(true),
       },
       {
         id: 'New Folder',
-        name: 'New Folder',
+        name: t('debug.newFolder'),
         icon: 'folder',
         action: () =>
           showPrompt({
-            title: 'New Folder',
-            defaultValue: 'My Folder',
-            submitName: 'Create',
-            label: 'Name',
+            title: t('debug.newFolder'),
+            defaultValue: t('debug.myFolder'),
+            submitName: t('project.create'),
+            label: t('debug.name'),
             selectText: true,
             onComplete: name =>
               requestFetcher.submit(
@@ -630,7 +633,7 @@ export const Debug: FC = () => {
           <div className="flex flex-col items-start gap-2 justify-between p-[--padding-sm]">
             <div className="flex w-full items-center gap-2 justify-between">
               <Select
-                aria-label="Select an environment"
+                aria-label={t('debug.selectEnvironment')}
                 onSelectionChange={environmentId => {
                   setActiveEnvironmentFetcher.submit(
                     {
@@ -657,7 +660,7 @@ export const Debug: FC = () => {
                         return (
                           <Fragment>
                             <Icon icon="cancel" />
-                            No Environment
+                            {t('debug.noEnvironment')}
                           </Fragment>
                         );
                       }
@@ -705,7 +708,7 @@ export const Debug: FC = () => {
                             />
                             <span>
                               {item._id === baseEnvironment._id
-                                ? 'No Environment'
+                                ? t('debug.noEnvironment')
                                 : item.name}
                             </span>
                             {isSelected && (
@@ -722,7 +725,7 @@ export const Debug: FC = () => {
                 </Popover>
               </Select>
               <Button
-                aria-label='Manage Environments'
+                aria-label={t('debug.manageEnvironments')}
                 onPress={() => setEnvironmentModalOpen(true)}
                 className="flex flex-shrink-0 items-center justify-center aspect-square h-full aria-pressed:bg-[--hl-sm] rounded-sm text-[--color-font] hover:bg-[--hl-xs] focus:ring-inset ring-1 ring-transparent focus:ring-[--hl-md] transition-all text-sm"
               >
@@ -734,14 +737,16 @@ export const Debug: FC = () => {
               className="px-4 py-1 flex-1 flex items-center justify-center gap-2 aria-pressed:bg-[--hl-sm] rounded-sm text-[--color-font] hover:bg-[--hl-xs] focus:ring-inset ring-1 ring-transparent focus:ring-[--hl-md] transition-all text-sm"
             >
               <Icon icon="cookie-bite" />
-              {activeCookieJar.cookies.length === 0 ? 'Add' : 'Manage'} Cookies
+              {activeCookieJar.cookies.length === 0
+                ? t('debug.addCookies')
+                : t('debug.manageCookies')}
             </Button>
           </div>
 
           <div className="flex flex-col flex-1 overflow-hidden">
             <div className="flex justify-between gap-1 p-[--padding-sm]">
               <SearchField
-                aria-label="Request filter"
+                aria-label={t('debug.requestFilter')}
                 className="group relative flex-1"
                 defaultValue={searchParams.get('filter')?.toString() ?? ''}
                 onChange={filter => {
@@ -752,7 +757,7 @@ export const Debug: FC = () => {
                 }}
               >
                 <Input
-                  placeholder="Filter"
+                  placeholder={t('debug.filter')}
                   className="py-1 w-full pl-2 pr-7 rounded-sm border border-solid border-[--hl-sm] bg-[--color-bg] text-[--color-font] focus:outline-none focus:ring-1 focus:ring-[--hl-md] transition-colors"
                 />
                 <div className="flex items-center px-2 absolute right-0 top-0 h-full">
@@ -762,7 +767,7 @@ export const Debug: FC = () => {
                 </div>
               </SearchField>
               <Select
-                aria-label="Sort order"
+                aria-label={t('debug.sortOrder')}
                 className="h-full aspect-square"
                 selectedKey={sortOrder}
                 onSelectionChange={order =>
@@ -779,7 +784,7 @@ export const Debug: FC = () => {
                 })}
               >
                 <Button
-                  aria-label="Select sort order"
+                  aria-label={t('debug.selectSortOrder')}
                   className="flex flex-shrink-0 items-center justify-center aspect-square h-full aria-pressed:bg-[--hl-sm] rounded-sm text-[--color-font] hover:bg-[--hl-xs] focus:ring-inset ring-1 ring-transparent focus:ring-[--hl-md] transition-all text-sm"
                 >
                   <Icon icon="sort" />
@@ -814,14 +819,14 @@ export const Debug: FC = () => {
 
               <MenuTrigger>
                 <Button
-                  aria-label="Create in collection"
+                  aria-label={t('debug.createInCollection')}
                   className="flex items-center justify-center h-full aspect-square aria-pressed:bg-[--hl-sm] rounded-sm text-[--color-font] hover:bg-[--hl-xs] focus:ring-inset ring-1 ring-transparent focus:ring-[--hl-md] transition-all text-sm"
                 >
                   <Icon icon="plus-circle" />
                 </Button>
                 <Popover className="min-w-max">
                   <Menu
-                    aria-label="Create a new request"
+                    aria-label={t('debug.createNewRequest')}
                     selectionMode="single"
                     onAction={key => {
                       const item = createInCollectionActionList.find(item => item.id === key);
@@ -851,7 +856,7 @@ export const Debug: FC = () => {
             <GridList
               className="overflow-y-auto border-b border-t data-[empty]:py-0 py-[--padding-sm] data-[empty]:border-none border-solid border-[--hl-sm]"
               items={collection.filter(item => !item.hidden && item.pinned)}
-              aria-label="Pinned Requests"
+              aria-label={t('debug.pinnedRequests')}
               disallowEmptySelection
               selectedKeys={[requestId]}
               selectionMode="single"
@@ -914,7 +919,7 @@ export const Debug: FC = () => {
                 style={{ height: virtualizer.getTotalSize() }}
                 items={virtualizer.getVirtualItems()}
                 className="relative"
-                aria-label="Request Collection"
+                aria-label={t('debug.requestCollection')}
                 disallowEmptySelection
                 key={sortOrder}
                 dragAndDropHooks={sortOrder === 'type-manual' ? collectionDragAndDrop.dragAndDropHooks : undefined}

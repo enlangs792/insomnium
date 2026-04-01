@@ -191,7 +191,7 @@ export const CookieModifyModal = ((props: ModalProps & CookieModifyModalOptions)
         </ModalBody>
         <ModalFooter>
           <button className="btn" onClick={() => modalRef.current?.hide()}>
-            Done
+            {t('modal.done')}
           </button>
         </ModalFooter>
       </Modal>

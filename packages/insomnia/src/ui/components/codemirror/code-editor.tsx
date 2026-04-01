@@ -15,6 +15,7 @@ import vkBeautify from 'vkbeautify';
 import { DEBOUNCE_MILLIS, isMac } from '../../../common/constants';
 import * as misc from '../../../common/misc';
 import { KeyCombination } from '../../../common/settings';
+import { t } from '../../../common/i18n';
 import { getTagDefinitions } from '../../../templating/index';
 import { NunjucksParsedTag } from '../../../templating/utils';
 import { jsonPrettify } from '../../../utils/prettify/json';
@@ -554,9 +555,11 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(({
                 ref={inputRef}
                 key="filter"
                 type="text"
-                title="Filter response body"
+                title={t('codeEditor.filterResponseBody')}
                 defaultValue={filter || ''}
-                placeholder={mode?.includes('json') ? '$.store.books[*].author' : '/store/books/author'}
+                placeholder={mode?.includes('json')
+                  ? t('codeEditor.jsonFilterPlaceholder')
+                  : t('codeEditor.xmlFilterPlaceholder')}
                 onKeyDown={createKeybindingsHandler({
                   'Enter': () => {
                     const filter = inputRef.current?.value;
@@ -578,7 +581,7 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(({
             {showFilter && filterHistory?.length ?
               ((
                 <Dropdown
-                  aria-label='Filter History'
+                  aria-label={t('codeEditor.filterHistory')}
                   key="history"
                   className="tall"
                   triggerButton={
@@ -617,14 +620,14 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(({
               (<button
                 key="prettify"
                 className="btn btn--compact"
-                title="Auto-format request body whitespace"
+                title={t('codeEditor.autoFormatRequestBodyWhitespace')}
                 onClick={() => {
                   if (mode?.includes('json') || mode?.includes('xml')) {
                     maybePrettifyAndSetValue(codeMirror.current?.getValue(), true);
                   }
                 }}
               >
-                Beautify {mode?.includes('json') ? 'JSON' : mode?.includes('xml') ? 'XML' : ''}
+                {t('codeEditor.beautify')} {mode?.includes('json') ? 'JSON' : mode?.includes('xml') ? 'XML' : ''}
               </button>) : null}
           </div>
         ) : null

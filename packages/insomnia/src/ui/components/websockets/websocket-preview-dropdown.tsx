@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 
 import { getPreviewModeName, PREVIEW_MODES, PreviewMode } from '../../../common/constants';
+import { t } from '../../../common/i18n';
 import { Dropdown, DropdownButton, DropdownItem, DropdownSection, ItemContent } from '../base/dropdown';
 
 interface Props {
@@ -18,7 +19,7 @@ export const WebSocketPreviewModeDropdown: FC<Props> = ({
 }) => {
   return (
     <Dropdown
-      aria-label="Websocket Preview Mode Dropdown"
+      aria-label={t('previewMode.websocketDropdown')}
       triggerButton={
         <DropdownButton className="tall">
           {getPreviewModeName(previewMode)}
@@ -27,8 +28,8 @@ export const WebSocketPreviewModeDropdown: FC<Props> = ({
       }
     >
       <DropdownSection
-        aria-label="Preview Mode Section"
-        title="Preview Mode"
+        aria-label={t('previewMode.previewModeSection')}
+        title={t('previewMode.previewMode')}
       >
         {PREVIEW_MODES.map(mode =>
           <DropdownItem
@@ -44,20 +45,20 @@ export const WebSocketPreviewModeDropdown: FC<Props> = ({
         )}
       </DropdownSection>
       <DropdownSection
-        aria-label="Actions Section"
-        title="Actions"
+        aria-label={t('previewMode.actionsSection')}
+        title={t('previewMode.actions')}
       >
-        <DropdownItem aria-label='Copy raw response'>
+        <DropdownItem aria-label={t('previewMode.copyRawResponse')}>
           <ItemContent
             icon="copy"
-            label="Copy raw response"
+            label={t('previewMode.copyRawResponse')}
             onClick={copyToClipboard}
           />
         </DropdownItem>
-        <DropdownItem aria-label='Export raw response'>
+        <DropdownItem aria-label={t('previewMode.exportRawResponse')}>
           <ItemContent
             icon="save"
-            label="Export raw response"
+            label={t('previewMode.exportRawResponse')}
             onClick={download}
           />
         </DropdownItem>

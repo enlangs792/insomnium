@@ -3,6 +3,7 @@ import React, { FC, useRef } from 'react';
 import { useMeasure } from 'react-use';
 import styled from 'styled-components';
 
+import { t } from '../../../common/i18n';
 import { CurlEvent } from '../../../main/network/curl';
 import { WebSocketEvent } from '../../../main/network/websocket';
 import { SvgIcon, SvgIconProps } from '../svg-icon';
@@ -111,21 +112,21 @@ const getMessage = (event: WebSocketEvent | CurlEvent): string => {
   switch (event.type) {
     case 'message': {
       if ('data' in event && typeof event.data === 'object') {
-        return 'Binary data';
+        return t('websocket.binaryData');
       }
       return event.data.toString();
     }
     case 'open': {
-      return 'Connected successfully';
+      return t('websocket.connectedSuccessfully');
     }
     case 'close': {
-      return 'Disconnected';
+      return t('websocket.disconnected');
     }
     case 'error': {
       return event.message;
     }
     default: {
-      return 'Unknown event';
+      return t('websocket.unknownEvent');
     }
   }
 };
@@ -154,9 +155,9 @@ export const EventLogView: FC<Props> = ({ events, onSelect, selectionId }) => {
           <div style={{ width: '13px' }} />
         </EventIconCell>
         <Divider />
-        <EventMessageCell>Data</EventMessageCell>
+        <EventMessageCell>{t('websocket.data')}</EventMessageCell>
         <Divider />
-        <EventTimestampCell>Time</EventTimestampCell>
+        <EventTimestampCell>{t('websocket.time')}</EventTimestampCell>
       </HeadingRow>
       <AutoSize ref={autoSizeRef}>
         <Scrollable style={{ height }} ref={parentRef}>

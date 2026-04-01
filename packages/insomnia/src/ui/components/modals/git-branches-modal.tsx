@@ -3,6 +3,7 @@ import React, { FC, useEffect, useRef } from 'react';
 import { OverlayContainer } from 'react-aria';
 import { useFetcher, useParams } from 'react-router-dom';
 
+import { t } from '../../../common/i18n';
 import { GitRepository } from '../../../models/git-repository';
 import { CreateNewGitBranchResult, GitBranchesLoaderData } from '../../routes/git-actions';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
@@ -56,7 +57,7 @@ export const GitBranchesModal: FC<Props> = (({
   useEffect(() => {
     if (newBranchFetcher.data?.errors?.length) {
       showAlert({
-        title: 'Push Failed',
+        title: t('gitBranches.pushFailed'),
         message: newBranchFetcher.data.errors.join('\n'),
       });
     }
@@ -65,7 +66,7 @@ export const GitBranchesModal: FC<Props> = (({
   return (
     <OverlayContainer>
       <Modal ref={modalRef} onHide={onHide}>
-        <ModalHeader><i className={`fa fa-code-fork space-left ${isFetchingRemoteBranches ? 'fa-fade' : ''}`} /> Branches</ModalHeader>
+        <ModalHeader><i className={`fa fa-code-fork space-left ${isFetchingRemoteBranches ? 'fa-fade' : ''}`} /> {t('gitBranches.branches')}</ModalHeader>
         <ModalBody className="pad">
           <newBranchFetcher.Form
             method="post"
@@ -74,19 +75,19 @@ export const GitBranchesModal: FC<Props> = (({
             <div className="form-row">
               <div className="form-control form-control--outlined">
                 <label>
-                  New Branch Name
+                  {t('gitBranches.newBranchName')}
                   <input
                     type="text"
                     autoFocus
                     name="branch"
                     required
-                    placeholder="testing-branch"
+                    placeholder={t('gitBranches.newBranchPlaceholder')}
                   />
                 </label>
               </div>
               <div className="form-control form-control--no-label width-auto">
                 <button disabled={newBranchFetcher.state === 'loading'} type="submit" className="btn btn--clicky">
-                  <i className='fa fa-plus space-right' /> Create
+                  <i className='fa fa-plus space-right' /> {t('project.create')}
                 </button>
               </div>
             </div>
@@ -96,7 +97,7 @@ export const GitBranchesModal: FC<Props> = (({
             <table className="table--fancy table--outlined">
               <thead>
                 <tr>
-                  <th className="text-left">Branches</th>
+                  <th className="text-left">{t('gitBranches.branches')}</th>
                   <th className="text-right">&nbsp;</th>
                 </tr>
               </thead>
@@ -112,7 +113,7 @@ export const GitBranchesModal: FC<Props> = (({
                         {branch}
                       </span>
                       {branch === activeBranch ? (
-                        <span className="txt-sm space-left">(current)</span>
+                        <span className="txt-sm space-left">({t('gitBranches.current')})</span>
                       ) : null}
                     </td>
                     <td className="text-right">
@@ -120,7 +121,7 @@ export const GitBranchesModal: FC<Props> = (({
                         <>
                           <PromptButton
                             className="btn btn--micro btn--outlined space-left"
-                            doneMessage="Merged"
+                            doneMessage={t('gitBranches.merged')}
                             onClick={async () => {
                               mergeBranchFetcher.submit({
                                 branch,
@@ -130,11 +131,11 @@ export const GitBranchesModal: FC<Props> = (({
                               });
                             }}
                           >
-                            Merge
+                            {t('gitBranches.merge')}
                           </PromptButton>
                           <PromptButton
                             className="btn btn--micro btn--outlined space-left"
-                            doneMessage="Deleted"
+                            doneMessage={t('gitBranches.deleted')}
                             onClick={async () => {
                               deleteBranchFetcher.submit({
                                 branch,
@@ -144,7 +145,7 @@ export const GitBranchesModal: FC<Props> = (({
                               });
                             }}
                           >
-                            Delete
+                            {t('menu.delete')}
                           </PromptButton>
                           <button
                             className="btn btn--micro btn--outlined space-left"
@@ -157,7 +158,7 @@ export const GitBranchesModal: FC<Props> = (({
                               });
                             }}
                           >
-                            Checkout
+                            {t('gitBranches.checkout')}
                           </button>
                         </>
                       )}
@@ -171,7 +172,7 @@ export const GitBranchesModal: FC<Props> = (({
             <div className="pad-top">
               <div className="txt-sm faint italic">
                 <i className="fa fa-spinner fa-spin space-right" />
-                Fetching remote branches...
+                {t('gitBranches.fetchingRemoteBranches')}
               </div>
             </div>
           )}
@@ -180,7 +181,7 @@ export const GitBranchesModal: FC<Props> = (({
               <table className="table--fancy table--outlined">
                 <thead>
                   <tr>
-                    <th className="text-left">Remote Branches {isFetchingRemoteBranches && <i className="fa fa-spinner fa-spin space-right" />}</th>
+                    <th className="text-left">{t('gitBranches.remoteBranches')} {isFetchingRemoteBranches && <i className="fa fa-spinner fa-spin space-right" />}</th>
                     <th className="text-right">&nbsp;</th>
                   </tr>
                 </thead>
@@ -200,7 +201,7 @@ export const GitBranchesModal: FC<Props> = (({
                             });
                           }}
                         >
-                          Checkout
+                          {t('gitBranches.checkout')}
                         </button>
                       </td>
                     </tr>
@@ -216,7 +217,7 @@ export const GitBranchesModal: FC<Props> = (({
           </div>
           <div>
             <button className="btn" onClick={() => modalRef.current?.hide()}>
-              Done
+              {t('modal.done')}
             </button>
           </div>
         </ModalFooter>

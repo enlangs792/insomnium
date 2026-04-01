@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { t } from '../../../common/i18n';
 export const GrpcTag = () => (
   <div
     style={{
@@ -7,7 +8,7 @@ export const GrpcTag = () => (
     }}
   >
     <div className="tag tag--no-bg tag--small method-grpc">
-      <span className="tag__inner">gRPC</span>
+      <span className="tag__inner">{t('grpc.label')}</span>
     </div>
   </div>
 );

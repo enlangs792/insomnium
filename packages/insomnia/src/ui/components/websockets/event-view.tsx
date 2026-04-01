@@ -4,6 +4,7 @@ import { useParams, useRouteLoaderData } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { PREVIEW_MODE_FRIENDLY, PREVIEW_MODE_RAW, PREVIEW_MODE_SOURCE, PreviewMode } from '../../../common/constants';
+import { t } from '../../../common/i18n';
 import { CurlEvent, CurlMessageEvent } from '../../../main/network/curl';
 import { WebSocketEvent, WebSocketMessageEvent } from '../../../main/network/websocket';
 import { requestMeta } from '../../../models';
@@ -51,8 +52,8 @@ export const MessageEventView: FC<Props<CurlMessageEvent | WebSocketMessageEvent
 
   const handleDownloadResponseBody = useCallback(async () => {
     const { canceled, filePath: outputPath } = await window.dialog.showSaveDialog({
-      title: 'Save Response Body',
-      buttonLabel: 'Save',
+      title: t('responsePane.saveResponseBody'),
+      buttonLabel: t('responsePane.save'),
     });
 
     if (canceled || !outputPath) {
@@ -63,8 +64,8 @@ export const MessageEventView: FC<Props<CurlMessageEvent | WebSocketMessageEvent
 
     to.on('error', err => {
       showError({
-        title: 'Save Failed',
-        message: 'Failed to save response body',
+        title: t('responsePane.saveFailed'),
+        message: t('responsePane.failedToSaveResponseBody'),
         error: err,
       });
     });

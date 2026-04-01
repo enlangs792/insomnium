@@ -212,7 +212,7 @@ export const RequestUrlBar = forwardRef<RequestUrlBarHandle, Props>(({
           ref={inputRef}
           type="text"
           getAutocompleteConstants={handleAutocompleteUrls}
-          placeholder="https://api.archgpt.dev/v1/posts"
+          placeholder={t('requestUrlBar.urlPlaceholder')}
           defaultValue={url}
           onChange={url => patchRequest(requestId, { url })}
           onKeyDown={createKeybindingsHandler({

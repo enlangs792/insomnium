@@ -2,6 +2,7 @@ import React, { ChangeEvent, FunctionComponent, ReactNode, useCallback, useLayou
 import useToggle from 'react-use/lib/useToggle';
 import styled from 'styled-components';
 
+import { t } from '../../../../common/i18n';
 import { SidebarFilter } from './sidebar-filter';
 import { SidebarHeader } from './sidebar-header';
 
@@ -46,7 +47,7 @@ export const SidebarSection: FunctionComponent<SidebarSectionProps> = ({ title, 
       <div style={{ height: bodyVisible ? '100%' : 0 }}>
         <SidebarFilter filter={filterVisible} onChange={handleFilterChange} />
         {renderBody(filterValue) || (
-          <StyledNoResults>No results found for "{filterValue}"...</StyledNoResults>
+          <StyledNoResults>{t('specEditor.sidebar.noResultsFoundFor', { filterValue })}</StyledNoResults>
         )}
       </div>
     </StyledSection>

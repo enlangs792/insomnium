@@ -29,7 +29,7 @@ const GrpcUnaryResponsePane: FunctionComponent<Props> = ({ grpcState }) => {
       <GrpcPaneHeader grpcState={grpcState} />
       <PaneBody>
         {grpcState.responseMessages.length
-          ? (<Tabs aria-label="Grpc tabbed messages tabs" isNested>
+          ? (<Tabs aria-label={t('grpc.tabbedMessagesTabs')} isNested>
             {grpcState.responseMessages.map((m, index) => (
               <TabItem key={m.id} title={`${t('grpc.response')} ${index + 1}`}>
                 <CodeEditor

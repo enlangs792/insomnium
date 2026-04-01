@@ -4,6 +4,7 @@ import { useFetcher, useRevalidator } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { t } from '../../../common/i18n';
 import { database as db } from '../../../common/database';
 import { getWorkspaceLabel } from '../../../common/get-workspace-label';
 import { CaCertificate } from '../../../models/ca-certificate';
@@ -157,20 +158,20 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
     return (
       <div className="row-spaced" key={certificate._id}>
         <CertificateFields>
-          <CertificateField title="Host" value={certificate.host} />
+          <CertificateField title={t('workspaceSettings.host')} value={certificate.host} />
           {certificate.pfx ? (
-            <CertificateField title="PFX" value={certificate.pfx} />
+            <CertificateField title={t('workspaceSettings.pfx')} value={certificate.pfx} />
           ) : (
-            <CertificateField title="CRT" value={certificate.cert} />
+            <CertificateField title={t('workspaceSettings.crt')} value={certificate.cert} />
           )}
-          <CertificateField title="Key" value={certificate.key} optional />
-          <CertificateField title="Passphrase" value={certificate.passphrase} privateText optional />
+          <CertificateField title={t('workspaceSettings.key')} value={certificate.key} optional />
+          <CertificateField title={t('workspaceSettings.passphrase')} value={certificate.passphrase} privateText optional />
         </CertificateFields>
 
         <div className="no-wrap">
           <button
             className="btn btn--super-compact width-auto"
-            title="Enable or disable certificate"
+            title={t('workspaceSettings.enableOrDisableCertificate')}
             onClick={() => toggleClientCert(certificate)}
           >
             {certificate.disabled ? (
@@ -250,20 +251,20 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
       <Modal ref={modalRef} onHide={onHide}>
         {workspace ?
           <ModalHeader key={`header::${workspace._id}`}>
-            {getWorkspaceLabel(workspace).singular} Settings{' '}
+            {t('workspaceSettings.settingsTitle', { type: getWorkspaceLabel(workspace).singular })}{' '}
             <div className="txt-sm selectable faint monospace">{workspace ? workspace._id : ''}</div>
           </ModalHeader> : null}
         {workspace ?
           <ModalBody key={`body::${workspace._id}`} noScroll>
-            <Tabs aria-label="Workspace settings tabs">
-              <TabItem key="overview" title="Overview">
+            <Tabs aria-label={t('workspaceSettings.tabsAriaLabel')}>
+              <TabItem key="overview" title={t('workspaceSettings.overview')}>
                 <PanelContainer className="pad pad-top-sm">
                   <div className="form-control form-control--outlined">
                     <label>
-                      Name
+                      {t('workspaceSettings.name')}
                       <input
                         type="text"
-                        placeholder="Awesome API"
+                        placeholder={t('workspaceSettings.namePlaceholder')}
                         defaultValue={activeWorkspaceName}
                         onChange={event => workspacePatcher(workspace._id, { name: event.target.value })}
                       />
@@ -274,7 +275,7 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
                       <MarkdownEditor
                         className="margin-top"
                         defaultPreviewMode={defaultPreviewMode}
-                        placeholder="Write a description"
+                        placeholder={t('workspaceSettings.writeDescription')}
                         defaultValue={workspace.description}
                         onChange={(description: string) => {
                           workspacePatcher(workspace._id, { description });
@@ -293,41 +294,41 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
                         }}
                         className="btn btn--outlined btn--super-duper-compact"
                       >
-                        Add Description
+                        {t('workspaceSettings.addDescription')}
                       </button>
                     )}
                   </div>
-                  <h2>Actions</h2>
+                  <h2>{t('workspaceSettings.actions')}</h2>
                   <div className="form-control form-control--padded">
                     <PromptButton
                       onClick={_handleRemoveWorkspace}
                       className="width-auto btn btn--clicky inline-block"
                     >
-                      <i className="fa fa-trash-o" /> Delete
+                      <i className="fa fa-trash-o" /> {t('menu.delete')}
                     </PromptButton>
                     <PromptButton
                       onClick={_handleClearAllResponses}
                       className="width-auto btn btn--clicky inline-block space-left"
                     >
-                      <i className="fa fa-trash-o" /> Clear All Responses
+                      <i className="fa fa-trash-o" /> {t('workspaceSettings.clearAllResponses')}
                     </PromptButton>
                   </div>
                 </PanelContainer>
               </TabItem>
-              <TabItem key="client-certificates" title="Client Certificates">
+              <TabItem key="client-certificates" title={t('workspaceSettings.clientCertificates')}>
                 <PanelContainer className="pad">
                   <div className="form-control form-control--outlined">
                     <label>
-                      CA Certificate
+                      {t('workspaceSettings.caCertificate')}
                       <HelpTooltip position="right" className="space-left">
-                        One or more PEM format certificates to trust when making requests.
+                        {t('workspaceSettings.caCertificateHelp')}
                       </HelpTooltip>
                     </label>
                     <div className="row-spaced">
                       <FileInputButton
                         disabled={caCertificate !== null}
                         className="btn btn--clicky"
-                        name="PEM file"
+                        name={t('workspaceSettings.pemFile')}
                         onChange={newCaCert}
                         path={caCertificate?.path || ''}
                         showFileName
@@ -337,7 +338,7 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
                         <button
                           disabled={caCertificate === null}
                           className="btn btn--super-compact width-auto"
-                          title="Enable or disable certificate"
+                          title={t('workspaceSettings.enableOrDisableCertificate')}
                           onClick={() => caCertificate && toggleCaCert(caCertificate)}
                         >
                           {caCertificate?.disabled !== false ? (
@@ -362,16 +363,16 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
                     <div>
                       {clientCertificates.length === 0 ? (
                         <p className="notice surprise margin-top">
-                          You have not yet added any client certificates
+                          {t('workspaceSettings.noClientCertificates')}
                         </p>
                       ) : null}
 
                       {!!sharedCertificates.length && (
                         <div className="form-control form-control--outlined margin-top">
                           <label>
-                            Shared Certificates
+                            {t('workspaceSettings.sharedCertificates')}
                             <HelpTooltip position="right" className="space-left">
-                              Shared certificates will be synced.
+                              {t('workspaceSettings.sharedCertificatesHelp')}
                             </HelpTooltip>
                           </label>
                           {sharedCertificates.map(renderCertificate)}
@@ -381,9 +382,9 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
                       {!!privateCertificates.length && (
                         <div className="form-control form-control--outlined margin-top">
                           <label>
-                            Private Certificates
+                            {t('workspaceSettings.privateCertificates')}
                             <HelpTooltip position="right" className="space-left">
-                              Certificates will not be Git Synced.
+                              {t('workspaceSettings.privateCertificatesHelp')}
                             </HelpTooltip>
                           </label>
                           {privateCertificates.map(renderCertificate)}
@@ -395,7 +396,7 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
                           className="btn btn--clicky auto"
                           onClick={_handleToggleCertificateForm}
                         >
-                          New Certificate
+                          {t('workspaceSettings.newCertificate')}
                         </button>
                       </div>
                     </div>
@@ -403,15 +404,14 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
                     <form onSubmit={_handleCreateCertificate}>
                       <div className="form-control form-control--outlined no-pad-top">
                         <label>
-                          Host
+                          {t('workspaceSettings.host')}
                           <HelpTooltip position="right" className="space-left">
-                            The host for which this client certificate is valid. Port number is optional
-                            and * can be used as a wildcard.
+                            {t('workspaceSettings.hostHelp')}
                           </HelpTooltip>
                           <input
                             type="text"
                             required
-                            placeholder="my-api.com"
+                            placeholder={t('workspaceSettings.hostPlaceholder')}
                             autoFocus
                             onChange={event => setState({ ...state, host: event.currentTarget.value })}
                           />
@@ -420,7 +420,7 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
                       <div className="form-row">
                         <div className="form-control width-auto">
                           <label>
-                            PFX <span className="faint">(or PKCS12)</span>
+                            {t('workspaceSettings.pfx')} <span className="faint">({t('workspaceSettings.orPkcs12')})</span>
                             <FileInputButton
                               className="btn btn--clicky"
                               onChange={pfxPath => setState({ ...state, pfxPath })}
@@ -437,10 +437,10 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
                         <div className="row-fill">
                           <div className="form-control">
                             <label>
-                              CRT File
+                              {t('workspaceSettings.crtFile')}
                               <FileInputButton
                                 className="btn btn--clicky"
-                                name="Cert"
+                                name={t('workspaceSettings.cert')}
                                 onChange={crtPath => setState({ ...state, crtPath })}
                                 path={crtPath}
                                 showFileName
@@ -449,10 +449,10 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
                           </div>
                           <div className="form-control">
                             <label>
-                              Key File
+                              {t('workspaceSettings.keyFile')}
                               <FileInputButton
                                 className="btn btn--clicky"
-                                name="Key"
+                                name={t('workspaceSettings.key')}
                                 onChange={keyPath => setState({ ...state, keyPath })}
                                 path={keyPath}
                                 showFileName
@@ -463,7 +463,7 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
                       </div>
                       <div className="form-control form-control--outlined">
                         <label>
-                          Passphrase
+                          {t('workspaceSettings.passphrase')}
                           <input
                             type="password"
                             placeholder="•••••••••••"
@@ -473,9 +473,9 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
                       </div>
                       <div className="form-control form-control--slim">
                         <label>
-                          Private
+                          {t('workspaceSettings.private')}
                           <HelpTooltip className="space-left">
-                            Certificates will not be Git Synced
+                            {t('workspaceSettings.privateHelp')}
                           </HelpTooltip>
                           <input
                             type="checkbox"
@@ -492,10 +492,10 @@ export const WorkspaceSettingsModal = ({ workspace, workspaceMeta, clientCertifi
                           className="btn btn--super-compact space-right"
                           onClick={_handleToggleCertificateForm}
                         >
-                          Cancel
+                          {t('root.cancel')}
                         </button>
                         <button className="btn btn--clicky space-right" type="submit">
-                          Create Certificate
+                          {t('workspaceSettings.createCertificate')}
                         </button>
                       </div>
                     </form>

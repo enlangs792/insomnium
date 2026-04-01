@@ -1,6 +1,7 @@
 import { GraphQLType } from 'graphql';
 import React, { Fragment, PureComponent } from 'react';
 
+import { t } from '../../../common/i18n';
 import { MarkdownPreview } from '../markdown-preview';
 import { GraphQLDefaultValue } from './graph-ql-default-value';
 import { GraphQLExplorerTypeLink } from './graph-ql-explorer-type-link';
@@ -14,14 +15,14 @@ interface Props {
 export class GraphQLExplorerField extends PureComponent<Props> {
   renderDescription() {
     const { field } = this.props;
-    return <MarkdownPreview markdown={field.description || '*no description*'} />;
+    return <MarkdownPreview markdown={field.description || t('graphqlExplorer.noDescriptionMarkdown')} />;
   }
 
   renderType() {
     const { field, onNavigateType } = this.props;
     return (
       <Fragment>
-        <h2 className="graphql-explorer__subheading">Type</h2>
+        <h2 className="graphql-explorer__subheading">{t('graphqlExplorer.type')}</h2>
         <GraphQLExplorerTypeLink type={field.type} onNavigate={onNavigateType} />
       </Fragment>
     );
@@ -36,7 +37,7 @@ export class GraphQLExplorerField extends PureComponent<Props> {
 
     return (
       <Fragment>
-        <h2 className="graphql-explorer__subheading">Arguments</h2>
+        <h2 className="graphql-explorer__subheading">{t('graphqlExplorer.arguments')}</h2>
         <ul className="graphql-explorer__defs">
           {field.args.map(a => {
             return (

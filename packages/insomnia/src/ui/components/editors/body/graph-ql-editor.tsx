@@ -13,6 +13,7 @@ import { useLocalStorage } from 'react-use';
 
 import { CONTENT_TYPE_JSON } from '../../../../common/constants';
 import { database as db } from '../../../../common/database';
+import { t } from '../../../../common/i18n';
 import { markdownToHTML } from '../../../../common/markdown-to-html';
 import { RENDER_PURPOSE_SEND } from '../../../../common/render';
 import type { ResponsePatch } from '../../../../main/network/libcurl-promise';
@@ -118,7 +119,7 @@ const fetchGraphQLSchemaForRequest = async ({
     if (!response) {
       return {
         schemaFetchError: {
-          message: 'No response body received when fetching schema',
+          message: t('graphqlEditor.noResponseBodyFetchingSchema'),
         },
       };
     }
@@ -126,7 +127,7 @@ const fetchGraphQLSchemaForRequest = async ({
       const renderedURL = response.url || request.url;
       return {
         schemaFetchError: {
-          message: `Got status ${statusCode} fetching schema from "${renderedURL}"`,
+          message: t('graphqlEditor.gotStatusFetchingSchema', { statusCode, renderedURL }),
         },
       };
     }
@@ -140,7 +141,7 @@ const fetchGraphQLSchemaForRequest = async ({
     }
     return {
       schemaFetchError: {
-        message: 'Something went wrong, no data was received from introspection query',
+        message: t('graphqlEditor.noDataFromIntrospectionQuery'),
       },
     };
   } catch (err) {
@@ -329,7 +330,7 @@ export const GraphQLEditor: FC<Props> = ({
       setState(state => ({
         ...state,
         documentAST: null,
-        body: { ...state.body, query, operationName: query ? state.body.operationName : 'Operations' },
+        body: { ...state.body, query, operationName: query ? state.body.operationName : t('graphqlEditor.operations') },
         operations: query ? state.operations : [],
       }));
     }
@@ -340,22 +341,22 @@ export const GraphQLEditor: FC<Props> = ({
       return '';
     }
     if (schemaIsFetching) {
-      return 'fetching schema...';
+      return t('graphqlEditor.fetchingSchema');
     }
     if (schemaLastFetchTime > 0) {
       return (
         <span>
-          schema fetched <TimeFromNow timestamp={schemaLastFetchTime} />
+          {t('graphqlEditor.schemaFetched')} <TimeFromNow timestamp={schemaLastFetchTime} />
         </span>
       );
     }
-    return <span>schema not yet fetched</span>;
+    return <span>{t('graphqlEditor.schemaNotYetFetched')}</span>;
   };
 
   const loadAndSetLocalSchema = async () => {
     const options: OpenDialogOptions = {
-      title: 'Import GraphQL introspection schema',
-      buttonLabel: 'Import',
+      title: t('graphqlEditor.importGraphqlIntrospectionSchema'),
+      buttonLabel: t('importModal.import'),
       properties: ['openFile'],
       filters: [
         // @ts-expect-error https://github.com/electron/electron/pull/29322
@@ -373,7 +374,7 @@ export const GraphQLEditor: FC<Props> = ({
       const file = readFileSync(filePath);
       const content = JSON.parse(file.toString());
       if (!content.data) {
-        throw new Error('JSON file should have a data field with the introspection results');
+        throw new Error(t('graphqlEditor.jsonFileShouldHaveDataField'));
       }
       setSchema(buildClientSchema(content.data));
       setSchemaLastFetchTime(Date.now());
@@ -382,7 +383,7 @@ export const GraphQLEditor: FC<Props> = ({
     } catch (err) {
       console.log('[graphql] ERROR: Failed to fetch schema', err);
       setSchemaFetchError({
-        message: `Failed to fetch schema: ${err.message}`,
+        message: t('graphqlEditor.failedToFetchSchema', { message: err.message }),
         response: null,
       });
       setSchemaIsFetching(false);
@@ -468,18 +469,18 @@ export const GraphQLEditor: FC<Props> = ({
     <div className="graphql-editor">
       <Toolbar>
         <Dropdown
-          aria-label='Operations Dropdown'
+          aria-label={t('graphqlEditor.operationsDropdown')}
           isDisabled={!state.operations.length}
           triggerButton={
             <DropdownButton className="btn btn--compact">
-              {state.body.operationName || 'Operations'}
+              {state.body.operationName || t('graphqlEditor.operations')}
             </DropdownButton>
           }
         >
           {state.operations.map(operationName => (
             <DropdownItem
               key={operationName}
-              aria-label={`Operation ${operationName}`}
+              aria-label={t('graphqlEditor.operationName', { operationName })}
             >
               <ItemContent
                 label={operationName}
@@ -489,36 +490,36 @@ export const GraphQLEditor: FC<Props> = ({
           ))}
         </Dropdown>
         <Dropdown
-          aria-label='Schema Dropdown'
+          aria-label={t('graphqlEditor.schemaDropdown')}
           triggerButton={
             <DropdownButton
               className="btn btn--compact"
               disableHoverBehavior={false}
               removeBorderRadius
             >
-              <span>schema <i className="fa fa-wrench" /></span>
+              <span>{t('graphqlEditor.schema')} <i className="fa fa-wrench" /></span>
             </DropdownButton>
           }
         >
-          <DropdownItem aria-label='Show Documentation'>
+          <DropdownItem aria-label={t('graphqlEditor.showDocumentation')}>
             <ItemContent
               isDisabled={!canShowSchema}
               icon="file-code-o"
-              label="Show Documentation"
+              label={t('graphqlEditor.showDocumentation')}
               onClick={() => {
                 setState(state => ({ ...state, explorerVisible: true }));
               }}
             />
           </DropdownItem>
           <DropdownSection
-            aria-label='Remote GraphQL Schema Section'
-            title="Remote GraphQL Schema"
+            aria-label={t('graphqlEditor.remoteGraphqlSchemaSection')}
+            title={t('graphqlEditor.remoteGraphqlSchema')}
           >
-            <DropdownItem aria-label='Refresh Schema'>
+            <DropdownItem aria-label={t('graphqlEditor.refreshSchema')}>
               <ItemContent
                 stayOpenAfterClick
                 icon={`refresh ${schemaIsFetching ? 'fa-spin' : ''}`}
-                label="Refresh Schema"
+                label={t('graphqlEditor.refreshSchema')}
                 onClick={async () => {
                   // First, "forget" preference to hide errors so they always show
                   // again after a refresh
@@ -536,14 +537,14 @@ export const GraphQLEditor: FC<Props> = ({
                 }}
               />
             </DropdownItem>
-            <DropdownItem aria-label='Automatic Fetch'>
+            <DropdownItem aria-label={t('graphqlEditor.automaticFetch')}>
               <ItemContent
                 stayOpenAfterClick
                 icon={`toggle-${automaticFetch ? 'on' : 'off'}`}
                 label={
                   <>
-                    <span style={{ marginRight: '10px' }}>Automatic Fetch</span>
-                    <HelpTooltip>Automatically fetch schema when request URL is modified</HelpTooltip>
+                    <span style={{ marginRight: '10px' }}>{t('graphqlEditor.automaticFetch')}</span>
+                    <HelpTooltip>{t('graphqlEditor.automaticFetchHelp')}</HelpTooltip>
                   </>
                 }
                 onClick={() => {
@@ -554,18 +555,17 @@ export const GraphQLEditor: FC<Props> = ({
           </DropdownSection>
 
           <DropdownSection
-            aria-label="Local GraphQL Schema Section"
-            title="Local GraphQL Schema"
+            aria-label={t('graphqlEditor.localGraphqlSchemaSection')}
+            title={t('graphqlEditor.localGraphqlSchema')}
           >
-            <DropdownItem aria-label='Load schema from JSON'>
+            <DropdownItem aria-label={t('graphqlEditor.loadSchemaFromJson')}>
               <ItemContent
                 icon="file-code-o"
                 label={
                   <>
-                    <span style={{ marginRight: '10px' }}>Load schema from JSON</span>
+                    <span style={{ marginRight: '10px' }}>{t('graphqlEditor.loadSchemaFromJson')}</span>
                     <HelpTooltip>
-                      Run <i>apollo-codegen introspect-schema schema.graphql --output schema.json</i> to
-                      convert GraphQL DSL to JSON.
+                      {t('graphqlEditor.loadSchemaFromJsonHelpPrefix')} <i>apollo-codegen introspect-schema schema.graphql --output schema.json</i> {t('graphqlEditor.loadSchemaFromJsonHelpSuffix')}
                     </HelpTooltip>
                   </>
                 }
@@ -617,10 +617,10 @@ export const GraphQLEditor: FC<Props> = ({
         {renderSchemaFetchMessage()}
       </div>
       <h2 className="no-margin pad-left-sm pad-top-sm pad-bottom-sm">
-        Query Variables
+        {t('graphqlEditor.queryVariables')}
         <HelpTooltip className="space-left">
-          Variables to use in GraphQL query <br />
-          (JSON format)
+          {t('graphqlEditor.queryVariablesHelpPrefix')} <br />
+          {t('graphqlEditor.jsonFormat')}
         </HelpTooltip>
         {variablesSyntaxError && (
           <span className="text-danger italic pull-right">{variablesSyntaxError}</span>
@@ -647,7 +647,7 @@ export const GraphQLEditor: FC<Props> = ({
       </div>
       <div className="pane__footer">
         <button className="pull-right btn btn--compact" onClick={beautifyRequestBody}>
-          Prettify GraphQL
+          {t('graphqlEditor.prettifyGraphql')}
         </button>
       </div>
 

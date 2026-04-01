@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 
+import { t } from '../../../../common/i18n';
 import { AuthInputRow } from './components/auth-input-row';
 import { AuthPrivateKeyRow } from './components/auth-private-key-row';
 import { AuthTableBody } from './components/auth-table-body';
@@ -7,16 +8,16 @@ import { AuthToggleRow } from './components/auth-toggle-row';
 
 export const AsapAuth: FC = () => (
   <AuthTableBody>
-    <AuthToggleRow label="Enabled" property="disabled" invert />
-    <AuthInputRow label='Issuer (iss)' property='issuer' />
-    <AuthInputRow label='Subject (sub)' property='subject' />
-    <AuthInputRow label='Audience (aud)' property='audience' />
-    <AuthInputRow label='Additional Claims' property='additionalClaims' />
-    <AuthInputRow label='Key ID (kid)' property='keyId' />
+    <AuthToggleRow label={t('auth.enabled')} property="disabled" invert />
+    <AuthInputRow label={t('auth.issuer')} property='issuer' />
+    <AuthInputRow label={t('auth.subject')} property='subject' />
+    <AuthInputRow label={t('auth.audience')} property='audience' />
+    <AuthInputRow label={t('auth.additionalClaims')} property='additionalClaims' />
+    <AuthInputRow label={t('auth.keyId')} property='keyId' />
     <AuthPrivateKeyRow
-      label='Private Key'
+      label={t('auth.privateKey')}
       property='privateKey'
-      help='Can also use single line data-uri format (e.g. obtained from asap-cli export-as-data-uri command), useful for saving as environment data'
+      help={t('auth.privateKeyDataUriHelp')}
     />
   </AuthTableBody>
 );

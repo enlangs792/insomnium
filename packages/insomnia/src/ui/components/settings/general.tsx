@@ -197,7 +197,7 @@ export const General: FC = () => {
           setting="editorKeyMap"
           help={isMac() && settings.editorKeyMap === EditorKeyMap.vim && (
             <Fragment>
-              To enable key-repeating with Vim on macOS, see <Link href={docsKeyMaps}>
+              {t('settings.font.vimKeyRepeatingHelpPrefix')} <Link href={docsKeyMaps}>
                 {t('tooltip.documentation')} <i className="fa fa-external-link-square" /></Link>
             </Fragment>
           )}

@@ -2,6 +2,7 @@ import { JSONPath } from 'jsonpath-plus';
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 
 import { docsTemplateTags } from '../../../common/documentation';
+import { t } from '../../../common/i18n';
 import { GrpcRequest } from '../../../models/grpc-request';
 import { Request } from '../../../models/request';
 import { WebSocketRequest } from '../../../models/websocket-request';
@@ -40,31 +41,33 @@ export const RequestRenderErrorModal = forwardRef<RequestRenderErrorModalHandle,
   const fullPath = `Request.${error?.path}`;
   const result = JSONPath({ json: request, path: `$.${error?.path}` });
   const template = result && result.length ? result[0] : null;
-  const locationLabel = template?.includes('\n') ? `line ${error?.location.line} of` : null;
+  const locationLabel = template?.includes('\n')
+    ? t('requestRenderError.lineOf', { line: error?.location.line || 0 })
+    : null;
 
   return (
     <Modal ref={modalRef}>
-      <ModalHeader>Failed to Render Request</ModalHeader>
+      <ModalHeader>{t('requestRenderError.failedToRenderRequest')}</ModalHeader>
       <ModalBody>{request && error ? (
         <div className="pad">
           <div className="notice warning">
             <p>
-              Failed to render <strong>{fullPath}</strong> prior to sending
+              {t('requestRenderError.failedToRenderBeforeSending', { path: fullPath })}
             </p>
             <div className="pad-top-sm">
               <Link button href={docsTemplateTags} className="btn btn--clicky">
-                Templating Documentation <i className="fa fa-external-link" />
+                {t('requestRenderError.templatingDocumentation')} <i className="fa fa-external-link" />
               </Link>
             </div>
           </div>
 
           <p>
-            <strong>Render error</strong>
+            <strong>{t('requestRenderError.renderError')}</strong>
             <code className="block selectable">{error.message}</code>
           </p>
 
           <p>
-            <strong>Caused by the following field</strong>
+            <strong>{t('requestRenderError.causedByField')}</strong>
             <code className="block">
               {locationLabel} {fullPath}
             </code>

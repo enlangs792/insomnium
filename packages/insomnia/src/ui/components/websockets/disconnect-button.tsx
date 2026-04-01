@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
 
+import { t } from '../../../common/i18n';
 import { Dropdown as OriginalDropdown, DropdownButton, DropdownItem, ItemContent } from '../base/dropdown';
 
 const SplitButton = styled.div({
@@ -58,13 +59,13 @@ export const DisconnectButton: FC<{ requestId: string }> = ({ requestId }) => {
         type="button"
         onClick={handleCloseThisRequest}
       >
-        Disconnect
+        {t('websocket.disconnect')}
       </ActionButton>
       <Dropdown
         key="dropdown"
         className="tall"
         data-testid="DisconnectDropdown__Dropdown"
-        aria-label='Disconnect Dropdown'
+        aria-label={t('websocket.disconnectDropdown')}
         triggerButton={
           <StyledDropdownButton
             name="DisconnectDropdown__DropdownButton"
@@ -73,17 +74,17 @@ export const DisconnectButton: FC<{ requestId: string }> = ({ requestId }) => {
           </StyledDropdownButton>
         }
       >
-        <DropdownItem aria-label='Disconnect this request'>
+        <DropdownItem aria-label={t('websocket.disconnectThisRequest')}>
           <ItemContent onClick={handleCloseThisRequest}>
             <Connections>
               <Connection />
             </Connections>
             <TextWrapper>
-              Disconnect this request
+              {t('websocket.disconnectThisRequest')}
             </TextWrapper>
           </ItemContent>
         </DropdownItem>
-        <DropdownItem aria-label='Disconnect all requests'>
+        <DropdownItem aria-label={t('websocket.disconnectAllRequests')}>
           <ItemContent onClick={handleCloseAllRequests}>
             <Connections>
               <Connection size={5} />
@@ -91,7 +92,7 @@ export const DisconnectButton: FC<{ requestId: string }> = ({ requestId }) => {
               <Connection size={5} />
             </Connections>
             <TextWrapper>
-              Disconnect all requests
+              {t('websocket.disconnectAllRequests')}
             </TextWrapper>
           </ItemContent>
         </DropdownItem>

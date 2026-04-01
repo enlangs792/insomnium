@@ -1,34 +1,35 @@
 import React, { FC } from 'react';
 
+import { t } from '../../../../common/i18n';
 import { AuthInputRow } from './components/auth-input-row';
 import { AuthTableBody } from './components/auth-table-body';
 import { AuthToggleRow } from './components/auth-toggle-row';
 
 export const AWSAuth: FC = () => (
   <AuthTableBody>
-    <AuthToggleRow label="Enabled" property="disabled" invert />
+    <AuthToggleRow label={t('auth.enabled')} property="disabled" invert />
     <AuthInputRow
-      label="Access Key ID"
+      label={t('auth.accessKeyId')}
       property="accessKeyId"
     />
     <AuthInputRow
-      label="Secret Access Key"
+      label={t('auth.secretAccessKey')}
       property="secretAccessKey"
     />
     <AuthInputRow
-      label="Region"
+      label={t('auth.region')}
       property="region"
-      help="Will be calculated from hostname or host or use 'us-east-1' if not given"
+      help={t('auth.regionHelp')}
     />
     <AuthInputRow
-      label="Service"
+      label={t('auth.service')}
       property="service"
-      help="Will be calculated from hostname or host if not given"
+      help={t('auth.serviceHelp')}
     />
     <AuthInputRow
-      label="Session Token"
+      label={t('auth.sessionToken')}
       property="sessionToken"
-      help="Optional token used for multi-factor authentication"
+      help={t('auth.sessionTokenHelp')}
     />
   </AuthTableBody>
 );

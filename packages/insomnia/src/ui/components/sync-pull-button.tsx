@@ -1,6 +1,7 @@
 import React, { FC, ReactNode, useState } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 
+import { t } from '../../common/i18n';
 import { VCS } from '../../sync/vcs/vcs';
 import { WorkspaceLoaderData } from '../routes/workspace';
 import { showError } from './modals';
@@ -31,8 +32,8 @@ export const SyncPullButton: FC<Props> = props => {
       await newVCS.pull([], activeProject.remoteId);
     } catch (err) {
       showError({
-        title: 'Pull Error',
-        message: 'Failed to pull ' + branch,
+        title: t('sync.pullError'),
+        message: t('sync.failedToPullBranch', { branch }),
         error: err,
       });
       failed = true;
@@ -50,7 +51,7 @@ export const SyncPullButton: FC<Props> = props => {
   return (
     <button className={className} onClick={onClick} disabled={disabled}>
       {loading && <i className="fa fa-spin fa-refresh space-right" />}
-      {children || 'Pull'}
+      {children || t('sync.pull')}
     </button>
   );
 };

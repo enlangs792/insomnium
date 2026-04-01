@@ -3,6 +3,7 @@ import { OverlayContainer } from 'react-aria';
 import { useRouteLoaderData } from 'react-router-dom';
 
 import { database as db } from '../../../common/database';
+import { t } from '../../../common/i18n';
 import type { Snapshot } from '../../../sync/types';
 import { VCS } from '../../../sync/vcs/vcs';
 import { WorkspaceLoaderData } from '../../routes/workspace';
@@ -44,20 +45,20 @@ export const SyncHistoryModal = ({ vcs, branch, history, onHide }: Props) => {
     <OverlayContainer>
       <Modal ref={modalRef} onHide={onHide}>
         <ModalHeader>
-          Branch History: <i>{branch}</i>
+          {t('sync.branchHistory')}: <i>{branch}</i>
         </ModalHeader>
         <ModalBody className="wide pad">
           <table className="table--fancy table--striped">
             <thead>
               <tr>
-                <th className="text-left">Message</th>
-                <th className="text-left">When</th>
-                <th className="text-left">Author</th>
-                <th className="text-right">Objects</th>
+                <th className="text-left">{t('sync.message')}</th>
+                <th className="text-left">{t('sync.when')}</th>
+                <th className="text-left">{t('sync.author')}</th>
+                <th className="text-right">{t('sync.objects')}</th>
                 <th className="text-right">
-                  Restore
+                  {t('sync.restore')}
                   <HelpTooltip>
-                    This will revert the workspace to that state stored in the snapshot
+                    {t('sync.restoreHelp')}
                   </HelpTooltip>
                 </th>
               </tr>
@@ -98,7 +99,7 @@ export const SyncHistoryModal = ({ vcs, branch, history, onHide }: Props) => {
                         await db.batchModifyDocs(delta as any);
                       }}
                     >
-                      Restore
+                      {t('sync.restore')}
                     </PromptButton>
                   </td>
                 </tr>

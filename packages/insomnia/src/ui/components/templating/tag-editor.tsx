@@ -4,6 +4,7 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useMount } from 'react-use';
 
 import { database as db } from '../../../common/database';
+import { t } from '../../../common/i18n';
 import { delay, fnOrString } from '../../../common/misc';
 import { metaSortKeySort } from '../../../common/sorting';
 import * as models from '../../../models';
@@ -206,7 +207,7 @@ export const TagEditor: FC<Props> = props => {
     } else if (!activeTagData && !tagDefinition && state.activeTagData) {
       activeTagData = {
         name: 'custom',
-        displayName: 'Custom',
+        displayName: t('tagEditor.custom'),
         args: [],
         rawValue: templateUtils.unTokenizeTag(state.activeTagData),
       };
@@ -266,18 +267,18 @@ export const TagEditor: FC<Props> = props => {
   }
   let previewElement;
   if (error) {
-    previewElement = <textarea className="danger" value={error || 'Error'} readOnly rows={5} />;
+    previewElement = <textarea className="danger" value={error || t('tagEditor.error')} readOnly rows={5} />;
   } else if (rendering) {
-    previewElement = <textarea value="rendering..." readOnly rows={5} />;
+    previewElement = <textarea value={t('tagEditor.rendering')} readOnly rows={5} />;
   } else {
-    previewElement = <textarea value={finalPreview || 'error'} readOnly rows={5} />;
+    previewElement = <textarea value={finalPreview || t('tagEditor.errorLowercase')} readOnly rows={5} />;
   }
 
   return (
     <div>
       <div className="form-control form-control--outlined">
         <label>
-          Function to Perform
+          {t('tagEditor.functionToPerform')}
           <select
             onChange={async event => {
               const name = event.currentTarget.value;
@@ -292,7 +293,7 @@ export const TagEditor: FC<Props> = props => {
                 {tagDefinition.displayName} – {tagDefinition.description}
               </option>
             ))}
-            <option value="custom">-- Custom --</option>
+            <option value="custom">{t('tagEditor.customOption')}</option>
           </select>
         </label>
       </div>
@@ -341,7 +342,7 @@ export const TagEditor: FC<Props> = props => {
           } else if (argDefinition.type === 'enum') {
             argInput = (
               <select value={strValue} onChange={handleChange}>
-                {!argDefinition.options?.find(o => o.value === strValue) ? <option value="">-- Select Option --</option> : null}
+                {!argDefinition.options?.find(o => o.value === strValue) ? <option value="">{t('tagEditor.selectOption')}</option> : null}
                 {argDefinition.options?.map(option => (
                   // @ts-expect-error -- TSCONVERSION boolean not accepted by option
                   <option key={option.value.toString()} value={option.value}>
@@ -363,11 +364,11 @@ export const TagEditor: FC<Props> = props => {
           } else if (argDefinition.type === 'model') {
             argInput = state.loadingDocs ? (
               <select disabled={state.loadingDocs}>
-                <option>Loading...</option>
+                <option>{t('tagEditor.loading')}</option>
               </select>
             ) : (
               <select value={typeof strValue === 'string' ? strValue : 'unknown'} onChange={handleChange}>
-                <option value="n/a">-- Select Item --</option>
+                <option value="n/a">{t('tagEditor.selectItem')}</option>
                 {state.allDocs[typeof argDefinition.model === 'string' ? argDefinition.model : 'unknown']?.map((doc: any) => {
                   let namePrefix: string | null = null;
                   // Show parent folder with name if it's a request
@@ -383,7 +384,7 @@ export const TagEditor: FC<Props> = props => {
                   return (
                     <option key={doc._id} value={doc._id}>
                       {namePrefix}
-                      {typeof doc.name === 'string' ? doc.name : 'Unknown Request'}
+                      {typeof doc.name === 'string' ? doc.name : t('tagEditor.unknownRequest')}
                     </option>
                   );
                 })}
@@ -426,17 +427,17 @@ export const TagEditor: FC<Props> = props => {
             <div className={formControlClasses}>
               <label data-arg-index={index}>
                 {fnOrString(displayName, activeTagData.args)}
-                {isVariable && <span className="faded space-left">(Variable)</span>}
+                {isVariable && <span className="faded space-left">{t('tagEditor.variableSuffix')}</span>}
                 {help && <HelpTooltip className="space-left">{help}</HelpTooltip>}
                 {validationError && <span className="font-error space-left">{validationError}</span>}
                 {isVariable ? state.variables.length === 0 ? (
                   <select disabled>
-                    <option>-- No Environment Variables Found --</option>
+                    <option>{t('tagEditor.noEnvironmentVariablesFound')}</option>
                   </select>
                 ) : (
                   <select value={strValue || ''} onChange={handleChange}>
                     <option key="n/a" value="NO_VARIABLE">
-                      -- Select Variable --
+                      {t('tagEditor.selectVariable')}
                     </option>
                     {state.variables.map((v, i) => (
                       <option key={`${i}::${v.name}`} value={v.name}>
@@ -454,7 +455,7 @@ export const TagEditor: FC<Props> = props => {
                 })}
               >
                 <Dropdown
-                  aria-label='Variable Dropdown'
+                  aria-label={t('tagEditor.variableDropdown')}
                   triggerButton={
                     <DropdownButton className="btn btn--clicky">
                       <i className="fa fa-gear" />
@@ -462,13 +463,13 @@ export const TagEditor: FC<Props> = props => {
                   }
                 >
                   <DropdownSection
-                    aria-label="Input Type Section"
-                    title="Input Type"
+                    aria-label={t('tagEditor.inputTypeSection')}
+                    title={t('tagEditor.inputType')}
                   >
-                    <DropdownItem aria-label='Static Value'>
+                    <DropdownItem aria-label={t('tagEditor.staticValue')}>
                       <ItemContent
                         icon={isVariable ? 'check' : ''}
-                        label="Static Value"
+                        label={t('tagEditor.staticValue')}
                         onClick={() => {
                           const { activeTagData, activeTagDefinition, variables } = state;
                           if (!activeTagData || !activeTagDefinition) {
@@ -485,10 +486,10 @@ export const TagEditor: FC<Props> = props => {
                         }}
                       />
                     </DropdownItem>
-                    <DropdownItem aria-label='Environment Variable'>
+                    <DropdownItem aria-label={t('tagEditor.environmentVariable')}>
                       <ItemContent
                         icon={isVariable ? '' : 'check'}
-                        label="Environment Variable"
+                        label={t('tagEditor.environmentVariable')}
                         onClick={() => {
                           const { activeTagData, activeTagDefinition, variables } = state;
                           if (!activeTagData || !activeTagDefinition) {
@@ -515,7 +516,7 @@ export const TagEditor: FC<Props> = props => {
       {activeTagDefinition?.actions && activeTagDefinition?.actions?.length > 0 ? (
         <div className="form-row">
           <div className="form-control">
-            <label>Actions</label>
+            <label>{t('tagEditor.actions')}</label>
             <div className="form-row">{activeTagDefinition.actions.map(action => (
               <button
                 key={action.name}
@@ -549,7 +550,7 @@ export const TagEditor: FC<Props> = props => {
       {!activeTagDefinition && (
         <div className="form-control form-control--outlined">
           <label>
-            Custom
+            {t('tagEditor.custom')}
             <input
               type="text"
               defaultValue={activeTagData.rawValue}
@@ -582,7 +583,7 @@ export const TagEditor: FC<Props> = props => {
               true,
             )}
           >
-            refresh{' '}
+            {t('tagEditor.refresh')}{' '}
             <i
               className={classnames('fa fa-refresh', {
                 'fa-spin': rendering,
@@ -590,7 +591,7 @@ export const TagEditor: FC<Props> = props => {
             />
           </button>
           <label>
-            Live Preview
+            {t('tagEditor.livePreview')}
             {previewElement}
           </label>
         </div>

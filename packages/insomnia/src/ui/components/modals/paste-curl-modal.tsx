@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { OverlayContainer } from 'react-aria';
 
+import { t } from '../../../common/i18n';
 import { Request } from '../../../models/request';
 import { convert } from '../../../utils/importers/convert';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
@@ -38,11 +39,11 @@ export const PasteCurlModal = ({ onHide, onImport, defaultValue }: ModalProps & 
   return (
     <OverlayContainer onClick={e => e.stopPropagation()}>
       <Modal ref={modalRef} tall onHide={onHide}>
-        <ModalHeader>Paste Curl to import request</ModalHeader>
+        <ModalHeader>{t('importModal.pasteCurlToImportRequest')}</ModalHeader>
         <ModalBody className="">
           <CodeEditor
             id="paste-curl-content"
-            placeholder="Paste curl request here"
+            placeholder={t('importModal.pasteCurlRequestHere')}
             className=" border-top"
             mode="text"
             dynamicHeight
@@ -68,11 +69,13 @@ export const PasteCurlModal = ({ onHide, onImport, defaultValue }: ModalProps & 
         </ModalBody>
         <ModalFooter>
           <div className="margin-left italic txt-sm truncate">
-            {isValid ? `Detected ${req.method} request to ${req.url}` : 'Invalid input'}
+            {isValid
+              ? t('importModal.detectedRequestTo', { method: req.method, url: req.url })
+              : t('importModal.invalidInput')}
           </div>
           <div>
             <button className="btn" onClick={() => modalRef.current?.hide()}>
-              Cancel
+              {t('root.cancel')}
             </button>
             <button
               className="btn"
@@ -82,7 +85,7 @@ export const PasteCurlModal = ({ onHide, onImport, defaultValue }: ModalProps & 
               }}
               disabled={!isValid}
             >
-              Import
+              {t('importModal.import')}
             </button>
           </div>
         </ModalFooter>

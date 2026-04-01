@@ -66,10 +66,10 @@ export const RequestActionsDropdown = ({
     }
 
     showPrompt({
-      title: 'Duplicate Request',
+      title: t('requestActions.duplicateRequest'),
       defaultValue: request.name,
-      submitName: 'Create',
-      label: 'New Name',
+      submitName: t('project.create'),
+      label: t('requestActions.newName'),
       selectText: true,
       onComplete: (name: string) => requestFetcher.submit({ name },
         {
@@ -95,7 +95,7 @@ export const RequestActionsDropdown = ({
       });
     } catch (error) {
       showError({
-        title: 'Plugin Action Failed',
+        title: t('requestActions.pluginActionFailed'),
         error,
       });
     }
@@ -120,19 +120,19 @@ export const RequestActionsDropdown = ({
       }
     } catch (err) {
       showModal(AlertModal, {
-        title: 'Could not generate cURL',
-        message: err instanceof Error ? err.message : 'Unknown error',
+        title: t('requestActions.couldNotGenerateCurl'),
+        message: err instanceof Error ? err.message : t('requestActions.unknownError'),
       });
     }
   };
 
   const handleRename = () => {
     showPrompt({
-      title: 'Rename Request',
+      title: t('requestActions.renameRequest'),
       defaultValue: request.name,
-      submitName: 'Rename',
+      submitName: t('menu.rename'),
       selectText: true,
-      label: 'Name',
+      label: t('requestActions.name'),
       onComplete: name => patchRequest(request._id, { name }),
     });
   };
@@ -226,14 +226,14 @@ export const RequestActionsDropdown = ({
     <MenuTrigger onOpenChange={isOpen => isOpen && onOpen()}>
       <Button
         data-testid={`Dropdown-${toKebabCase(request.name)}`}
-        aria-label="Request Actions"
+        aria-label={t('requestActions.requestActions')}
         className="opacity-0 items-center hover:opacity-100 focus:opacity-100 data-[pressed]:opacity-100 flex group-focus:opacity-100 group-hover:opacity-100 justify-center h-6 aspect-square aria-pressed:bg-[--hl-sm] rounded-sm text-[--color-font] hover:bg-[--hl-xs] focus:ring-inset ring-1 ring-transparent focus:ring-[--hl-md] transition-all text-sm"
       >
         <Icon icon="caret-down" />
       </Button>
       <Popover className="min-w-max">
         <Menu
-          aria-label="Request Actions Menu"
+          aria-label={t('requestActions.requestActionsMenu')}
           selectionMode="single"
           onAction={key =>
             requestActionList.find(({ id }) => key === id)?.action()

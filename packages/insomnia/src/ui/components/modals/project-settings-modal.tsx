@@ -2,6 +2,7 @@ import React, { FC, useEffect, useRef } from 'react';
 import { OverlayContainer } from 'react-aria';
 import { useFetcher, useParams } from 'react-router-dom';
 
+import { t } from '../../../common/i18n';
 import { strings } from '../../../common/strings';
 import { isRemoteProject, Project } from '../../../models/project';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
@@ -29,20 +30,22 @@ export const ProjectSettingsModal: FC<ProjectSettingsModalProps> = ({ project, o
     <OverlayContainer>
       <Modal onHide={onHide} ref={modalRef}>
         <ModalHeader key={`header::${project._id}`}>
-          {strings.project.singular} Settings{' '}
+          {strings.project.singular} {t('projectSettings.settings')}{' '}
           <div className="txt-sm selectable faint monospace">{project._id}</div>
         </ModalHeader>
         <ModalBody key={`body::${project._id}`} className="pad">
           <div className="form-control form-control--outlined">
             <label>
-              Name
+              {t('workspaceSettings.name')}
               {isRemote && (
                 <>
                   <HelpTooltip className="space-left">
-                    To rename a {strings.remoteProject.singular.toLowerCase()}{' '}
-                    {strings.project.singular.toLowerCase()} please visit{' '}
+                    {t('projectSettings.renameRemoteProjectHelpPrefix', {
+                      remoteProject: strings.remoteProject.singular.toLowerCase(),
+                      project: strings.project.singular.toLowerCase(),
+                    })}{' '}
                     <a href="https://app.insomnia.rest/app/teams">
-                      the insomnia website.
+                      {t('projectSettings.theInsomniaWebsite')}
                     </a>
                   </HelpTooltip>
                   <input disabled readOnly defaultValue={project.name} />
@@ -51,7 +54,7 @@ export const ProjectSettingsModal: FC<ProjectSettingsModalProps> = ({ project, o
               {!isRemote && (
                 <input
                   type="text"
-                  placeholder={`My ${strings.project.singular}`}
+                  placeholder={t('projectSettings.myProject', { project: strings.project.singular })}
                   defaultValue={project.name}
                   onChange={e => {
                     submit(
@@ -68,7 +71,7 @@ export const ProjectSettingsModal: FC<ProjectSettingsModalProps> = ({ project, o
               )}
             </label>
           </div>
-          <h2>Actions</h2>
+          <h2>{t('workspaceSettings.actions')}</h2>
           <div className="form-control form-control--padded">
             <PromptButton
               onClick={() =>
@@ -79,7 +82,7 @@ export const ProjectSettingsModal: FC<ProjectSettingsModalProps> = ({ project, o
               }
               className="width-auto btn btn--clicky inline-block"
             >
-              <i className="fa fa-trash-o" /> Delete
+              <i className="fa fa-trash-o" /> {t('menu.delete')}
             </PromptButton>
           </div>
         </ModalBody>

@@ -8,6 +8,7 @@ import { ActionFunction, LoaderFunction, redirect } from 'react-router-dom';
 import { version } from '../../../package.json';
 import { CONTENT_TYPE_EVENT_STREAM, CONTENT_TYPE_GRAPHQL, CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST } from '../../common/constants';
 import { ChangeBufferEvent, database } from '../../common/database';
+import { t } from '../../common/i18n';
 import { getContentDispositionHeader } from '../../common/misc';
 import { RENDER_PURPOSE_SEND, RenderedRequest } from '../../common/render';
 import { ResponsePatch } from '../../main/network/libcurl-promise';
@@ -105,14 +106,14 @@ export const createRequestAction: ActionFunction = async ({ request, params }) =
     activeRequestId = (await models.request.create({
       parentId: parentId || workspaceId,
       method: METHOD_GET,
-      name: 'New Request',
+      name: t('request.newRequest'),
       headers: [{ name: 'User-Agent', value: `insomnium/${version}` }],
     }))._id;
   }
   if (requestType === 'gRPC') {
     activeRequestId = (await models.grpcRequest.create({
       parentId: parentId || workspaceId,
-      name: 'New Request',
+      name: t('request.newRequest'),
     }))._id;
   }
   if (requestType === 'GraphQL') {
@@ -127,7 +128,7 @@ export const createRequestAction: ActionFunction = async ({ request, params }) =
         mimeType: CONTENT_TYPE_GRAPHQL,
         text: '',
       },
-      name: 'New Request',
+      name: t('request.newRequest'),
     }))._id;
   }
   if (requestType === 'Event Stream') {
@@ -139,13 +140,13 @@ export const createRequestAction: ActionFunction = async ({ request, params }) =
         { name: 'User-Agent', value: `insomnium/${version}` },
         { name: 'Accept', value: CONTENT_TYPE_EVENT_STREAM },
       ],
-      name: 'New Event Stream',
+      name: t('request.newEventStream'),
     }))._id;
   }
   if (requestType === 'WebSocket') {
     activeRequestId = (await models.webSocketRequest.create({
       parentId: parentId || workspaceId,
-      name: 'New WebSocket Request',
+      name: t('request.newWebSocketRequest'),
       headers: [{ name: 'User-Agent', value: `insomnium/${version}` }],
     }))._id;
   }
@@ -305,7 +306,7 @@ const writeToDownloadPath = (downloadPathAndName: string, responsePatch: Respons
 
   return new Promise(resolve => {
     readStream.on('end', async () => {
-      responsePatch.error = `Saved to ${downloadPathAndName}`;
+      responsePatch.error = t('request.savedTo', { path: downloadPathAndName });
       const response = await models.response.create(responsePatch, maxHistoryResponses);
       await models.requestMeta.update(requestMeta, { activeResponseId: response._id });
       resolve(null);
@@ -364,8 +365,8 @@ export const sendAction: ActionFunction = async ({ request, params }) => {
   } else {
     const defaultPath = window.localStorage.getItem('insomnia.sendAndDownloadLocation') + "/" + name;
     const { filePath } = await window.dialog.showSaveDialog({
-      title: 'Select Download Location',
-      buttonLabel: 'Save',
+      title: t('request.selectDownloadLocation'),
+      buttonLabel: t('request.save'),
       // NOTE: An error will be thrown if defaultPath is supplied but not a String
       ...(defaultPath ? { defaultPath } : {}),
     });

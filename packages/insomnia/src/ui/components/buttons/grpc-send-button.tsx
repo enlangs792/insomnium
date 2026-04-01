@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
+import { t } from '../../../common/i18n';
 import { GrpcMethodType } from '../../../main/ipc/grpc';
 import { Button, ButtonProps } from '../themed-button';
 
@@ -22,7 +23,7 @@ export const GrpcSendButton: FunctionComponent<Props> = ({ running, methodType, 
   if (running) {
     return (
       <Button {...buttonProps} onClick={handleCancel}>
-        Cancel
+        {t('modal.cancel')}
       </Button>
     );
   }
@@ -30,14 +31,14 @@ export const GrpcSendButton: FunctionComponent<Props> = ({ running, methodType, 
   if (!methodType) {
     return (
       <Button {...buttonProps} disabled>
-        Send
+        {t('grpcSendButton.send')}
       </Button>
     );
   }
 
   return (
     <Button {...buttonProps} onClick={handleStart}>
-      {methodType === 'unary' ? 'Send' : 'Start'}
+      {methodType === 'unary' ? t('grpcSendButton.send') : t('grpcSendButton.start')}
     </Button>
   );
 };

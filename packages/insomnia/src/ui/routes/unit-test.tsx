@@ -12,6 +12,7 @@ import {
 } from 'react-router-dom';
 
 import * as models from '../../models';
+import { t } from '../../common/i18n';
 import type { UnitTestSuite } from '../../models/unit-test-suite';
 import { guard } from '../../utils/guard';
 import { Dropdown, DropdownButton, DropdownItem, ItemContent } from '../components/base/dropdown';
@@ -76,10 +77,10 @@ const TestRoute: FC = () => {
                 variant="outlined"
                 onClick={() => {
                   showPrompt({
-                    title: 'New Test Suite',
-                    defaultValue: 'New Suite',
-                    submitName: 'Create Suite',
-                    label: 'Test Suite Name',
+                    title: t('test.newTestSuite'),
+                    defaultValue: t('test.newSuite'),
+                    submitName: t('test.createSuite'),
+                    label: t('test.testSuiteName'),
                     selectText: true,
                     onComplete: async name => {
                       createUnitTestSuiteFetcher.submit(
@@ -95,7 +96,7 @@ const TestRoute: FC = () => {
                   });
                 }}
               >
-                New Test Suite
+                {t('test.newTestSuite')}
               </Button>
             </div>
             <ul>
@@ -118,20 +119,20 @@ const TestRoute: FC = () => {
                   </button>
 
                   <Dropdown
-                    aria-label='Test Suite Actions'
+                    aria-label={t('test.testSuiteActions')}
                     triggerButton={
                       <DropdownButton className="unit-tests__sidebar__action">
                         <i className="fa fa-caret-down" />
                       </DropdownButton>
                     }
                   >
-                    <DropdownItem aria-label='Run Tests'>
+                    <DropdownItem aria-label={t('test.runTests')}>
                       <ItemContent
                         stayOpenAfterClick
                         isDisabled={runAllTestsFetcher.state === 'submitting'}
                         label={runAllTestsFetcher.state === 'submitting'
-                          ? 'Running... '
-                          : 'Run Tests'}
+                          ? t('test.running')
+                          : t('test.runTests')}
                         onClick={() => {
                           runAllTestsFetcher.submit(
                             {},
@@ -143,9 +144,9 @@ const TestRoute: FC = () => {
                         }}
                       />
                     </DropdownItem>
-                    <DropdownItem aria-label='Delete Suite'>
+                    <DropdownItem aria-label={t('test.deleteSuite')}>
                       <ItemContent
-                        label="Delete Suite"
+                        label={t('test.deleteSuite')}
                         withPrompt
                         onClick={() =>
                           deleteUnitTestSuiteFetcher.submit(
@@ -182,7 +183,7 @@ const TestRoute: FC = () => {
             path="*"
             element={
               <div className="unit-tests pad theme--pane__body">
-                No test suite selected
+                {t('test.noTestSuiteSelected')}
               </div>
             }
           />
@@ -196,7 +197,7 @@ const TestRoute: FC = () => {
               runningTests ? (
                 <div className="unit-tests__results">
                   <div className="unit-tests__top-header">
-                    <h2>Running Tests...</h2>
+                    <h2>{t('test.runningTests')}</h2>
                   </div>
                 </div>
               ) : (
@@ -210,13 +211,13 @@ const TestRoute: FC = () => {
               runningTests ? (
                 <div className="unit-tests__results">
                   <div className="unit-tests__top-header">
-                    <h2>Running Tests...</h2>
+                    <h2>{t('test.runningTests')}</h2>
                   </div>
                 </div>
               ) : (
                 <div className="unit-tests__results">
                   <div className="unit-tests__top-header">
-                    <h2>No Results</h2>
+                    <h2>{t('test.noResults')}</h2>
                   </div>
                 </div>
               )

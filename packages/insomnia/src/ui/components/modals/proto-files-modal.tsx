@@ -2,6 +2,7 @@ import React, { FC, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { ChangeBufferEvent, database as db } from "../../../common/database";
+import { t } from "../../../common/i18n";
 import { selectFileOrFolder } from "../../../common/select-file-or-folder";
 import * as models from "../../../models";
 import { isProtoDirectory, ProtoDirectory } from "../../../models/proto-directory";
@@ -123,8 +124,8 @@ export const ProtoFilesModal: FC<Props> = ({ defaultId, onHide, onSave, reloadRe
 
     if (addResult.errors.length > 0) {
       showError({
-        title: "Failed to add file",
-        message: `Could not add ${filePath}:\n${addResult.errors.join("\n")}`,
+        title: t('protoFiles.failedToAddFile'),
+        message: t('protoFiles.couldNotAddFile', { filePath }) + `\n${addResult.errors.join("\n")}`,
       });
     }
   };
@@ -139,8 +140,8 @@ export const ProtoFilesModal: FC<Props> = ({ defaultId, onHide, onSave, reloadRe
 
     if (addResult.errors.length > 0) {
       showError({
-        title: "Encountered some issues while adding directory",
-        message: `Some proto files could not be added:\n${addResult.errors.join("\n")}`,
+        title: t('protoFiles.issuesAddingDirectory'),
+        message: t('protoFiles.someProtoFilesCouldNotBeAdded') + `\n${addResult.errors.join("\n")}`,
       });
     }
   };
@@ -173,8 +174,8 @@ export const ProtoFilesModal: FC<Props> = ({ defaultId, onHide, onSave, reloadRe
 
     if (updateResult.errors.length > 0) {
       showError({
-        title: "Failed to update file",
-        message: `Could not update ${filePath}:\n${updateResult.errors.join("\n")}`,
+        title: t('protoFiles.failedToUpdateFile'),
+        message: t('protoFiles.couldNotUpdateFile', { filePath }) + `\n${updateResult.errors.join("\n")}`,
       });
     }
   };
@@ -187,19 +188,18 @@ export const ProtoFilesModal: FC<Props> = ({ defaultId, onHide, onSave, reloadRe
 
     if (updateResult.errors.length > 0) {
       showError({
-        title: "Encountered some issues while updating directory",
-        message: `Some proto files failed to update:\n${updateResult.errors.join("\n")}`,
+        title: t('protoFiles.issuesUpdatingDirectory'),
+        message: t('protoFiles.someProtoFilesFailedToUpdate') + `\n${updateResult.errors.join("\n")}`,
       });
     }
   };
 
   const handleDeleteDirectory = (protoDirectory: ProtoDirectory) => {
     showAlert({
-      title: `Delete ${protoDirectory.name}`,
+      title: t('protoFiles.deleteItem', { name: protoDirectory.name }),
       message: (
         <span>
-          Really delete <strong>{protoDirectory.name}</strong> and all proto files contained within? All requests that use these proto files
-          will stop working.
+          {t('protoFiles.deleteDirectoryMessagePrefix')} <strong>{protoDirectory.name}</strong> {t('protoFiles.deleteDirectoryMessageSuffix')}
         </span>
       ),
       addCancel: true,
@@ -211,10 +211,10 @@ export const ProtoFilesModal: FC<Props> = ({ defaultId, onHide, onSave, reloadRe
   };
   const handleDeleteFile = (protoFile: ProtoFile) => {
     showAlert({
-      title: `Delete ${protoFile.name}`,
+      title: t('protoFiles.deleteItem', { name: protoFile.name }),
       message: (
         <span>
-          Really delete <strong>{protoFile.name}</strong>? All requests that use this proto file will stop working.
+          {t('protoFiles.deleteFileMessagePrefix')} <strong>{protoFile.name}</strong>? {t('protoFiles.deleteFileMessageSuffix')}
         </span>
       ),
       addCancel: true,
@@ -229,16 +229,16 @@ export const ProtoFilesModal: FC<Props> = ({ defaultId, onHide, onSave, reloadRe
 
   return (
     <Modal ref={modalRef} onHide={onHide}>
-      <ModalHeader>Select Proto File</ModalHeader>
+      <ModalHeader>{t('protoFiles.selectProtoFile')}</ModalHeader>
       <ModalBody className="wide pad">
         <div className="row-spaced margin-bottom bold">
-          Files
+          {t('protoFiles.files')}
           <span>
             <AsyncButton className="margin-right-sm" onClick={handleAddDirectory} loadingNode={<i className="fa fa-spin fa-refresh" />}>
-              Add Directory
+              {t('protoFiles.addDirectory')}
             </AsyncButton>
             <AsyncButton onClick={handleAddFile} loadingNode={<i className="fa fa-spin fa-refresh" />}>
-              Add Proto File
+              {t('protoFiles.addProtoFile')}
             </AsyncButton>
           </span>
         </div>
@@ -263,7 +263,7 @@ export const ProtoFilesModal: FC<Props> = ({ defaultId, onHide, onSave, reloadRe
             }}
             disabled={!selectedId}
           >
-            Save
+            {t('request.save')}
           </button>
         </div>
       </ModalFooter>

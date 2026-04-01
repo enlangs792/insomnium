@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { OverlayContainer } from 'react-aria';
 import { useRouteLoaderData } from 'react-router-dom';
 
+import { t } from '../../../common/i18n';
 import { database as db, Operation } from '../../../common/database';
 import { interceptAccessError } from '../../../sync/vcs/util';
 import { VCS } from '../../../sync/vcs/vcs';
@@ -158,7 +159,7 @@ export const SyncBranchesModal = ({ vcs, onHide }: Props) => {
   return (
     <OverlayContainer>
       <Modal ref={modalRef} onHide={onHide}>
-        <ModalHeader>Branches</ModalHeader>
+        <ModalHeader>{t('sync.branches')}</ModalHeader>
         <ModalBody className="wide pad">
           {error && (
             <p className="notice error margin-bottom-sm no-margin-top">
@@ -172,17 +173,17 @@ export const SyncBranchesModal = ({ vcs, onHide }: Props) => {
             <div className="form-row">
               <div className="form-control form-control--outlined">
                 <label>
-                  New Branch Name
+                  {t('sync.newBranchName')}
                   <input
                     type="text"
                     name="newName"
-                    placeholder="testing-branch"
+                    placeholder={t('sync.newBranchPlaceholder')}
                   />
                 </label>
               </div>
               <div className="form-control form-control--no-label width-auto">
                 <button type="submit" className="btn btn--clicky">
-                  Create
+                  {t('project.create')}
                 </button>
               </div>
             </div>
@@ -192,7 +193,7 @@ export const SyncBranchesModal = ({ vcs, onHide }: Props) => {
             <table className="table--fancy table--outlined">
               <thead>
                 <tr>
-                  <th className="text-left">Branches</th>
+                  <th className="text-left">{t('sync.branches')}</th>
                   <th className="text-right">&nbsp;</th>
                 </tr>
               </thead>
@@ -208,33 +209,33 @@ export const SyncBranchesModal = ({ vcs, onHide }: Props) => {
                         {name}
                       </span>
                       {name === currentBranch ? (
-                        <span className="txt-sm space-left">(current)</span>
+                        <span className="txt-sm space-left">({t('sync.current')})</span>
                       ) : null}
                       {name === 'master' && <i className="fa fa-lock space-left faint" />}
                     </td>
                     <td className="text-right">
                       <PromptButton
                         className="btn btn--micro btn--outlined space-left"
-                        doneMessage="Merged"
+                        doneMessage={t('sync.merged')}
                         disabled={name === currentBranch}
                         onClick={() => handleMerge(name)}
                       >
-                        Merge
+                        {t('sync.merge')}
                       </PromptButton>
                       <PromptButton
                         className="btn btn--micro btn--outlined space-left"
-                        doneMessage="Deleted"
+                        doneMessage={t('sync.deleted')}
                         disabled={name === currentBranch || name === 'master'}
                         onClick={() => handleDelete(name)}
                       >
-                        Delete
+                        {t('sync.delete')}
                       </PromptButton>
                       <button
                         className="btn btn--micro btn--outlined space-left"
                         disabled={name === currentBranch}
                         onClick={() => handleCheckout(name)}
                       >
-                        Checkout
+                        {t('sync.checkout')}
                       </button>
                     </td>
                   </tr>
@@ -248,7 +249,7 @@ export const SyncBranchesModal = ({ vcs, onHide }: Props) => {
               <table className="table--fancy table--outlined">
                 <thead>
                   <tr>
-                    <th className="text-left">Remote Branches</th>
+                    <th className="text-left">{t('sync.remoteBranches')}</th>
                     <th className="text-right">&nbsp;</th>
                   </tr>
                 </thead>
@@ -263,11 +264,11 @@ export const SyncBranchesModal = ({ vcs, onHide }: Props) => {
                         {name !== 'master' && (
                           <PromptButton
                             className="btn btn--micro btn--outlined space-left"
-                            doneMessage="Deleted"
+                            doneMessage={t('sync.deleted')}
                             disabled={name === currentBranch}
                             onClick={() => handleRemoteDelete(name)}
                           >
-                            Delete
+                            {t('sync.delete')}
                           </PromptButton>
                         )}
                         <SyncPullButton
@@ -277,7 +278,7 @@ export const SyncBranchesModal = ({ vcs, onHide }: Props) => {
                           disabled={name === currentBranch}
                           vcs={vcs}
                         >
-                          Fetch
+                          {t('sync.fetch')}
                         </SyncPullButton>
                       </td>
                     </tr>

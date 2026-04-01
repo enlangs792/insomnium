@@ -1,6 +1,7 @@
 import React, { createRef, FunctionComponent, useLayoutEffect } from 'react';
 import styled from 'styled-components';
 
+import { t } from '../../../../common/i18n';
 export interface SidebarFilterProps {
   filter: boolean;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
@@ -50,7 +51,7 @@ export const SidebarFilter: FunctionComponent<SidebarFilterProps> = ({ filter, o
         height: filter ? '100%' : '0px',
       }}
     >
-      <input type="text" placeholder="Filter..." onChange={onChange} ref={filterField} />
+      <input type="text" placeholder={t('specEditor.sidebar.filterPlaceholder')} onChange={onChange} ref={filterField} />
     </StyledFilter>
   );
 };

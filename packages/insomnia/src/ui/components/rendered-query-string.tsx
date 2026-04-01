@@ -2,6 +2,7 @@ import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
 import styled from 'styled-components';
 
+import { t } from '../../common/i18n';
 import { Request } from '../../models/request';
 import { WebSocketRequest } from '../../models/websocket-request';
 import { addSegValuesToUrl, buildQueryStringFromParams, joinUrlAndQueryString, smartEncodeUrl } from '../../utils/url/querystring';
@@ -76,7 +77,7 @@ export const RenderedQueryString: FC<Props> = ({ request }) => {
         size="small"
         content={previewString}
         disabled={previewString === defaultPreview}
-        title="Copy URL"
+        title={t('renderedQueryString.copyUrl')}
         confirmMessage=""
       >
         <i className="fa fa-copy" />

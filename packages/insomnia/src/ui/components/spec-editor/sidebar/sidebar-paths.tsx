@@ -1,5 +1,6 @@
 import React, { Component, Fragment, ReactNode } from 'react';
 
+import { t } from '../../../../common/i18n';
 import { IconEnum, SvgIcon } from '../../svg-icon';
 import { SidebarBadge } from './sidebar-badge';
 import { SidebarInvalidSection } from './sidebar-invalid-section';
@@ -68,6 +69,6 @@ export class SidebarPaths extends Component<SidebarPathsProps> {
   };
 
   render() {
-    return <SidebarSection title="PATHS" renderBody={this.renderBody} />;
+    return <SidebarSection title={t('specEditor.sidebar.pathsTitle')} renderBody={this.renderBody} />;
   }
 }

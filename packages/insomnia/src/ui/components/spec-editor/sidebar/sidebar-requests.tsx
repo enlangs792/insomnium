@@ -1,6 +1,7 @@
 import React, { Component, Fragment, ReactNode } from 'react';
 import styled from 'styled-components';
 
+import { t } from '../../../../common/i18n';
 import { IconEnum, SvgIcon } from '../../svg-icon';
 import { Tooltip } from '../../tooltip';
 import { SidebarBadge } from './sidebar-badge';
@@ -105,6 +106,6 @@ export class SidebarRequests extends Component<SidebarRequestsProps> {
   };
 
   render() {
-    return <SidebarSection title="REQUESTS" renderBody={this.renderBody} />;
+    return <SidebarSection title={t('specEditor.sidebar.requestsTitle')} renderBody={this.renderBody} />;
   }
 }

@@ -15,6 +15,7 @@ import { SwaggerUIBundle } from 'swagger-ui-dist';
 
 import { parseApiSpec } from '../../common/api-specs';
 import { ACTIVITY_SPEC } from '../../common/constants';
+import { t } from '../../common/i18n';
 import { debounce } from '../../common/misc';
 import { ApiSpec } from '../../models/api-spec';
 import * as models from '../../models/index';
@@ -242,12 +243,10 @@ const Design: FC = () => {
             renderError={() => (
               <div className="text-left margin pad">
                 <h4>
-                  An error occurred while trying to render your spec's
-                  navigation.
+                  {t('design.renderNavigationErrorTitle')}
                 </h4>
                 <p>
-                  This navigation will automatically refresh, once you have a
-                  valid specification that can be rendered.
+                  {t('design.renderNavigationErrorDescription')}
                 </p>
               </div>
             )}
@@ -266,7 +265,7 @@ const Design: FC = () => {
           </ErrorBoundary>
         ) : (
           <Fragment>
-            <EmptySpaceHelper>A spec navigator will render here</EmptySpaceHelper>
+            <EmptySpaceHelper>{t('design.specNavigatorPlaceholder')}</EmptySpaceHelper>
             <div
               style={{
                 gridRowStart: 6,
@@ -325,7 +324,7 @@ const Design: FC = () => {
                       rulesetPath ? (
                         <Fragment>
                           <p>
-                            Using ruleset from
+                            {t('design.usingRulesetFrom')}
                           </p>
                           <code
                             style={{
@@ -335,11 +334,11 @@ const Design: FC = () => {
                         </Fragment>
                       ) : (
                         <Fragment>
-                          <p>Using default OAS ruleset.</p>
+                          <p>{t('design.usingDefaultRuleset')}</p>
                           <p>
-                            To use a custom ruleset add a{' '}
+                            {t('design.useCustomRulesetPrefix')}{' '}
                             <code>.spectral.yaml</code> file to the root of your
-                            git repository
+                            {' '}{t('design.useCustomRulesetSuffix')}
                           </p>
                         </Fragment>
                       )
@@ -353,7 +352,7 @@ const Design: FC = () => {
                             : 'fa fa-file-circle-xmark'
                         }
                       />{' '}
-                      Ruleset
+                      {t('design.ruleset')}
                     </RulesetLabel>
                   </Tooltip>
                 }
@@ -374,7 +373,7 @@ const Design: FC = () => {
                     <i className="fa fa-spin fa-spinner" />
                   ) : (
                     <i className="fa fa-file-import" />
-                  )} Generate Request Collection
+                  )} {t('design.generateRequestCollection')}
                 </button>
               </Toolbar>
             ) : null}

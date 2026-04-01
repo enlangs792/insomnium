@@ -1,6 +1,7 @@
 import React, { DOMAttributes, FunctionComponent, useEffect, useState } from 'react';
 
 import { REQUEST_SETUP_TEARDOWN_COMPENSATION, REQUEST_TIME_TO_SHOW_COUNTER } from '../../common/constants';
+import { t } from '../../common/i18n';
 
 interface Props {
   handleCancel: DOMAttributes<HTMLButtonElement>['onClick'];
@@ -28,7 +29,7 @@ export const ResponseTimer: FunctionComponent<Props> = ({ handleCancel }) => {
   return (
     <div className="overlay theme--transparent-overlay">
       <h2 style={{ fontVariantNumeric: 'tabular-nums' }}>
-        {seconds >= REQUEST_TIME_TO_SHOW_COUNTER ? `${seconds.toFixed(1)} seconds` : 'Loading'}...
+        {seconds >= REQUEST_TIME_TO_SHOW_COUNTER ? t('responseTimer.seconds', { seconds: seconds.toFixed(1) }) : t('responseTimer.loading')}...
       </h2>
       <div className="pad">
         <i className="fa fa-refresh fa-spin" />
@@ -38,7 +39,7 @@ export const ResponseTimer: FunctionComponent<Props> = ({ handleCancel }) => {
           className="btn btn--clicky"
           onClick={handleCancel}
         >
-          Cancel Request
+          {t('responseTimer.cancelRequest')}
         </button>
       </div>
     </div>

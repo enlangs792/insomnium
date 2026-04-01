@@ -1,5 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 
+import { t } from '../../../common/i18n';
 import { ResponseTimelineEntry } from '../../../main/network/libcurl-promise';
 import * as models from '../../../models/index';
 import type { Response } from '../../../models/response';
@@ -40,7 +41,7 @@ export const ResponseDebugModal = forwardRef<ResponseDebugModalHandle, ModalProp
         response = await models.response.getById(options.responseId || 'n/a');
       }
       if (!response) {
-        console.error('No response found');
+        console.error(t('responseDebug.noResponseFound'));
         return;
       }
       const timeline = await models.response.getTimeline(response, options.showBody);
@@ -55,7 +56,7 @@ export const ResponseDebugModal = forwardRef<ResponseDebugModalHandle, ModalProp
   const { responseId, timeline, title } = state;
   return (
     <Modal ref={modalRef} tall>
-      <ModalHeader>{title || 'Response Timeline'}</ModalHeader>
+      <ModalHeader>{title || t('auth.responseTimeline')}</ModalHeader>
       <ModalBody>
         <div
           style={{
@@ -69,7 +70,7 @@ export const ResponseDebugModal = forwardRef<ResponseDebugModalHandle, ModalProp
               timeline={timeline}
             />
           ) : (
-            <div>No response found</div>
+            <div>{t('responseDebug.noResponseFound')}</div>
           )}
         </div>
       </ModalBody>

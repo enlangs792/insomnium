@@ -11,6 +11,7 @@ import { OverlayContainer, useDrop } from 'react-aria';
 import { useFetcher } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { t } from '../../../common/i18n';
 import {
   ImportResourcesActionResult,
   ScanForResourcesActionResult,
@@ -184,15 +185,15 @@ const FileField: FC = () => {
               <i className="fa fa-upload fa-xl" />
             </div>
             <div>
-              Drag and Drop or{' '}
+              {t('importModal.dragAndDropOr')}{' '}
               <span
                 style={{
                   color: 'var(--color-surprise)',
                 }}
               >
-                Choose a File
+                {t('importModal.chooseFile')}
               </span>{' '}
-              to import
+              {t('importModal.toImport')}
             </div>
           </div>
         )}
@@ -474,7 +475,9 @@ export const ImportModal: FC<ImportModalProps> = ({
   // allow workspace import if there is only one workspace
   const totalWorkspaces = scanResourcesFetcher.data?.workspaces?.length || 0;
   const shouldImportToWorkspace = !!defaultWorkspaceId && totalWorkspaces <= 1;
-  const header = shouldImportToWorkspace ? `Import to "${workspaceName}" Workspace` : `Import to "${projectName}" Project`;
+  const header = shouldImportToWorkspace
+    ? t('importModal.importToWorkspace', { name: workspaceName || '' })
+    : t('importModal.importToProject', { name: projectName });
   return (
     <OverlayContainer onClick={e => e.stopPropagation()}>
       <Modal ref={modalRef} onHide={onHide} wide>
@@ -546,7 +549,7 @@ const ScanResourcesForm = ({
               checked={importFrom === 'file'}
             >
               <i className="fa fa-plus" />
-              File
+              {t('importModal.file')}
             </Radio>
             <Radio
               onChange={() => setImportFrom('uri')}
@@ -555,7 +558,7 @@ const ScanResourcesForm = ({
               checked={importFrom === 'uri'}
             >
               <i className="fa fa-link" />
-              Url
+              {t('importModal.url')}
             </Radio>
             <Radio
               onChange={() => setImportFrom('clipboard')}
@@ -564,7 +567,7 @@ const ScanResourcesForm = ({
               checked={importFrom === 'clipboard'}
             >
               <i className="fa fa-clipboard" />
-              Clipboard
+              {t('importModal.clipboard')}
             </Radio>
           </RadioGroup>
         </Fieldset>
@@ -572,12 +575,12 @@ const ScanResourcesForm = ({
         {importFrom === 'uri' && (
           <div className="form-control form-control--outlined">
             <label>
-              Url:
+              {t('importModal.urlLabel')}
               <input
                 type="text"
                 name="uri"
                 defaultValue={from?.type === 'uri' ? from.defaultValue : undefined}
-                placeholder="https://website.com/insomnia-import.json"
+                placeholder={t('importModal.urlPlaceholder')}
               />
             </label>
           </div>
@@ -587,7 +590,7 @@ const ScanResourcesForm = ({
         {errors && errors.length > 0 && (
           <div className="notice error margin-top-sm">
             <p>
-              <strong>Error while scanning for resources to import:</strong>
+              <strong>{t('importModal.errorScanningResources')}</strong>
               {errors[0]}
             </p>
           </div>
@@ -607,7 +610,7 @@ const ScanResourcesForm = ({
               paddingBottom: 'var(--padding-sm)',
             }}
           >
-            Supported Formats
+            {t('importModal.supportedFormats')}
           </div>
           <div
             style={{
@@ -661,7 +664,7 @@ const ScanResourcesForm = ({
           form={id}
           className="btn"
         >
-          <i className="fa fa-file-import" /> Scan
+          <i className="fa fa-file-import" /> {t('importModal.scan')}
         </Button>
       </div>
     </Fragment>
@@ -766,7 +769,7 @@ const ImportResourcesForm = ({
                       cURL
                     </Fragment>
                   )}{' '}
-                  resources to be imported:
+                  {t('importModal.resourcesToBeImported')}
                 </ImportTypeTitle>
               </th>
             </tr>
@@ -779,7 +782,9 @@ const ImportResourcesForm = ({
               >
                 <td>
                   {scanResult.workspaces.length}{' '}
-                  {scanResult.workspaces.length === 1 ? 'Workspace' : 'Workspaces'}
+                  {scanResult.workspaces.length === 1
+                    ? t('importModal.workspace')
+                    : t('importModal.workspaces')}
                 </td>
               </tr>
             )}
@@ -790,7 +795,9 @@ const ImportResourcesForm = ({
               >
                 <td>
                   {scanResult.requests.length}{' '}
-                  {scanResult.requests.length === 1 ? 'Request' : 'Requests'}
+                  {scanResult.requests.length === 1
+                    ? t('importModal.request')
+                    : t('importModal.requests')}
                 </td>
               </tr>
             )}
@@ -808,7 +815,9 @@ const ImportResourcesForm = ({
                     }}
                   >
                     {scanResult.apiSpecs.length}{' '}
-                    {scanResult.apiSpecs.length === 1 ? 'OpenAPI Spec' : 'OpenAPI Specs'}
+                    {scanResult.apiSpecs.length === 1
+                      ? t('importModal.openApiSpec')
+                      : t('importModal.openApiSpecs')}
                   </div>
                 </td>
               </tr>
@@ -819,11 +828,13 @@ const ImportResourcesForm = ({
                 <td>
                   {scanResult.environments.length}{' '}
                   {scanResult.environments.length === 1
-                    ? 'Environment'
-                    : 'Environments'}
-                  {' with '}
+                    ? t('importModal.environment')
+                    : t('importModal.environments')}
+                  {' '}{t('importModal.with')}{' '}
                   {scanResult.cookieJars?.length}{' '}
-                  {scanResult.cookieJars?.length === 1 ? 'Cookie Jar' : 'Cookie Jars'}
+                  {scanResult.cookieJars?.length === 1
+                    ? t('importModal.cookieJar')
+                    : t('importModal.cookieJars')}
                 </td>
               </tr>
             )}
@@ -833,11 +844,13 @@ const ImportResourcesForm = ({
                 <td>
                   {scanResult.unitTestSuites.length}{' '}
                   {scanResult.unitTestSuites.length === 1
-                    ? 'Test Suite'
-                    : 'Test Suites'}
-                  {' with '}
+                    ? t('importModal.testSuite')
+                    : t('importModal.testSuites')}
+                  {' '}{t('importModal.with')}{' '}
                   {scanResult.unitTests?.length}
-                  {scanResult.unitTests?.length === 1 ? ' Test' : ' Tests'}
+                  {scanResult.unitTests?.length === 1
+                    ? ` ${t('importModal.test')}`
+                    : ` ${t('importModal.tests')}`}
                 </td>
               </tr>
             )}
@@ -849,7 +862,7 @@ const ImportResourcesForm = ({
         {errors && errors.length > 0 && (
           <div className="notice error margin-top-sm">
             <p>
-              <strong>Error while importing to Insomnium:</strong>
+              <strong>{t('importModal.errorImportingToInsomnium')}</strong>
               {errors[0]}
             </p>
           </div>
@@ -879,11 +892,11 @@ const ImportResourcesForm = ({
         >
           {disabled ? (
             <div>
-              <i className="fa fa-spinner fa-spin" /> Importing
+              <i className="fa fa-spinner fa-spin" /> {t('importModal.importing')}
             </div>
           ) : (
             <div>
-              <i className="fa fa-file-import" /> Import
+              <i className="fa fa-file-import" /> {t('importModal.import')}
             </div>
           )}
         </Button>

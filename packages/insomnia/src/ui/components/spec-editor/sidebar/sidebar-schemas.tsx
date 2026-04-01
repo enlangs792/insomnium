@@ -1,5 +1,6 @@
 import React, { Component, ReactNode } from 'react';
 
+import { t } from '../../../../common/i18n';
 import { IconEnum, SvgIcon } from '../../svg-icon';
 import { SidebarInvalidSection } from './sidebar-invalid-section';
 import { SidebarItem } from './sidebar-item';
@@ -43,6 +44,6 @@ export class SidebarSchemas extends Component<SidebarSchemasProps> {
   };
 
   render() {
-    return <SidebarSection title="SCHEMAS" renderBody={this.renderBody} />;
+    return <SidebarSection title={t('specEditor.sidebar.schemasTitle')} renderBody={this.renderBody} />;
   }
 }

@@ -173,7 +173,7 @@ export const GrpcRequestPane: FunctionComponent<Props> = ({
                 key={uniquenessKey}
                 type="text"
                 defaultValue={activeRequest.url}
-                placeholder="grpcb.in:9000"
+                placeholder={t('grpc.urlPlaceholder')}
                 onChange={url => patchRequest(requestId, { url })}
                 getAutocompleteConstants={() => queryAllWorkspaceUrls(workspaceId, models.grpcRequest.type, requestId)}
               />
@@ -248,7 +248,7 @@ export const GrpcRequestPane: FunctionComponent<Props> = ({
         </PaneHeader>
         <PaneBody>
           {methodType && (
-            <Tabs aria-label="Grpc request pane tabs">
+            <Tabs aria-label={t('grpc.requestPaneTabs')}>
               <TabItem key="method-type" title={GrpcMethodTypeName[methodType]}>
                 <>
                   {running && canClientStream(methodType) && (
@@ -285,7 +285,7 @@ export const GrpcRequestPane: FunctionComponent<Props> = ({
                       </button>
                     </ActionButtonsContainer>
                   )}
-                  <Tabs key={uniquenessKey} aria-label="Grpc tabbed messages tabs" isNested>
+                  <Tabs key={uniquenessKey} aria-label={t('grpc.tabbedMessagesTabs')} isNested>
                     {[
                       <TabItem key="body" title={t('grpc.body')}>
                         <CodeEditor
@@ -318,9 +318,9 @@ export const GrpcRequestPane: FunctionComponent<Props> = ({
                 <PanelContainer className="tall wide">
                   <ErrorBoundary key={uniquenessKey} errorClassName="font-error pad text-center">
                     <KeyValueEditor
-                      namePlaceholder="header"
-                      valuePlaceholder="value"
-                      descriptionPlaceholder="description"
+                      namePlaceholder={t('grpc.header')}
+                      valuePlaceholder={t('grpc.value')}
+                      descriptionPlaceholder={t('grpc.description')}
                       pairs={activeRequest.metadata}
                       isDisabled={running}
                       handleGetAutocompleteNameConstants={getCommonHeaderNames}

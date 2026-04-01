@@ -59,7 +59,7 @@ const useDocumentActionPlugins = ({ workspace, apiSpec, project }: Props) => {
       await p.action(context, parseApiSpec(apiSpec?.contents || ''));
     } catch (err) {
       showError({
-        title: 'Document Action Failed',
+        title: t('workspaceCardDropdown.documentActionFailed'),
         error: err,
       });
     } finally {
@@ -102,10 +102,10 @@ export const WorkspaceCardDropdown: FC<Props> = props => {
   return (
     <Fragment>
       <Dropdown
-        aria-label='Workspace Actions Dropdown'
+        aria-label={t('workspaceCardDropdown.workspaceActionsDropdown')}
         onOpen={refresh}
         triggerButton={
-          <DropdownButton aria-label='Workspace actions menu button' className="px-4 py-1 flex flex-1 items-center justify-center gap-2 aria-pressed:bg-[--hl-sm] rounded-sm text-[--color-font] hover:bg-[--hl-xs] focus:ring-inset ring-1 ring-transparent focus:ring-[--hl-md] transition-all text-sm">
+          <DropdownButton aria-label={t('workspaceCardDropdown.workspaceActionsMenuButton')} className="px-4 py-1 flex flex-1 items-center justify-center gap-2 aria-pressed:bg-[--hl-sm] rounded-sm text-[--color-font] hover:bg-[--hl-xs] focus:ring-inset ring-1 ring-transparent focus:ring-[--hl-md] transition-all text-sm">
             <SvgIcon icon="ellipsis" />
           </DropdownButton>
         }
@@ -123,11 +123,13 @@ export const WorkspaceCardDropdown: FC<Props> = props => {
             icon="pen-to-square"
             onClick={() => {
               showPrompt({
-                title: `Rename ${getWorkspaceLabel(workspace).singular}`,
+                title: t('workspaceCardDropdown.renameWorkspace', {
+                  type: getWorkspaceLabel(workspace).singular,
+                }),
                 defaultValue: workspaceName,
-                submitName: 'Rename',
+                submitName: t('menu.rename'),
                 selectText: true,
-                label: 'Name',
+                label: t('workspaceCardDropdown.name'),
                 onComplete: name =>
                   fetcher.submit(
                     { name, workspaceId: workspace._id },
@@ -141,24 +143,24 @@ export const WorkspaceCardDropdown: FC<Props> = props => {
             }}
           />
         </DropdownItem>
-        <DropdownSection aria-label='Meta section'>
-          <DropdownItem aria-label='Import'>
+        <DropdownSection aria-label={t('workspaceCardDropdown.metaSection')}>
+          <DropdownItem aria-label={t('menu.import')}>
             <ItemContent
-              label="Import"
+              label={t('menu.import')}
               icon="file-import"
               onClick={() => setIsImportModalOpen(true)}
             />
           </DropdownItem>
-          <DropdownItem aria-label='Export'>
+          <DropdownItem aria-label={t('menu.export')}>
             <ItemContent
-              label="Export"
+              label={t('menu.export')}
               icon="file-export"
               onClick={() => setIsExportModalOpen(true)}
             />
           </DropdownItem>
-          <DropdownItem aria-label='Settings'>
+          <DropdownItem aria-label={t('menu.settings')}>
             <ItemContent
-              label="Settings"
+              label={t('menu.settings')}
               icon="gear"
               onClick={() => setIsSettingsModalOpen(true)}
             />
@@ -166,19 +168,19 @@ export const WorkspaceCardDropdown: FC<Props> = props => {
         </DropdownSection>
         {renderPluginDropdownItems()}
 
-        <DropdownSection aria-label='Delete section'>
-          <DropdownItem aria-label='Delete'>
+        <DropdownSection aria-label={t('workspaceCardDropdown.deleteSection')}>
+          <DropdownItem aria-label={t('menu.delete')}>
             <ItemContent
-              label="Delete"
+              label={t('menu.delete')}
               icon="trash-o"
               className="danger"
               onClick={() => {
                 const label = getWorkspaceLabel(workspace);
                 showModal(AskModal, {
-                  title: `Delete ${label.singular}`,
-                  message: `Do you really want to delete "${workspaceName}"?`,
-                  yesText: 'Yes',
-                  noText: 'Cancel',
+                  title: t('workspaceCardDropdown.deleteWorkspace', { type: label.singular }),
+                  message: t('workspaceCardDropdown.confirmDeleteWorkspace', { name: workspaceName }),
+                  yesText: t('modal.yes'),
+                  noText: t('modal.cancel'),
                   onDone: async (isYes: boolean) => {
                     if (!isYes) {
                       return;

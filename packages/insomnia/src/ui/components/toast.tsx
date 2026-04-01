@@ -10,6 +10,7 @@ import {
   getProductName,
   updatesSupported,
 } from '../../common/constants';
+import { t } from '../../common/i18n';
 import * as models from '../../models/index';
 import imgSrcCore from '../images/insomnia-logo.svg';
 import { Link } from './base/link';
@@ -134,7 +135,7 @@ export const Toast: FC = () => {
         <img src={imgSrcCore} alt={productName} />
       </StyledLogo>
       <StyledContent>
-        <p>{notification?.message || 'Unknown'}</p>
+        <p>{notification?.message || t('toast.unknown')}</p>
         <StyledFooter>
           <button
             className="btn btn--super-duper-compact btn--outlined"
@@ -150,7 +151,7 @@ export const Toast: FC = () => {
               }
             }}
           >
-            Dismiss
+            {t('toast.dismiss')}
           </button>
           &nbsp;&nbsp;
           <Link

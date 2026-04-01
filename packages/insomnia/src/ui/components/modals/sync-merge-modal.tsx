@@ -1,5 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 
+import { t } from '../../../common/i18n';
 import type { MergeConflict } from '../../../sync/types';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
@@ -34,19 +35,19 @@ export const SyncMergeModal = forwardRef<SyncMergeModalHandle, ModalProps>((_, r
 
   return (
     <Modal ref={modalRef}>
-      <ModalHeader key="header">Resolve Conflicts</ModalHeader>
+      <ModalHeader key="header">{t('sync.resolveConflicts')}</ModalHeader>
       <ModalBody key="body" className="pad text-center" noScroll>
         <table className="table--fancy table--outlined">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Description</th>
+              <th>{t('sync.name')}</th>
+              <th>{t('sync.description')}</th>
               <th
                 style={{
                   width: '10rem',
                 }}
               >
-                Choose
+                {t('sync.choose')}
               </th>
             </tr>
           </thead>
@@ -57,7 +58,7 @@ export const SyncMergeModal = forwardRef<SyncMergeModalHandle, ModalProps>((_, r
                 <td className="text-left">{conflict.message}</td>
                 <td className="no-wrap">
                   <label className="no-pad">
-                    Mine{' '}
+                    {t('sync.mine')}{' '}
                     <input
                       type="radio"
                       value={conflict.mineBlob || ''}
@@ -69,7 +70,7 @@ export const SyncMergeModal = forwardRef<SyncMergeModalHandle, ModalProps>((_, r
                     />
                   </label>
                   <label className="no-pad margin-left">
-                    Theirs{' '}
+                    {t('sync.theirs')}{' '}
                     <input
                       type="radio"
                       value={conflict.theirsBlob || ''}
@@ -94,7 +95,7 @@ export const SyncMergeModal = forwardRef<SyncMergeModalHandle, ModalProps>((_, r
             modalRef.current?.hide();
           }}
         >
-          Submit Resolutions
+          {t('sync.submitResolutions')}
         </button>
       </ModalFooter>
     </Modal >

@@ -1,5 +1,6 @@
 import React, { FC, forwardRef, useImperativeHandle, useRef, useState } from 'react';
 
+import { t } from '../../../common/i18n';
 import { Link } from '../base/link';
 import { Modal, type ModalHandle, ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
@@ -26,19 +27,19 @@ const HelpExamples: FC<{ helpExamples: HelpExample[] }> = ({ helpExamples }) => 
 const JSONPathHelp: FC = () => (
   <ModalBody className="pad">
     <p>
-      Use <Link href="http://goessner.net/articles/JsonPath/">JSONPath</Link> to filter the response body. Here are some examples that you might use on a book store API:
+      {t('filterHelp.useJsonPathPrefix')} <Link href="http://goessner.net/articles/JsonPath/">JSONPath</Link> {t('filterHelp.useJsonPathSuffix')}
     </p>
     <HelpExamples
       helpExamples={[
-        { code: '$.store.books[*].title', description: 'Get titles of all books in the store' },
-        { code: '$.store.books[?(@.price < 10)].title', description: 'Get books costing less than $10' },
-        { code: '$.store.books[-1:]', description: 'Get the last book in the store' },
-        { code: '$.store.books.length', description: 'Get the number of books in the store' },
-        { code: '$.store.books[?(@.title.match(/lord.*rings/i))]', description: 'Get book by title regular expression' },
+        { code: '$.store.books[*].title', description: t('filterHelp.getTitlesOfAllBooks') },
+        { code: '$.store.books[?(@.price < 10)].title', description: t('filterHelp.getBooksLessThan10') },
+        { code: '$.store.books[-1:]', description: t('filterHelp.getLastBook') },
+        { code: '$.store.books.length', description: t('filterHelp.getNumberOfBooks') },
+        { code: '$.store.books[?(@.title.match(/lord.*rings/i))]', description: t('filterHelp.getBookByTitleRegex') },
       ]}
     />
     <p className="notice info">
-      Note that there's <Link href="https://cburgmer.github.io/json-path-comparison/">no standard</Link> for JSONPath. Insomnium uses <Link href="https://www.npmjs.com/package/jsonpath-plus">jsonpath-plus</Link>.
+      {t('filterHelp.noStandardPrefix')} <Link href="https://cburgmer.github.io/json-path-comparison/">{t('filterHelp.noStandard')}</Link> {t('filterHelp.noStandardSuffix')} <Link href="https://www.npmjs.com/package/jsonpath-plus">jsonpath-plus</Link>.
     </p>
   </ModalBody>
 );
@@ -46,15 +47,14 @@ const JSONPathHelp: FC = () => (
 const XPathHelp: FC = () => (
   <ModalBody className="pad">
     <p>
-      Use <Link href="https://www.w3.org/TR/xpath/">XPath</Link> to filter the response body. Here are some examples that you might use on a
-      book store API:
+      {t('filterHelp.useXPathPrefix')} <Link href="https://www.w3.org/TR/xpath/">XPath</Link> {t('filterHelp.useXPathSuffix')}
     </p>
     <HelpExamples
       helpExamples={[
-        { code: '/store/books/title', description: 'Get titles of all books in the store' },
-        { code: '/store/books[price < 10]', description: 'Get books costing less than $10' },
-        { code: '/store/books[last()]', description: 'Get the last book in the store' },
-        { code: 'count(/store/books)', description: 'Get the number of books in the store' },
+        { code: '/store/books/title', description: t('filterHelp.getTitlesOfAllBooks') },
+        { code: '/store/books[price < 10]', description: t('filterHelp.getBooksLessThan10') },
+        { code: '/store/books[last()]', description: t('filterHelp.getLastBook') },
+        { code: 'count(/store/books)', description: t('filterHelp.getNumberOfBooks') },
       ]}
     />
   </ModalBody>
@@ -87,7 +87,7 @@ export const FilterHelpModal = forwardRef<FilterHelpModalHandle, ModalProps>((_,
   const isXPath = !isJSON;
   return (
     <Modal ref={modalRef}>
-      <ModalHeader>Response Filtering Help</ModalHeader>
+      <ModalHeader>{t('filterHelp.responseFilteringHelp')}</ModalHeader>
       {isJSON ? <JSONPathHelp /> : null}
       {isXPath ? <XPathHelp /> : null}
     </Modal>

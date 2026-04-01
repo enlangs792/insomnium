@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 
 import { DASHBOARD_SORT_ORDERS, DashboardSortOrder, getDashboardSortOrderName } from '../../../common/constants';
+import { t } from '../../../common/i18n';
 import { Dropdown, DropdownButton, DropdownItem, ItemContent } from '../base/dropdown';
 
 interface DashboardSortDropdownProps {
@@ -11,7 +12,7 @@ interface DashboardSortDropdownProps {
 export const DashboardSortDropdown: FC<DashboardSortDropdownProps> = ({ onSelect, value }) => {
   return (
     <Dropdown
-      aria-label='Dashboard Sort Dropdown'
+      aria-label={t('dashboardSort.dropdown')}
       className="margin-left"
       triggerButton={
         <DropdownButton

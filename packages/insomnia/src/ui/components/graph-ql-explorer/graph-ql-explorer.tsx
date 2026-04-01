@@ -2,6 +2,7 @@ import { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import { GraphQLEnumType, GraphQLField, GraphQLNamedType, GraphQLSchema, GraphQLType, isNamedType } from 'graphql';
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 
+import { t } from '../../../common/i18n';
 import { useDocBodyKeyboardShortcuts } from '../keydown-binder';
 import { GraphQLExplorerEnum } from './graph-ql-explorer-enum';
 import { GraphQLExplorerField } from './graph-ql-explorer-field';
@@ -173,7 +174,7 @@ export const GraphQLExplorer: FC<Props> = ({ schema, handleClose, visible, refer
             <input
               ref={inputRef}
               onChange={event => setState(state => ({ ...state, filter: event.target.value }))}
-              placeholder="Search the docs..."
+              placeholder={t('graphqlExplorer.searchTheDocs')}
               defaultValue={filter}
             />
             {filter && (
@@ -214,9 +215,9 @@ export const GraphQLExplorer: FC<Props> = ({ schema, handleClose, visible, refer
 
   const fieldName = currentField ? currentField.name : null;
   const typeName = isNamedType(currentType) ? currentType.name : null;
-  const schemaName = schema ? 'Schema' : null;
+  const schemaName = schema ? t('graphqlExplorer.schema') : null;
   const typeOrField = currentType || currentField;
-  let name = 'Unknown';
+  let name = t('graphqlExplorer.unknown');
   const lastHistoryItem = history[history.length - 1] || {};
   if (lastHistoryItem.currentField?.name) {
     name = lastHistoryItem.currentField?.name;
@@ -246,10 +247,10 @@ export const GraphQLExplorer: FC<Props> = ({ schema, handleClose, visible, refer
                 handlePopHistory();
               }}
             >
-              <i className="fa--skinny fa fa-angle-left" /> Schema
+              <i className="fa--skinny fa fa-angle-left" /> {t('graphqlExplorer.schema')}
             </a>)
             : null}
-        <h1>{fieldName || typeName || schemaName || 'Unknown'}</h1>
+        <h1>{fieldName || typeName || schemaName || t('graphqlExplorer.unknown')}</h1>
         <button
           className="btn btn--compact graphql-explorer__header__close-btn"
           onClick={handleClose}

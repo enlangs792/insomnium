@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
+import { t } from '../../../../common/i18n';
 import { SidebarItem } from './sidebar-item';
 import { SidebarTextItem } from './sidebar-text-item';
 
@@ -32,22 +33,22 @@ export const SidebarInfo: FunctionComponent<SidebarInfoProps> = ({
     <div style={{ height: childrenVisible ? '100%' : 0 }}>
       {title && (
         <SidebarItem onClick={() => onClick('info', 'title')}>
-          <SidebarTextItem label={'Title:'} headline={title} />
+          <SidebarTextItem label={t('specEditor.sidebar.titleLabel')} headline={title} />
         </SidebarItem>
       )}
       {description && (
         <SidebarItem onClick={() => onClick('info', 'description')}>
-          <SidebarTextItem label={'Description:'} headline={description} />
+          <SidebarTextItem label={t('specEditor.sidebar.descriptionLabel')} headline={description} />
         </SidebarItem>
       )}
       {version && (
         <SidebarItem onClick={() => onClick('info', 'version')}>
-          <SidebarTextItem label={'Version:'} headline={version} />
+          <SidebarTextItem label={t('specEditor.sidebar.versionLabel')} headline={version} />
         </SidebarItem>
       )}
       {license && license.name && (
         <SidebarItem onClick={() => onClick('info', 'license')}>
-          <SidebarTextItem label={'License:'} headline={license.name} />
+          <SidebarTextItem label={t('specEditor.sidebar.licenseLabel')} headline={license.name} />
         </SidebarItem>
       )}
     </div>

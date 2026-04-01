@@ -75,7 +75,7 @@ export const WorkspaceDropdown: FC = () => {
       });
     } catch (err) {
       showError({
-        title: 'Plugin Action Failed',
+        title: t('workspaceDropdown.pluginActionFailed'),
         error: err,
       });
     }
@@ -102,7 +102,7 @@ export const WorkspaceDropdown: FC = () => {
     <>
       <Dropdown
         dataTestId='workspace-dropdown'
-        aria-label="Workspace Dropdown"
+        aria-label={t('workspaceDropdown.workspaceDropdown')}
         ref={dropdownRef}
         closeOnSelect={false}
         className="wide workspace-dropdown"
@@ -122,24 +122,26 @@ export const WorkspaceDropdown: FC = () => {
           </DropdownButton>
         }
       >
-        <DropdownItem aria-label='Duplicate'>
+        <DropdownItem aria-label={t('menu.duplicate')}>
           <ItemContent
-            label="Duplicate"
+            label={t('menu.duplicate')}
             icon="copy"
             onClick={() => setIsDuplicateModalOpen(true)}
           />
         </DropdownItem>
-        <DropdownItem aria-label='Rename'>
+        <DropdownItem aria-label={t('menu.rename')}>
           <ItemContent
-            label="Rename"
+            label={t('menu.rename')}
             icon="pen-to-square"
             onClick={() => {
               showPrompt({
-                title: `Rename ${getWorkspaceLabel(activeWorkspace).singular}`,
+                title: t('workspaceDropdown.renameWorkspace', {
+                  type: getWorkspaceLabel(activeWorkspace).singular,
+                }),
                 defaultValue: activeWorkspaceName,
-                submitName: 'Rename',
+                submitName: t('menu.rename'),
                 selectText: true,
-                label: 'Name',
+                label: t('workspaceDropdown.name'),
                 onComplete: name =>
                   fetcher.submit(
                     { name, workspaceId: activeWorkspace._id },
@@ -153,7 +155,7 @@ export const WorkspaceDropdown: FC = () => {
             }}
           />
         </DropdownItem>
-        <DropdownSection aria-label='Meta section'>
+        <DropdownSection aria-label={t('workspaceDropdown.metaSection')}>
 
           <DropdownItem aria-label={t('menu.import')}>
             <ItemContent

@@ -11,6 +11,7 @@ import {
   getContentTypeFromHeaders,
   PREVIEW_MODE_FRIENDLY,
 } from '../../../common/constants';
+import { t } from '../../../common/i18n';
 import type { ResponseHeader } from '../../../models/response';
 import { Dropdown, DropdownButton, DropdownItem, ItemContent } from '../base/dropdown';
 import { showModal } from '../modals/index';
@@ -83,7 +84,7 @@ export const ResponseMultipartViewer: FC<Props> = ({
     showModal(WrapperModal, {
       title: (
         <span>
-          Headers for <code>{selectedPart.name}</code>
+          {t('responseMultipart.headersFor')} <code>{selectedPart.name}</code>
         </span>
       ),
       body: <ResponseHeadersViewer headers={[...selectedPart.headers]} />,
@@ -101,8 +102,8 @@ export const ResponseMultipartViewer: FC<Props> = ({
     const date = format(Date.now(), 'yyyy-MM-dd');
     const filename = selectedPart.filename || `${selectedPart.name}_${date}`;
     const options: SaveDialogOptions = {
-      title: 'Save as File',
-      buttonLabel: 'Save',
+      title: t('responseMultipart.saveAsFile'),
+      buttonLabel: t('request.save'),
       defaultPath: path.join(dir, filename),
       filters: [
         // @ts-expect-error https://github.com/electron/electron/pull/29322
@@ -137,7 +138,7 @@ export const ResponseMultipartViewer: FC<Props> = ({
           fontSize: editorFontSize,
         }}
       >
-        Failed to parse multipart response: {error}
+        {t('responseMultipart.failedToParseMultipartResponse', { error })}
       </div>
     );
   }
@@ -162,7 +163,7 @@ export const ResponseMultipartViewer: FC<Props> = ({
       >
         <div>
           <Dropdown
-            aria-label='Select Part Dropdown'
+            aria-label={t('responseMultipart.selectPartDropdown')}
             triggerButton={
               <DropdownButton className="btn btn--clicky">
                 <div
@@ -192,24 +193,24 @@ export const ResponseMultipartViewer: FC<Props> = ({
           </Dropdown>
         </div>
         <Dropdown
-          aria-label='Part Actions Dropdown'
+          aria-label={t('responseMultipart.partActionsDropdown')}
           triggerButton={
             <DropdownButton className="btn btn--clicky">
               <i className="fa fa-bars" />
             </DropdownButton>
           }
         >
-          <DropdownItem aria-label='View Headers'>
+          <DropdownItem aria-label={t('responseMultipart.viewHeaders')}>
             <ItemContent
               icon="list"
-              label="View Headers"
+              label={t('responseMultipart.viewHeaders')}
               onClick={viewHeaders}
             />
           </DropdownItem>
-          <DropdownItem aria-label='Save as File'>
+          <DropdownItem aria-label={t('responseMultipart.saveAsFile')}>
             <ItemContent
               icon="save"
-              label="Save as File"
+              label={t('responseMultipart.saveAsFile')}
               onClick={saveAsFile}
             />
           </DropdownItem>
